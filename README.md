@@ -3,11 +3,11 @@ A map-based toponymic wiki.
 ## Overview
 from [Wiktionary](https://en.wiktionary.org/wiki/toponym):
 
-> **toponym** (_plural_ **[toponyms](https://en.wiktionary.org/wiki/toponyms#English "toponyms")**)
+> **toponym** (_plural_ toponyms)
 > 1.  A placename.
 > 2.  A word derived from the name of a place.
 
-Toponymia will be a wiki-style repository of information about the origins and meanings of place names.  There is currently no website devoted specifically to this subject. Toponymia can help centralize this information, and ************* _______ ---
+Toponymia will be a wiki-style repository of information about the origins and meanings of place names.  There is currently no website devoted specifically to this subject.
 
 ## Function
 The initial/basic view of the site will be a full-page map with a header. Overlaid on the map will be a search bar (geocoder), zoom controls, and an "add marker" button. Map data is provided by [OpenStreetMap](https://www.openstreetmap.org) and [Mapbox](https://www.mapbox.com/).
