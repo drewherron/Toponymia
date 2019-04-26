@@ -64,7 +64,9 @@ Only a few elements on the page will vary based on whether or not the user is lo
  7. Give markers a pop-up label
  8. Add links to header 
  9. Allow user creation and login
+ 
 *eventually*:
+
  10. Allow social media login
  14. Red/green diff display in article edit history
  12. Link on header to random article
