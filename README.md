@@ -60,15 +60,19 @@ Only a few elements on the page will vary based on whether or not the user is lo
  3. "Add marker" button - allow "edit mode" on map
  4. Create new marker/article submission form
  5. Adding marker opens submission form in sidebar
- 6. Create wiki-style sidebar template
- 7. Give markers a pop-up label
- 8. Add links to header 
+ 6. Create sidebar display template
+ 7. Add "Edit" button on articles
+ 8. Add "History" button on articles
  9. Allow user creation and login
+ 7. Give markers a pop-up label
+ 8. Create "about" page
+ 8. Add links to header 
  
 *eventually*:
 
- 10. Allow social media login
- 14. Red/green diff display in article edit history
+ 10. Add "Report" button on articles
+ 11. Allow social media login
+ 14. Red/green diff display in article edit history?
  12. Link on header to random article
  13. Add language filter to header
  14. Create polygon/heatmap based on selected languages or language families
