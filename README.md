@@ -47,12 +47,12 @@ If WikiMedia is **not** used:
 All data will be stored on a PostgreSQL database. 
 
 The database will consist of the following tables:
-![Database Diagram](https://raw.githubusercontent.com/drewherron/personal/master/tpnmdb.png?token=ALFEC5ARHZYJ4GHQKD53WFC4YN2M6)
+![Database Diagram](https://i.imgur.com/W5vHzgU.png)
 
 #### Authentication:
 User authentication will be handled by Django's built-in authentication system, and possibly  [django-allauth](https://github.com/pennersr/django-allauth/) for social media login. 
 Only a few elements on the page will vary based on whether or not the user is logged in:
-![Authentication Diagram](https://raw.githubusercontent.com/drewherron/personal/master/loggedindiagram.png?token=ALFEC5GPN7TOYB4WKDSUF6K4YNXYW)
+![Authentication Diagram](https://i.imgur.com/A6mLONy.png)
 
 ##  Schedule
  1. Flush out map format/style
