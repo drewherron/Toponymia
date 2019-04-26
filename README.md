@@ -65,7 +65,7 @@ Only a few elements on the page will vary based on whether or not the user is lo
  8. Add "History" button on articles
  9. Allow user creation and login
  7. Give markers a pop-up label
- 8. Create "about" page
+ 8. Create "About" page
  8. Add links to header 
  
 *eventually*:
