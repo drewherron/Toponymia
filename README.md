@@ -1,5 +1,3 @@
-# Toponymia
-A map-based toponymic wiki. 
 ## Overview
 from [Wiktionary](https://en.wiktionary.org/wiki/toponym):
 
