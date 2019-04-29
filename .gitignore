@@ -116,6 +116,7 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+tpnm/
 
 # Spyder project settings
 .spyderproject
