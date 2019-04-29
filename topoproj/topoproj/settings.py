@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 """
 
 import os
-import secret_settings
+from .secrets import *
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -78,11 +78,11 @@ WSGI_APPLICATION = 'topoproj.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'DB_NAME',
-        'USER': 'DB_USER',
-        'PASSWORD': 'DB_KEY',
-        'HOST': 'DB_HOST',
-        'PORT': 'DB_PORT',
+        'NAME': DB_NAME,
+        'USER': DB_USER,
+        'PASSWORD': DB_KEY,
+        'HOST': DB_HOST,
+        'PORT': DB_PORT,
     }
 }
 
