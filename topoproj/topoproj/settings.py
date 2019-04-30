@@ -86,7 +86,8 @@ DATABASES = {
     }
 }
 
-
+# Map api
+MAP_KEY = API_KEY
 
 # Password validation
 # https://docs.djangoproject.com/en/1.11/ref/settings/#auth-password-validators
