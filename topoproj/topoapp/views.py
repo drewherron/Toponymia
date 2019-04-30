@@ -3,4 +3,7 @@ from django.http import HttpResponse
 
 
 def index(request):
-    return render(request, 'toponymia/index.html')
+    return render(request, 'topoapp/index.html')
+
+def psql(request):
+    return render(request, 'topoapp/psql.html')
