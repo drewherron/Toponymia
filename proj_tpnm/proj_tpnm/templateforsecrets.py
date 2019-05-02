@@ -1,0 +1,7 @@
+SECRET_KEY = 'v92(x_=3=hqty8d$pkl*r-pn)=jph9buwm%cu0n1g(_0jbv+z3'
+DB_NAME = 'maptest'
+DB_USER = 'drew'
+DB_KEY = 'qweasd11'
+DB_HOST = '127.0.0.1'
+DB_PORT = '5432'
+API_KEY = 'pk.eyJ2IjoieWF4eDByIiwiYSI6ImNqdW9rYXd1ODBjbjg0NHA3emp4ZDZiZWgifQ.0KqNiYI2LlrzR1lNSFJ6IA'
