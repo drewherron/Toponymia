@@ -8,3 +8,6 @@ def index(request):
         'MAP_KEY': settings.MAP_KEY
     }
     return render(request, 'app_tpnm/index.html', context)
+
+def indextest(request):
+    return render (request, 'app_tpnm/indextest.html')
