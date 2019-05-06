@@ -238,7 +238,7 @@
                 </div>
             </div>
             <div id='map'>
-                <button id="marker-toggle" type="button" name="marker-toggle" onclick="toggleMarkerMode()">Add Marker</button>
+                <button id="marker-toggle" type="button" name="marker-toggle">Add Marker</button>
             </div>
             <pre id='features'></pre>
         </div>
@@ -284,22 +284,28 @@
 
         var markerToggle = document.getElementById("marker-toggle");
         var addMarkerMode = false;
-        function toggleMarkerMode() {
+        markerToggle.addEventListener('click', function() {
             if (markerToggle.innerHTML == 'Add Marker') {
                 markerToggle.innerHTML = 'Cancel';
                 markerToggle.style.borderStyle = 'inset';
                 markerToggle.style.backgroundColor = '#eedf9c';
-                var addMarkerMode = true;
+                addMarkerMode = true;
+                return addMarkerMode;
             } else {
                 markerToggle.innerHTML = 'Add Marker';
                 markerToggle.style.borderStyle = 'outset';
                 markerToggle.style.backgroundColor = 'lightgray';
-                var addMarkerMode = false;
+                addMarkerMode = false;
+                return addMarkerMode;
             }
-        }
-        map.on('click', function(e) {
+        });
+        map.on('click', function() {
             console.log(addMarkerMode)
         });
+
+        var markerHeight = 50,
+            markerRadius = 10,
+            linearOffset = 25; // after this was commented
         map.on('click', function(e) {
             var features = map.queryRenderedFeatures(e.point);
             document.getElementById('features').innerHTML = JSON.stringify(features, null, 2);
@@ -308,45 +314,44 @@
             console.log(jsonfeatures[0]["properties"]["name"])
             console.log(jsonfeatures[0]["geometry"]["type"])
         });
-        map.on('click', function(e) {
-            var marker = new mapboxgl.Marker()
-            var jsonfeatures = map.queryRenderedFeatures(e.point);
-            longLat = (jsonfeatures[0]["geometry"]["coordinates"])
-            nameEn = (jsonfeatures[0]["properties"]["name_en"])
-            name = (jsonfeatures[0]["properties"]["name"])
-            if (typeof nameEn != "undefined" && nameEn) {
-                openSidebar()
-                // } else if (typeof name != "undefined" && name) {
-                // sidebarIframe.setAttribute("src","http://159.69.145.236/index.php/"+name)
-                // openSidebar()
-            } else {
-                closeSidebar()
-            }
-            console.log(longLat)
-            // if (longLat.length == 2) {
-            if (jsonfeatures[0]["geometry"]["type"] == "Point") {
-                marker.setLngLat(longLat)
-                marker.addTo(map);
-                map.flyTo({
-                    center: longLat
-                });
-                // openSidebar()
-            } else if (jsonfeatures[0]["geometry"]["type"] == "LineString") {
-                marker.setLngLat(longLat[Math.floor((longLat.length) / 2)])
-                marker.addTo(map);
-                map.flyTo({
-                    center: longLat[Math.floor((longLat.length) / 2)]
-                });
-                // openSidebar()
-            } else if (jsonfeatures[0]["geometry"]["type"] == "MultiLineString") {
-                marker.setLngLat(longLat[Math.floor((longLat.length) / 2)])
-                marker.addTo(map);
-                // openSidebar()
-            }
-        });
-        var markerHeight = 50,
-            markerRadius = 10,
-            linearOffset = 25; // after this was commented
+        if (addMarkerMode == true) {
+            map.on('click', function(e) {
+                var marker = new mapboxgl.Marker()
+                var jsonfeatures = map.queryRenderedFeatures(e.point);
+                longLat = (jsonfeatures[0]["geometry"]["coordinates"])
+                nameEn = (jsonfeatures[0]["properties"]["name_en"])
+                name = (jsonfeatures[0]["properties"]["name"])
+                if (typeof nameEn != "undefined" && nameEn) {
+                    openSidebar()
+                    // } else if (typeof name != "undefined" && name) {
+                    // sidebarIframe.setAttribute("src","http://159.69.145.236/index.php/"+name)
+                    // openSidebar()
+                } else {
+                    closeSidebar()
+                }
+                console.log(longLat)
+                // if (longLat.length == 2) {
+                if (jsonfeatures[0]["geometry"]["type"] == "Point") {
+                    marker.setLngLat(longLat)
+                    marker.addTo(map);
+                    map.flyTo({
+                        center: longLat
+                    });
+                    // openSidebar()
+                } else if (jsonfeatures[0]["geometry"]["type"] == "LineString") {
+                    marker.setLngLat(longLat[Math.floor((longLat.length) / 2)])
+                    marker.addTo(map);
+                    map.flyTo({
+                        center: longLat[Math.floor((longLat.length) / 2)]
+                    });
+                    // openSidebar()
+                } else if (jsonfeatures[0]["geometry"]["type"] == "MultiLineString") {
+                    marker.setLngLat(longLat[Math.floor((longLat.length) / 2)])
+                    marker.addTo(map);
+                    // openSidebar()
+                }
+            });
+        }
         // var popupOffsets = {
         //     'top': [0, 0],
         //     'top-left': [0, 0],
