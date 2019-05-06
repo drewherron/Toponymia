@@ -16,11 +16,14 @@
         #page-wrapper {
             display: flex;
             flex-direction: column;
+            height: 100%;
         }
 
         #content-wrapper {
             display: flex;
             flex-direction: row;
+            flex-shrink: 1;
+            height: 100%;
             transition: 400ms;
         }
 
@@ -65,6 +68,7 @@
             height: 100%;
             width: 100%;
             z-index: 0;
+            background-color: lightblue;
         }
 
         #map canvas {
@@ -95,55 +99,101 @@
             background: #ffffff95;
         }
 
-        .sidebar {
-            height: 100%;
-            width: 0%;
-            position: relative;
-            z-index: 3;
-            top: 0px;
-            left: 0;
-            background-color: #ffffff;
-            /* overflow-x: hidden; */
-            padding-top: 50px;
+        #sidebar {
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 1;
+            text-align: center;
+            justify-content: space-between;
             transition: 400ms;
+            background-color: white;
+            z-index: 10;
+            width: 0%;
+            overflow: hidden;
+            white-space: nowrap;
         }
 
-        .sidebar .closebtn {
-            position: absolute;
+        #sidebar-wrapper {}
+
+        #sidebar h1 {
+            margin-top: 0;
+        }
+
+        #sidebar #closebtn {
+            position: relative;
             float: right;
             top: 20px;
-            /* right: -25px; */
+            right: 25px;
             font-size: 36px;
+            height: 36px;
             /* margin-left: 50px; */
             color: #000;
             z-index: 200;
+            text-decoration: none;
         }
 
-        #sidebar-toggle {
-            position: absolute;
-            top: 10%;
-            left: 0px;
-            z-index: 99;
+        #sidebar1 {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
         }
 
-        #addmarker-div {}
+        #sidebar2 {
+            /* display: flex;
+            flex-direction: row; */
+            flex-shrink: 1;
+            justify-content: center;
+            min-width: 60%;
+            word-break: break-all;
 
-        #addmarker {
-            position: relative;
+        }
+
+        #sidebar3 {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        #sidebar4 {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        #sidebar5 {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        #sidebar6 {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+        }
+
+        #marker-toggle {
+            position: fixed;
+            text-align: center;
+            height: 30px;
+            width: 100px;
             top: 100px;
-            width: 200px;
-            right: -200px;
-            z-index: 100;
+            left: 20px;
+            background-color: lightgray;
+            z-index: 1
         }
 
-        .push-div {}
-
-        .overflow-h {
-            overflow: hidden;
+        #marker-toggle:hover {
+            background-color: #eedf9c;
         }
 
-        .overflow-v {
-            overflow: visible;
+
+        #username {
+            left: 5px;
+        }
+
+        #datetime {
+            text-align: right;
         }
     </style>
 </head>
@@ -156,75 +206,106 @@
             {% load static %}
             <img src="{% static "app_tpnm/tpnmlogo1.png" %}" id="header-logo" alt="Toponymia">
             <a href="#" id="openbtn" class="header-btn">Open</a>
-            <a href="#" id="closebtn" class="header-btn">Close</a>
             <a href="#" class="header-btn">Language</a>
             <a href="#" class="header-btn">Random</a>
             <a href="#" class="header-btn">About</a>
             <a href="#" class="header-btn">Login</a>
         </div>
         <div id='content-wrapper'>
-            <div id="sidebar-wrapper" class="overflow-v">
-                <div id="sidebar" class="sidebar overflow-v">
-                    <!-- <iframe id="sidebar-iframe" src="http://159.69.145.236/index.php/Main_Page" style="height:100%;width:100%;"></iframe> -->
-                    <h1>Sidebar</h1>
-                    <p>Content</p>
+            <div id="sidebar">
+                <div>
+                    <a href="javascript:void(0)" id="closebtn" onclick="closeSidebar()">&times;</a>
                 </div>
-                <div class="overflow-v" id="addmarker-div">
-                    <img src="{% static "app_tpnm/addmarker.png" %}" id="addmarker" alt="Add Marker">
+                <div id="sidebar1">
+                    <h1>[[ title ]]</h1>
                 </div>
-            </div>
-            <!-- <div id="addmarker-div">
-                <img src="{% static "app_tpnm/addmarker.png" %}" id="header-logo" alt="Toponymia">
-                <a href="javascript:void(0)" class="closebtn" onclick="closeSidebar()">&times;</a>
-            </div> -->
-            <!-- <div id='cancel-btn'></div> -->
-            <div id='sidebar-toggle' onclick="openSidebar()">
-                <img src="{% static "app_tpnm/addmarker.png" %}" id="addmarker" alt="Add Marker">
-                <!-- <img src="http://www.stickpng.com/assets/images/586abf52b6fc1117b60b274f.png" alt=""> -->
+                <div id="sidebar2">
+                    [[ content ]]
+                </div>
+                <div id="sidebar3">
+                </div>
+                <div id="sidebar4">
+                </div>
+                <div id="sidebar5">
+                </div>
+                <div id="sidebar6">
+                    <div>
+                        <span id='username'>Created by: [[ username ]]</span>
+                    </div>
+                    <div>
+                        <span id='datetime'>Created on: [[ datetime ]]</span>
+                    </div>
+                </div>
             </div>
             <div id='map'>
+                <button id="marker-toggle" type="button" name="marker-toggle">Add Marker</button>
             </div>
             <pre id='features'></pre>
         </div>
     </div>
     <script>
-        // mapboxgl.accessToken = {
-        //     {
-        //         MAP_KEY
-        //     }
-        // };
-        var sidebarToggle = document.getElementById("sidebar-toggle")
-        var sidebarIframe = document.getElementById("sidebar-iframe")
-        // var openBtn = document.getElementById("openbtn")
-        // var closeBtn = document.getElementById("closebtn")
-        document.getElementById("openbtn").onclick = openSidebar;
-        document.getElementById("closebtn").onclick = closeSidebar;
+        var app = new Vue({
+            el: '#sidebar',
+            delimiters: ['[[', ']]'],
+            data: {
+                title: 'Title',
+                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+                username: 'username',
+                datetime: 'datetime'
+            }
+        })
+        // this is mapbox's demo key
+        mapboxgl.accessToken = 'pk.eyJ1IjoieWF4eDByIiwiYSI6ImNqdW9rYXd1ODBjbjg0NHA3emp4ZDZiZWgifQ.0KqNiYI2LlrzR1lNSFJ6IA';
         var map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/mapbox/streets-v11',
             center: [2, 20],
             zoom: 1.5
         });
-
-        function openSidebar() {
-            document.getElementById("sidebar-wrapper").style.width = "50%";
-            document.getElementById("map").style.marginLeft = "20%";
-        }
-
-        function closeSidebar() {
-            document.getElementById("sidebar-wrapper").style.width = "0";
-            document.getElementById("map").style.marginLeft = "0";
-        }
-
-        function cancelMarker() {
-
-        }
-
         map.addControl(new MapboxGeocoder({
             accessToken: mapboxgl.accessToken,
             mapboxgl: mapboxgl
         }));
         map.addControl(new mapboxgl.NavigationControl());
+        document.getElementById("openbtn").onclick = openSidebar;
+        document.getElementById("closebtn").onclick = closeSidebar;
+
+        function openSidebar() {
+            windowWidth = window.outerWidth;
+            document.getElementById("sidebar").style.width = "800px";
+            document.getElementById("sidebar").style.maxWidth = "windowWidth";
+            document.getElementById("map").style.marginLeft = "20%";
+        }
+
+        function closeSidebar() {
+            document.getElementById("sidebar").style.width = "0";
+            document.getElementById("map").style.marginLeft = "0";
+        }
+
+        var markerToggle = document.getElementById("marker-toggle");
+        var addMarkerMode = false;
+        markerToggle.addEventListener('click', function() {
+            if (markerToggle.innerHTML == 'Add Marker') {
+                markerToggle.innerHTML = 'Cancel';
+                markerToggle.style.borderStyle = 'inset';
+                markerToggle.style.backgroundColor = '#eedf9c';
+                addMarkerMode = true;
+                return addMarkerMode;
+            } else {
+                markerToggle.innerHTML = 'Add Marker';
+                markerToggle.style.borderStyle = 'outset';
+                markerToggle.style.backgroundColor = 'lightgray';
+                addMarkerMode = false;
+                return addMarkerMode;
+            }
+        });
+        map.on('click', function() {
+            console.log(addMarkerMode)
+        });
+
+        var markerHeight = 50,
+            markerRadius = 10,
+            linearOffset = 25; // after this was commented
         map.on('click', function(e) {
             var features = map.queryRenderedFeatures(e.point);
             document.getElementById('features').innerHTML = JSON.stringify(features, null, 2);
@@ -233,47 +314,44 @@
             console.log(jsonfeatures[0]["properties"]["name"])
             console.log(jsonfeatures[0]["geometry"]["type"])
         });
-        map.on('click', function(e) {
-            var marker = new mapboxgl.Marker()
-            var jsonfeatures = map.queryRenderedFeatures(e.point);
-            longLat = (jsonfeatures[0]["geometry"]["coordinates"])
-            nameEn = (jsonfeatures[0]["properties"]["name_en"])
-            name = (jsonfeatures[0]["properties"]["name"])
-            if (typeof nameEn != "undefined" && nameEn) {
-                sidebarIframe.setAttribute("src", "http://159.69.145.236/index.php/" + nameEn)
-                openSidebar()
-                // } else if (typeof name != "undefined" && name) {
-                //     sidebarIframe.setAttribute("src","http://159.69.145.236/index.php/"+name)
-                //     openSidebar()
-            } else {
-                closeSidebar()
-            }
-            console.log(longLat)
-            // if (longLat.length == 2) {
-            if (jsonfeatures[0]["geometry"]["type"] == "Point") {
-                marker.setLngLat(longLat)
-                marker.addTo(map);
-                map.flyTo({
-                    center: longLat
-                });
-                // openSidebar()
-                sidebarToggle.setAttribute("onclick", "closeSidebar()")
-            } else if (jsonfeatures[0]["geometry"]["type"] == "LineString") {
-                marker.setLngLat(longLat[Math.floor((longLat.length) / 2)])
-                marker.addTo(map);
-                map.flyTo({
-                    center: longLat[Math.floor((longLat.length) / 2)]
-                });
-                // openSidebar()
-            } else if (jsonfeatures[0]["geometry"]["type"] == "MultiLineString") {
-                marker.setLngLat(longLat[Math.floor((longLat.length) / 2)])
-                marker.addTo(map);
-                // openSidebar()
-            }
-        });
-        var markerHeight = 50,
-            markerRadius = 10,
-            linearOffset = 25;
+        if (addMarkerMode == true) {
+            map.on('click', function(e) {
+                var marker = new mapboxgl.Marker()
+                var jsonfeatures = map.queryRenderedFeatures(e.point);
+                longLat = (jsonfeatures[0]["geometry"]["coordinates"])
+                nameEn = (jsonfeatures[0]["properties"]["name_en"])
+                name = (jsonfeatures[0]["properties"]["name"])
+                if (typeof nameEn != "undefined" && nameEn) {
+                    openSidebar()
+                    // } else if (typeof name != "undefined" && name) {
+                    // sidebarIframe.setAttribute("src","http://159.69.145.236/index.php/"+name)
+                    // openSidebar()
+                } else {
+                    closeSidebar()
+                }
+                console.log(longLat)
+                // if (longLat.length == 2) {
+                if (jsonfeatures[0]["geometry"]["type"] == "Point") {
+                    marker.setLngLat(longLat)
+                    marker.addTo(map);
+                    map.flyTo({
+                        center: longLat
+                    });
+                    // openSidebar()
+                } else if (jsonfeatures[0]["geometry"]["type"] == "LineString") {
+                    marker.setLngLat(longLat[Math.floor((longLat.length) / 2)])
+                    marker.addTo(map);
+                    map.flyTo({
+                        center: longLat[Math.floor((longLat.length) / 2)]
+                    });
+                    // openSidebar()
+                } else if (jsonfeatures[0]["geometry"]["type"] == "MultiLineString") {
+                    marker.setLngLat(longLat[Math.floor((longLat.length) / 2)])
+                    marker.addTo(map);
+                    // openSidebar()
+                }
+            });
+        }
         // var popupOffsets = {
         //     'top': [0, 0],
         //     'top-left': [0, 0],
@@ -387,8 +465,8 @@
         //     ]
         // };
         //
-        //
-        // // add markers to map
+
+        // add markers to map
         // geojson.features.forEach(function(marker) {
         //
         //     // create a HTML element for each feature
