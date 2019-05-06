@@ -22,6 +22,7 @@
         #content-wrapper {
             display: flex;
             flex-direction: row;
+            flex-shrink: 1;
             height: 100%;
             transition: 400ms;
         }
@@ -101,8 +102,9 @@
         #sidebar {
             display: flex;
             flex-direction: column;
+            flex-shrink: 1;
             text-align: center;
-            justify-content: space-around;
+            justify-content: space-between;
             transition: 400ms;
             background-color: white;
             z-index: 10;
@@ -110,9 +112,9 @@
             overflow: hidden;
             white-space: nowrap;
         }
-        #sidebar-wrapper {
 
-        }
+        #sidebar-wrapper {}
+
         #sidebar h1 {
             margin-top: 0;
         }
@@ -130,6 +132,46 @@
             text-decoration: none;
         }
 
+        #sidebar1 {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        #sidebar2 {
+            /* display: flex;
+            flex-direction: row; */
+            flex-shrink: 1;
+            justify-content: center;
+            min-width: 60%;
+            word-break: break-all;
+
+        }
+
+        #sidebar3 {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        #sidebar4 {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        #sidebar5 {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+
+        #sidebar6 {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+        }
+
         #marker-toggle {
             position: fixed;
             text-align: center;
@@ -138,18 +180,18 @@
             top: 100px;
             left: 20px;
             background-color: lightgray;
+            z-index: 1
         }
 
         #marker-toggle:hover {
             background-color: #eedf9c;
         }
-        #sidebar6 {
-            position: absolute;
-            bottom: 5px;
-        }
+
+
         #username {
             left: 5px;
         }
+
         #datetime {
             text-align: right;
         }
@@ -157,8 +199,8 @@
 </head>
 
 <body>
-    <!-- <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.0.0/mapbox-gl-geocoder.min.js'></script>
-    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.0.0/mapbox-gl-geocoder.css' type='text/css' /> -->
+    <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.0.0/mapbox-gl-geocoder.min.js'></script>
+    <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.0.0/mapbox-gl-geocoder.css' type='text/css' />
     <div id="page-wrapper">
         <div id="header">
             {% load static %}
@@ -187,8 +229,12 @@
                 <div id="sidebar5">
                 </div>
                 <div id="sidebar6">
-                    <span id='username'>Created by: [[ username ]]</span>
-                    <span id='datetime'>Created on: [[ datetime ]]</span>
+                    <div>
+                        <span id='username'>Created by: [[ username ]]</span>
+                    </div>
+                    <div>
+                        <span id='datetime'>Created on: [[ datetime ]]</span>
+                    </div>
                 </div>
             </div>
             <div id='map'>
@@ -203,28 +249,26 @@
             delimiters: ['[[', ']]'],
             data: {
                 title: 'Title',
-                content: 'content',
+                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
                 username: 'username',
                 datetime: 'datetime'
             }
         })
-        // mapboxgl.accessToken = {
-        //     {
-        //         MAP_KEY
-        //     }
-        // };
-        // var sidebarToggle = document.getElementById("sidebar-toggle")
-        // var sidebarIframe = document.getElementById("sidebar-iframe")
-        // var openBtn = document.getElementById("openbtn")
-        // var closeBtn = document.getElementById("closebtn")
+        // this is mapbox's demo key
+        mapboxgl.accessToken = 'pk.eyJ1IjoieWF4eDByIiwiYSI6ImNqdW9rYXd1ODBjbjg0NHA3emp4ZDZiZWgifQ.0KqNiYI2LlrzR1lNSFJ6IA';
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [2, 20],
+            zoom: 1.5
+        });
+        map.addControl(new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl
+        }));
+        map.addControl(new mapboxgl.NavigationControl());
         document.getElementById("openbtn").onclick = openSidebar;
         document.getElementById("closebtn").onclick = closeSidebar;
-        // var map = new mapboxgl.Map({
-        //     container: 'map',
-        //     style: 'mapbox://styles/mapbox/streets-v11',
-        //     center: [2, 20],
-        //     zoom: 1.5
-        // });
 
         function openSidebar() {
             windowWidth = window.outerWidth;
@@ -237,80 +281,72 @@
             document.getElementById("sidebar").style.width = "0";
             document.getElementById("map").style.marginLeft = "0";
         }
+
         var markerToggle = document.getElementById("marker-toggle");
         var addMarkerMode = false;
-
         function toggleMarkerMode() {
             if (markerToggle.innerHTML == 'Add Marker') {
-                // do some stuff
                 markerToggle.innerHTML = 'Cancel';
                 markerToggle.style.borderStyle = 'inset';
                 markerToggle.style.backgroundColor = '#eedf9c';
                 var addMarkerMode = true;
             } else {
-                // do some other stuff
                 markerToggle.innerHTML = 'Add Marker';
                 markerToggle.style.borderStyle = 'outset';
                 markerToggle.style.backgroundColor = 'lightgray';
                 var addMarkerMode = false;
             }
         }
-        // map.addControl(new MapboxGeocoder({
-        //     accessToken: mapboxgl.accessToken,
-        //     mapboxgl: mapboxgl
-        // }));
-        // map.addControl(new mapboxgl.NavigationControl());
-        // map.on('click', function(e) {
-        //     var features = map.queryRenderedFeatures(e.point);
-        //     document.getElementById('features').innerHTML = JSON.stringify(features, null, 2);
-        //     var jsonfeatures = map.queryRenderedFeatures(e.point);
-        //     // var jsonfeatures = JSON.stringify(features, null, 2);
-        //     console.log(jsonfeatures[0]["properties"]["name"])
-        //     console.log(jsonfeatures[0]["geometry"]["type"])
-        // });
-        // map.on('click', function(e) {
-        //     var marker = new mapboxgl.Marker()
-        //     var jsonfeatures = map.queryRenderedFeatures(e.point);
-        //     longLat = (jsonfeatures[0]["geometry"]["coordinates"])
-        //     nameEn = (jsonfeatures[0]["properties"]["name_en"])
-        //     name = (jsonfeatures[0]["properties"]["name"])
-        //     if (typeof nameEn != "undefined" && nameEn) {
-        //         sidebarIframe.setAttribute("src", "http://159.69.145.236/index.php/" + nameEn)
-        //         openSidebar()
-        //         // } else if (typeof name != "undefined" && name) {
-        //         //     sidebarIframe.setAttribute("src","http://159.69.145.236/index.php/"+name)
-        //         //     openSidebar()
-        //     } else {
-        //         closeSidebar()
-        //     }
-        //     console.log(longLat)
-        //     // if (longLat.length == 2) {
-        //     if (jsonfeatures[0]["geometry"]["type"] == "Point") {
-        //         marker.setLngLat(longLat)
-        //         marker.addTo(map);
-        //         map.flyTo({
-        //             center: longLat
-        //         });
-        //         // openSidebar()
-        //         sidebarToggle.setAttribute("onclick", "closeSidebar()")
-        //     } else if (jsonfeatures[0]["geometry"]["type"] == "LineString") {
-        //         marker.setLngLat(longLat[Math.floor((longLat.length) / 2)])
-        //         marker.addTo(map);
-        //         map.flyTo({
-        //             center: longLat[Math.floor((longLat.length) / 2)]
-        //         });
-        //         // openSidebar()
-        //     } else if (jsonfeatures[0]["geometry"]["type"] == "MultiLineString") {
-        //         marker.setLngLat(longLat[Math.floor((longLat.length) / 2)])
-        //         marker.addTo(map);
-        //         // openSidebar()
-        //     }
-        // });
-        // var markerHeight = 50,
-        //     markerRadius = 10,
-        //     linearOffset = 25;
-
-        // after this was commented
+        map.on('click', function(e) {
+            console.log(addMarkerMode)
+        });
+        map.on('click', function(e) {
+            var features = map.queryRenderedFeatures(e.point);
+            document.getElementById('features').innerHTML = JSON.stringify(features, null, 2);
+            var jsonfeatures = map.queryRenderedFeatures(e.point);
+            // var jsonfeatures = JSON.stringify(features, null, 2);
+            console.log(jsonfeatures[0]["properties"]["name"])
+            console.log(jsonfeatures[0]["geometry"]["type"])
+        });
+        map.on('click', function(e) {
+            var marker = new mapboxgl.Marker()
+            var jsonfeatures = map.queryRenderedFeatures(e.point);
+            longLat = (jsonfeatures[0]["geometry"]["coordinates"])
+            nameEn = (jsonfeatures[0]["properties"]["name_en"])
+            name = (jsonfeatures[0]["properties"]["name"])
+            if (typeof nameEn != "undefined" && nameEn) {
+                openSidebar()
+                // } else if (typeof name != "undefined" && name) {
+                // sidebarIframe.setAttribute("src","http://159.69.145.236/index.php/"+name)
+                // openSidebar()
+            } else {
+                closeSidebar()
+            }
+            console.log(longLat)
+            // if (longLat.length == 2) {
+            if (jsonfeatures[0]["geometry"]["type"] == "Point") {
+                marker.setLngLat(longLat)
+                marker.addTo(map);
+                map.flyTo({
+                    center: longLat
+                });
+                // openSidebar()
+            } else if (jsonfeatures[0]["geometry"]["type"] == "LineString") {
+                marker.setLngLat(longLat[Math.floor((longLat.length) / 2)])
+                marker.addTo(map);
+                map.flyTo({
+                    center: longLat[Math.floor((longLat.length) / 2)]
+                });
+                // openSidebar()
+            } else if (jsonfeatures[0]["geometry"]["type"] == "MultiLineString") {
+                marker.setLngLat(longLat[Math.floor((longLat.length) / 2)])
+                marker.addTo(map);
+                // openSidebar()
+            }
+        });
+        var markerHeight = 50,
+            markerRadius = 10,
+            linearOffset = 25; // after this was commented
         // var popupOffsets = {
         //     'top': [0, 0],
         //     'top-left': [0, 0],
@@ -424,8 +460,8 @@
         //     ]
         // };
         //
-        //
-        // // add markers to map
+
+        // add markers to map
         // geojson.features.forEach(function(marker) {
         //
         //     // create a HTML element for each feature
