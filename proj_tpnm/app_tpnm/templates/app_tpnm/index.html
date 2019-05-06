@@ -51,6 +51,7 @@
             margin-right: 15px;
             color: black;
             text-decoration: none;
+            font-family: sans-serif;
         }
 
         .header-btn:hover {
@@ -111,6 +112,7 @@
             width: 0%;
             overflow: hidden;
             white-space: nowrap;
+            border-right: 2px solid gray;
         }
 
         #sidebar-wrapper {}
@@ -123,7 +125,7 @@
             position: relative;
             float: right;
             top: 20px;
-            right: 25px;
+            right: 20px;
             font-size: 36px;
             height: 36px;
             /* margin-left: 50px; */
@@ -195,6 +197,48 @@
         #datetime {
             text-align: right;
         }
+
+        /* Style tab links */
+        .tablink {
+            background-color: #555;
+            color: white;
+            float: left;
+            border: none;
+            outline: none;
+            cursor: pointer;
+            padding: 14px 16px;
+            font-size: 17px;
+            width: 25%;
+            font-family: sans-serif;
+        }
+
+        .tablink:hover {
+            background-color: #777;
+        }
+
+        /* Style the tab content (and add height:100% for full page content) */
+        .tabcontent {
+            color: black;
+            display: none;
+            padding: 100px 20px;
+            height: 100%;
+        }
+
+        #Home {
+            background-color: white;
+        }
+
+        #News {
+            background-color: green;
+        }
+
+        #Contact {
+            background-color: blue;
+        }
+
+        #About {
+            background-color: orange;
+        }
     </style>
 </head>
 
@@ -205,7 +249,7 @@
         <div id="header">
             {% load static %}
             <img src="{% static "app_tpnm/tpnmlogo1.png" %}" id="header-logo" alt="Toponymia">
-            <a href="#" id="openbtn" class="header-btn">Open</a>
+            <a href="#" id="openbtn" class="header-btn" onclick="openSidebar()">Open</a>
             <a href="#" class="header-btn">Language</a>
             <a href="#" class="header-btn">Random</a>
             <a href="#" class="header-btn">About</a>
@@ -213,27 +257,46 @@
         </div>
         <div id='content-wrapper'>
             <div id="sidebar">
-                <div>
+                <!-- <div>
                     <a href="javascript:void(0)" id="closebtn" onclick="closeSidebar()">&times;</a>
-                </div>
-                <div id="sidebar1">
-                    <h1>[[ title ]]</h1>
-                </div>
-                <div id="sidebar2">
-                    [[ content ]]
-                </div>
-                <div id="sidebar3">
-                </div>
-                <div id="sidebar4">
-                </div>
-                <div id="sidebar5">
-                </div>
-                <div id="sidebar6">
-                    <div>
-                        <span id='username'>Created by: [[ username ]]</span>
+                </div> -->
+                <div class="tabbar">
+
+                    <button class="tablink" onclick="openPage('article', this, 'white')" id="defaultOpen">Article</button>
+                    <button class="tablink" onclick="openPage('talk', this, 'green')">Talk</button>
+                    <button class="tablink" onclick="openPage('history', this, 'blue')">View History</button>
+                    <button class="tablink" onclick="closeSidebar()">Close</button>
+
+                    <div id="article" class="tabcontent">
+                        <div id="sidebar1">
+                            <h1>[[ title ]]</h1>
+                        </div>
+                        <div id="sidebar2">
+                            [[ content ]]
+                        </div>
+                        <div id="sidebar3">
+                        </div>
+                        <div id="sidebar4">
+                        </div>
+                        <div id="sidebar5">
+                        </div>
+                        <div id="sidebar6">
+                            <div>
+                                <span id='username'>Created by: [[ username ]]</span>
+                            </div>
+                            <div>
+                                <span id='datetime'>Created on: [[ datetime ]]</span>
+                            </div>
+                        </div>
                     </div>
-                    <div>
-                        <span id='datetime'>Created on: [[ datetime ]]</span>
+
+                    <div id="talk" class="tabcontent">
+                    </div>
+
+                    <div id="history" class="tabcontent">
+                    </div>
+
+                    <div id="close" class="tabcontent">
                     </div>
                 </div>
             </div>
@@ -256,6 +319,11 @@
         })
         // this is mapbox's demo key
         mapboxgl.accessToken = 'pk.eyJ1IjoieWF4eDByIiwiYSI6ImNqdW9rYXd1ODBjbjg0NHA3emp4ZDZiZWgifQ.0KqNiYI2LlrzR1lNSFJ6IA';
+        // mapboxgl.accessToken = {
+        //     {
+        //         MAP_KEY
+        //     }
+        // }
         var map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/mapbox/streets-v11',
@@ -268,7 +336,7 @@
         }));
         map.addControl(new mapboxgl.NavigationControl());
         document.getElementById("openbtn").onclick = openSidebar;
-        document.getElementById("closebtn").onclick = closeSidebar;
+        // document.getElementById("closebtn").onclick = closeSidebar;
 
         function openSidebar() {
             windowWidth = window.outerWidth;
@@ -478,6 +546,32 @@
         //         .setLngLat(marker.geometry.coordinates)
         //         .addTo(map);
         // });
+
+        // For sidebar tabs
+        function openPage(pageName, elmnt, color) {
+            // Hide all elements with class="tabcontent" by default */
+            var i, tabcontent, tablinks;
+            tabcontent = document.getElementsByClassName("tabcontent");
+            for (i = 0; i < tabcontent.length; i++) {
+                tabcontent[i].style.display = "none";
+            }
+
+            // Remove the background color of all tablinks/buttons
+            tablinks = document.getElementsByClassName("tablink");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].style.backgroundColor = "";
+            }
+
+            // Show the specific tab content
+            document.getElementById(pageName).style.display = "block";
+
+            // Add the specific color to the button used to open the tab content
+            elmnt.style.color = 'black;'
+            elmnt.style.backgroundColor = 'white';
+        }
+
+        // Get the element with id="defaultOpen" and click on it
+        document.getElementById("defaultOpen").click();
     </script>
 
 </body>
