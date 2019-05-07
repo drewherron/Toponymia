@@ -90,13 +90,13 @@
         }
 
         #features {
-            visibility: hidden;
+            /* visibility: hidden; */
             position: absolute;
             top: 12%;
             right: 0;
             bottom: 0;
             width: 300px;
-            /* overflow: auto; */
+            overflow: auto;
             background: #ffffff95;
         }
 
@@ -208,7 +208,7 @@
             cursor: pointer;
             padding: 14px 16px;
             font-size: 17px;
-            width: 25%;
+            width: 20%;
             font-family: sans-serif;
         }
 
@@ -262,9 +262,10 @@
                 </div> -->
                 <div class="tabbar">
 
-                    <button class="tablink" onclick="openPage('article', this, 'white')" id="defaultOpen">Article</button>
-                    <button class="tablink" onclick="openPage('talk', this, 'green')">Talk</button>
-                    <button class="tablink" onclick="openPage('history', this, 'blue')">View History</button>
+                    <button class="tablink" onclick="openPage('article', this')" id="defaultOpen">Article</button>
+                    <button class="tablink" onclick="openPage('talk', this')">Talk</button>
+                    <button class="tablink" onclick="openPage('talk', this')">Edit</button>
+                    <button class="tablink" onclick="openPage('history', this')">View History</button>
                     <button class="tablink" onclick="closeSidebar()">Close</button>
 
                     <div id="article" class="tabcontent">
@@ -382,8 +383,8 @@
             console.log(jsonfeatures[0]["properties"]["name"])
             console.log(jsonfeatures[0]["geometry"]["type"])
         });
-        if (addMarkerMode == true) {
-            map.on('click', function(e) {
+        map.on('click', function(e) {
+            if (addMarkerMode == true) {
                 var marker = new mapboxgl.Marker()
                 var jsonfeatures = map.queryRenderedFeatures(e.point);
                 longLat = (jsonfeatures[0]["geometry"]["coordinates"])
@@ -418,160 +419,34 @@
                     marker.addTo(map);
                     // openSidebar()
                 }
-            });
-        }
-        // var popupOffsets = {
-        //     'top': [0, 0],
-        //     'top-left': [0, 0],
-        //     'top-right': [0, 0],
-        //     'bottom': [0, -markerHeight],
-        //     'bottom-left': [linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
-        //     'bottom-right': [-linearOffset, (markerHeight - markerRadius + linearOffset) * -1],
-        //     'left': [markerRadius, (markerHeight - markerRadius) * -1],
-        //     'right': [-markerRadius, (markerHeight - markerRadius) * -1]
-        // };
-        // var popup = new mapboxgl.Popup({
-        //         offset: popupOffsets,
-        //         className: 'my-class'
-        //     })
-        // .setLngLat(e.lngLat)
-        // .setHTML("<h1>Hello World!</h1>")
-        // var highlightLayer = {
-        //     id: 'highlight',
-        //     type: 'custom',
-        //
-        //     onAdd: function(map, gl) {
-        //         var vertexSource = "" +
-        //             "uniform mat4 u_matrix;" +
-        //             "attribute vec2 a_pos;" +
-        //             "void main() {" +
-        //             "    gl_Position = u_matrix * vec4(a_pos, 0.0, 1.0);" +
-        //             "}";
-        //
-        //         var fragmentSource = "" +
-        //             "void main() {" +
-        //             "    gl_FragColor = vec4(1.0, 0.0, 0.0, 0.5);" +
-        //             "}";
-        //
-        //         var vertexShader = gl.createShader(gl.VERTEX_SHADER);
-        //         gl.shaderSource(vertexShader, vertexSource);
-        //         gl.compileShader(vertexShader);
-        //         var fragmentShader = gl.createShader(gl.FRAGMENT_SHADER);
-        //         gl.shaderSource(fragmentShader, fragmentSource);
-        //         gl.compileShader(fragmentShader);
-        //
-        //         this.program = gl.createProgram();
-        //         gl.attachShader(this.program, vertexShader);
-        //         gl.attachShader(this.program, fragmentShader);
-        //         gl.linkProgram(this.program);
-        //
-        //         this.aPos = gl.getAttribLocation(this.program, "a_pos");
-        //
-        //         var helsinki = mapboxgl.MercatorCoordinate.fromLngLat({
-        //             lng: 25.004,
-        //             lat: 60.239
-        //         });
-        //         var berlin = mapboxgl.MercatorCoordinate.fromLngLat({
-        //             lng: 13.403,
-        //             lat: 52.562
-        //         });
-        //         var kyiv = mapboxgl.MercatorCoordinate.fromLngLat({
-        //             lng: 30.498,
-        //             lat: 50.541
-        //         });
-        //
-        //         this.buffer = gl.createBuffer();
-        //         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-        //         gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([
-        //             helsinki.x, helsinki.y,
-        //             berlin.x, berlin.y,
-        //             kyiv.x, kyiv.y,
-        //         ]), gl.STATIC_DRAW);
-        //     },
-        //
-        //     render: function(gl, matrix) {
-        //         gl.useProgram(this.program);
-        //         gl.uniformMatrix4fv(gl.getUniformLocation(this.program, "u_matrix"), false, matrix);
-        //         gl.bindBuffer(gl.ARRAY_BUFFER, this.buffer);
-        //         gl.enableVertexAttribArray(this.aPos);
-        //         gl.vertexAttribPointer(this.aPos, 2, gl.FLOAT, false, 0, 0);
-        //         gl.enable(gl.BLEND);
-        //         gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
-        //         gl.drawArrays(gl.TRIANGLE_STRIP, 0, 3);
-        //     }
-        // };
-        //
-        // map.on('load', function() {
-        //     map.addLayer(highlightLayer, 'building');
-        // });
-        //
-        //
-        // var geojson = {
-        //     type: 'FeatureCollection',
-        //     features: [{
-        //             type: 'Feature',
-        //             geometry: {
-        //                 type: 'Point',
-        //                 coordinates: [-77.032, 38.913]
-        //             },
-        //             properties: {
-        //                 title: 'Mapbox',
-        //                 description: 'Washington, D.C.'
-        //             }
-        //         },
-        //         {
-        //             type: 'Feature',
-        //             geometry: {
-        //                 type: 'Point',
-        //                 coordinates: [-122.414, 37.776]
-        //             },
-        //             properties: {
-        //                 title: 'Mapbox',
-        //                 description: 'San Francisco, California'
-        //             }
-        //         }
-        //     ]
-        // };
-        //
-
-        // add markers to map
-        // geojson.features.forEach(function(marker) {
-        //
-        //     // create a HTML element for each feature
-        //     var el = document.createElement('div');
-        //     el.className = 'marker';
-        //
-        //     // make a marker for each feature and add to the map
-        //     new mapboxgl.Marker(el)
-        //         .setLngLat(marker.geometry.coordinates)
-        //         .addTo(map);
-        // });
+            }
+        });
 
         // For sidebar tabs
-        function openPage(pageName, elmnt, color) {
-            // Hide all elements with class="tabcontent" by default */
-            var i, tabcontent, tablinks;
-            tabcontent = document.getElementsByClassName("tabcontent");
-            for (i = 0; i < tabcontent.length; i++) {
-                tabcontent[i].style.display = "none";
-            }
-
-            // Remove the background color of all tablinks/buttons
-            tablinks = document.getElementsByClassName("tablink");
-            for (i = 0; i < tablinks.length; i++) {
-                tablinks[i].style.backgroundColor = "";
-            }
-
-            // Show the specific tab content
-            document.getElementById(pageName).style.display = "block";
-
-            // Add the specific color to the button used to open the tab content
-            elmnt.style.color = 'black;'
-            elmnt.style.backgroundColor = 'white';
-        }
-
-        // Get the element with id="defaultOpen" and click on it
-        document.getElementById("defaultOpen").click();
+        // function openPage(pageName, elmnt) {
+        //     // Hide all elements with class="tabcontent" by default */
+        //     var i, tabcontent, tablinks;
+        //     tabcontent = document.getElementsByClassName("tabcontent");
+        //     for (i = 0; i < tabcontent.length; i++) {
+        //         tabcontent[i].style.display = "none";
+        //     }
+        //
+        //     // Remove the background color of all tablinks/buttons
+        //     tablinks = document.getElementsByClassName("tablink");
+        //     for (i = 0; i < tablinks.length; i++) {
+        //         tablinks[i].style.backgroundColor = "";
+        //     }
+        //
+        //     // Show the specific tab content
+        //     // document.getElementById(pageName).style.display = "block";
+        //
+        //     // Add the specific color to the button used to open the tab content
+        //     elmnt.style.color = 'black;'
+        //     elmnt.style.backgroundColor = 'white';
+        // }
+        //
+        // // Get the element with id="defaultOpen" and click on it
+        // document.getElementById("defaultOpen").click();
     </script>
 
 </body>
