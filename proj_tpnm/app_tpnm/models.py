@@ -44,11 +44,10 @@ class Comment(models.Model):
 
 class Language(models.Model):
     id = models.PositiveSmallIntegerField(primary_key=True)
-    family_id = models.PositiveSmallIntegerField()
-    father_id = models.PositiveSmallIntegerField()
-    iso_639_3 = models.CharField(max_length=3)
     name = models.CharField(max_length=200)
-    status = models.CharField(max_length=200)
+    iso_639_3 = models.CharField(max_length=3)
+    glottocode = models.CharField(max_length=8)
+    macroarea = models.CharField(max_length=100, null=True)
 
     def __str__(self):
         return self.name
