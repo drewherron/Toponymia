@@ -3,35 +3,55 @@ from django.contrib.postgres.fields import JSONField
 from django import forms
 
 
-class Articles(models.Model):
+class Article(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=200)
     data = JSONField()
     created_by = models.CharField(max_length=50)
     created = models.DateField(auto_now_add=True)
-    edited = models.DateField(auto_now=True)
-    favorite = models.PositiveSmallIntegerField()
-    reported = models.CharField(max_length=200)
-    reported_by = models.CharField(max_length=200)
+    favorited = models.PositiveIntegerField(blank=True, null=True)
+    favorited_by = models.CharField(max_length=200, blank=True, null=True)
+    reported = models.CharField(max_length=200, blank=True, null=True)
+    reported_by = models.CharField(max_length=200, blank=True, null=True)
 
+    def __str__(self):
+        return self.title + str(self.id)
 
-class Edits:
+class Edit(models.Model):
     id = models.AutoField(primary_key=True)
-    article_id = models.ForeignKey('Articles.id', on_delete=models.CASCADE)
-    language = models.CharField(max_length=3)
-    content = models.CharField()
-    reference = models.CharField(max_length=2500)
-    edit_time = models.DateTimeField(auto_now=True)
-    author = models.CharField(max_length=200)
+    article = models.ForeignKey('Article', on_delete=models.CASCADE)
+    in_language = models.ForeignKey('Language', blank=False, null=True, on_delete=models.SET_NULL)
+    from_language = models.CharField(max_length=200, blank=True, null=True)
+    content = models.TextField()
+    reference = models.CharField(max_length=2500, blank=True, null=True)
+    reference_url = models.URLField(max_length=200, blank=True, null=True)
+    edited = models.DateTimeField(auto_now=True)
+    derived_term = models.CharField(max_length=200, blank=True, null=True)
+    derived_url = models.URLField(max_length=200, blank=True, null=True)
+    see_also_title = models.CharField(max_length=200, blank=True, null=True)
+    see_also_link = models.URLField(max_length=200, blank=True, null=True)
+    username = models.CharField(max_length=200)
 
-class Languages:
+
+class Comment(models.Model):
     id = models.AutoField(primary_key=True)
+    username = models.CharField(max_length=200)
+    created = models.DateTimeField(auto_now_add=True)
+    content = models.TextField()
+    reported = models.PositiveSmallIntegerField(blank=True, null=True)
+
+
+
+class Language(models.Model):
+    id = models.PositiveSmallIntegerField(primary_key=True)
+    family_id = models.PositiveSmallIntegerField()
+    father_id = models.PositiveSmallIntegerField()
     iso_639_3 = models.CharField(max_length=3)
     name = models.CharField(max_length=200)
+    status = models.CharField(max_length=200)
 
     def __str__(self):
         return self.name
-
 
 # class Users:
 #     id = models.AutoField(primary_key=True)
