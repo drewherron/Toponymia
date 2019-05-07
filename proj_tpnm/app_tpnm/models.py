@@ -17,10 +17,12 @@ class Article(models.Model):
     def __str__(self):
         return self.title + str(self.id)
 
+
 class Edit(models.Model):
     id = models.AutoField(primary_key=True)
     article = models.ForeignKey('Article', on_delete=models.CASCADE)
-    in_language = models.ForeignKey('Language', blank=False, null=True, on_delete=models.SET_NULL)
+    in_language = models.ForeignKey(
+        'Language', blank=False, null=True, on_delete=models.SET_NULL)
     from_language = models.CharField(max_length=200, blank=True, null=True)
     content = models.TextField()
     reference = models.CharField(max_length=2500, blank=True, null=True)
@@ -32,15 +34,22 @@ class Edit(models.Model):
     see_also_link = models.URLField(max_length=200, blank=True, null=True)
     username = models.CharField(max_length=200)
 
+    def __str__(self):
+        return self.article + ' Edit' + str(self.id)
+
 
 class Comment(models.Model):
     id = models.AutoField(primary_key=True)
+    article = models.ForeignKey('Article', on_delete=models.CASCADE)
     username = models.CharField(max_length=200)
     created = models.DateTimeField(auto_now_add=True)
+    edited = models.DateTimeField(auto_now=True)
     content = models.TextField()
     reported = models.PositiveSmallIntegerField(blank=True, null=True)
 
 
+    def __str__(self):
+        return self.username +' '+ str(self.created)
 
 class Language(models.Model):
     id = models.PositiveSmallIntegerField(primary_key=True)
@@ -50,7 +59,7 @@ class Language(models.Model):
     macroarea = models.CharField(max_length=100, null=True)
 
     def __str__(self):
-        return self.name
+        return self.name + ' (' + self.iso_639_3 +')'
 
 # class Users:
 #     id = models.AutoField(primary_key=True)
