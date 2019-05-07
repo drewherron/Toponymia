@@ -7,6 +7,7 @@
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css' rel='stylesheet' />
     <script src="https://vuejs.org/js/vue.js"></script>
+    {% load static %}
     <style>
         body {
             margin: 0;
@@ -33,25 +34,28 @@
             align-items: center;
             justify-content: flex-end;
             height: 80px;
-            ;
             background-color: #ffffff;
             z-index: 100;
             border-bottom: 3px solid #5d5d5d;
+            background-image: url("{% static "app_tpnm/worldmap.png" %}");
         }
 
         #header-logo {
-            height: 50%;
+            height: 60%;
             margin: 20px;
             margin-right: auto;
+            margin-left: 3rem;
         }
 
         .header-btn {
-            padding: 20px;
+            padding: 10px;
             /* margin-left: 10px; */
             margin-right: 15px;
             color: black;
             text-decoration: none;
+            font-size: 17px;
             font-family: sans-serif;
+            background-color: #ffffff65
         }
 
         .header-btn:hover {
@@ -121,19 +125,19 @@
             margin-top: 0;
         }
 
-        #sidebar #closebtn {
+        /* #sidebar #closebtn {
             position: relative;
             float: right;
             top: 20px;
             right: 20px;
             font-size: 36px;
             height: 36px;
-            /* margin-left: 50px; */
+            margin-left: 50px;
             color: #000;
             z-index: 200;
             text-decoration: none;
         }
-
+ */
         #sidebar1 {
             display: flex;
             flex-direction: row;
@@ -181,7 +185,7 @@
             width: 100px;
             top: 100px;
             left: 20px;
-            background-color: lightgray;
+            background-color: #ffffff;
             z-index: 1
         }
 
@@ -189,6 +193,15 @@
             background-color: #eedf9c;
         }
 
+        /* if you get to using red/custom colors:  */
+        /* .marker-red {
+            background-image: url(red_pin.png);
+            background-size: cover;
+            width: 15px;
+            height: 15px;
+            border-radius: 50%;
+            cursor: pointer;
+        } */
 
         #username {
             left: 5px;
@@ -198,7 +211,12 @@
             text-align: right;
         }
 
-        /* Style tab links */
+        #tabbar {
+            display: flex;
+            flex-direction: row;
+            word-wrap: normal;
+        }
+
         .tablink {
             background-color: #555;
             color: white;
@@ -210,18 +228,11 @@
             font-size: 17px;
             width: 20%;
             font-family: sans-serif;
+            flex-shrink: 1
         }
 
         .tablink:hover {
             background-color: #777;
-        }
-
-        /* Style the tab content (and add height:100% for full page content) */
-        .tabcontent {
-            color: black;
-            display: none;
-            padding: 100px 20px;
-            height: 100%;
         }
 
         #Home {
@@ -239,6 +250,14 @@
         #About {
             background-color: orange;
         }
+
+            {
+            % block style %
+        }
+
+            {
+            % endblock %
+        }
     </style>
 </head>
 
@@ -247,7 +266,6 @@
     <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.0.0/mapbox-gl-geocoder.css' type='text/css' />
     <div id="page-wrapper">
         <div id="header">
-            {% load static %}
             <img src="{% static "app_tpnm/tpnmlogo1.png" %}" id="header-logo" alt="Toponymia">
             <a href="#" class="header-btn">Language</a>
             <a href="#" class="header-btn">Random</a>
@@ -260,44 +278,15 @@
                     <a href="javascript:void(0)" id="closebtn" onclick="closeSidebar()">&times;</a>
                 </div> -->
                 <div class="tabbar">
-
-                    <button class="tablink" onclick="openPage('article', this')" id="defaultOpen">Article</button>
-                    <button class="tablink" onclick="openPage('talk', this')">Talk</button>
-                    <button class="tablink" onclick="openPage('talk', this')">Edit</button>
-                    <button class="tablink" onclick="openPage('history', this')">View History</button>
-                    <button class="tablink" onclick="closeSidebar()">Close</button>
-
-                    <div id="article" class="tabcontent">
-                        <div id="sidebar1">
-                            <h1>[[ title ]]</h1>
-                        </div>
-                        <div id="sidebar2">
-                            [[ content ]]
-                        </div>
-                        <div id="sidebar3">
-                        </div>
-                        <div id="sidebar4">
-                        </div>
-                        <div id="sidebar5">
-                        </div>
-                        <div id="sidebar6">
-                            <div>
-                                <span id='username'>Created by: [[ username ]]</span>
-                            </div>
-                            <div>
-                                <span id='datetime'>Created on: [[ datetime ]]</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div id="talk" class="tabcontent">
-                    </div>
-
-                    <div id="history" class="tabcontent">
-                    </div>
-
-                    <div id="close" class="tabcontent">
-                    </div>
+                    <button class="tablink" id="defaultOpen">Article</button>
+                    <button class="tablink" id="talk-tab">Talk</button>
+                    <button class="tablink" id="edit-tab">Edit</button>
+                    <button class="tablink" id="history-tab">History</button>
+                    <button class="tablink" id="close-btn">Close</button>
+                </div>
+                <div id="article">
+                    {% block content %}
+                    {% endblock %}
                 </div>
             </div>
             <div id='map'>
@@ -335,8 +324,6 @@
             mapboxgl: mapboxgl
         }));
         map.addControl(new mapboxgl.NavigationControl());
-        document.getElementById("openbtn").onclick = openSidebar;
-        // document.getElementById("closebtn").onclick = closeSidebar;
 
         function openSidebar() {
             windowWidth = window.outerWidth;
@@ -349,11 +336,12 @@
             document.getElementById("sidebar").style.width = "0";
             document.getElementById("map").style.marginLeft = "0";
         }
+        document.getElementById("close-btn").onclick = closeSidebar;
 
         function markerToggleOn() {
             markerToggle.innerHTML = 'Cancel';
             markerToggle.style.borderStyle = 'inset';
-            markerToggle.style.backgroundColor = '#eedf9c';
+            markerToggle.style.backgroundColor = '#f99a89';
             addMarkerMode = true;
             return addMarkerMode;
         }
@@ -375,10 +363,6 @@
                 markerToggleOff()
             }
         });
-        map.on('click', function() {
-            console.log(addMarkerMode)
-        });
-
         var markerHeight = 50,
             markerRadius = 10,
             linearOffset = 25; // after this was commented
@@ -387,17 +371,22 @@
             document.getElementById('features').innerHTML = JSON.stringify(features, null, 2);
             var jsonfeatures = map.queryRenderedFeatures(e.point);
             // var jsonfeatures = JSON.stringify(features, null, 2);
-            console.log(jsonfeatures[0]["properties"]["name"])
             console.log(jsonfeatures[0]["geometry"]["type"])
         });
         map.on('click', function(e) {
             if (addMarkerMode == true) {
                 var marker = new mapboxgl.Marker()
                 var jsonfeatures = map.queryRenderedFeatures(e.point);
+                var popup = new mapboxgl.Popup({
+                        offset: 25,
+                closeButton: false,
+                    })
+                    .setText('test');
                 longLat = (jsonfeatures[0]["geometry"]["coordinates"])
                 nameEn = (jsonfeatures[0]["properties"]["name_en"])
                 name = (jsonfeatures[0]["properties"]["name"])
                 if (typeof nameEn != "undefined" && nameEn) {
+                    console.log(nameEn)
                     openSidebar()
                     // } else if (typeof name != "undefined" && name) {
                     // sidebarIframe.setAttribute("src","http://159.69.145.236/index.php/"+name)
@@ -409,6 +398,7 @@
                 // if (longLat.length == 2) {
                 if (jsonfeatures[0]["geometry"]["type"] == "Point") {
                     marker.setLngLat(longLat)
+                        .setPopup(popup)
                     marker.addTo(map);
                     map.flyTo({
                         center: longLat
@@ -432,31 +422,90 @@
             }
         });
 
-        // For sidebar tabs
-        // function openPage(pageName, elmnt) {
-        //     // Hide all elements with class="tabcontent" by default */
-        //     var i, tabcontent, tablinks;
-        //     tabcontent = document.getElementsByClassName("tabcontent");
-        //     for (i = 0; i < tabcontent.length; i++) {
-        //         tabcontent[i].style.display = "none";
+        // var geojson_markers = {
+        //     type: 'FeatureCollection',
+        //     features: [{%
+        //             for i in marker_locations %
+        //         } {
+        //             type: 'Feature',
+        //             geometry: {
+        //                 type: 'Point',
+        //                 coordinates: [{
+        //                         {
+        //                             i.coord_h
+        //                         }
+        //                     },
+        //                     {
+        //                         {
+        //                             i.coord_v
+        //                         }
+        //                     }
+        //                 ]
+        //             },
+        //             properties: {
+        //                 title: '{{ i.name }}',
+        //                 description: '{{ i.status }}'
+        //             }
+        //         },
+        //         {
+        //             %
+        //             endfor %
+        //         }
+        //     ]
+        // };
+        //
+        // // add markers to map
+        // geojson_markers.features.forEach(function(marker) {
+        //
+        //     // create a HTML element for each feature
+        //     var el = document.createElement('div');
+        //     el.className = 'marker-light-red';
+        //
+        //     new mapboxgl.Marker(el)
+        //         .setLngLat(marker.geometry.coordinates)
+        //         .setPopup(new mapboxgl.Popup({
+        //                 offset: 25
+        //             }) // add popups
+        //             .setHTML('<h3>' + marker.properties.title + '</h3><p>' + marker.properties.description + '</p>'))
+        //         .addTo(map);
+        // });
+        //
+        //for popups
+        // map.on('load', function() {
+        //
+        //     // Create a popup, but don't add it to the map yet.
+        //     var popup = new mapboxgl.Popup({
+        //         closeButton: false,
+        //         closeOnClick: false
+        //     });
+        //
+        //     function showPopup(e) {
+        //         // Updates the cursor to a hand (interactivity)
+        //         map.getCanvas().style.cursor = 'pointer';
+        //
+        //         // Show the popup at the coordinates with some data
+        //         popup.setLngLat(e.features[0].geometry.coordinates)
+        //             .setHTML(checkEmpty(e.features[0].properties.name))
+        //             .addTo(map);
         //     }
         //
-        //     // Remove the background color of all tablinks/buttons
-        //     tablinks = document.getElementsByClassName("tablink");
-        //     for (i = 0; i < tablinks.length; i++) {
-        //         tablinks[i].style.backgroundColor = "";
+        //     function hidePopup() {
+        //         map.getCanvas().style.cursor = '';
+        //         popup.remove();
         //     }
         //
-        //     // Show the specific tab content
-        //     // document.getElementById(pageName).style.display = "block";
+        //     function checkEmpty(info) {
+        //         return (info) ? info : "No data";
+        //     }
         //
-        //     // Add the specific color to the button used to open the tab content
-        //     elmnt.style.color = 'black;'
-        //     elmnt.style.backgroundColor = 'white';
-        // }
+        //     // CHANGE: Add layer names that need to be interactive
         //
-        // // Get the element with id="defaultOpen" and click on it
-        // document.getElementById("defaultOpen").click();
+        //     map.on('mouseenter', 'hospitals', showPopup);
+        //     map.on('mouseleave', 'hospitals', hidePopup);
+        //
+        //     map.on('mouseenter', 'clinics', showPopup);
+        //     map.on('mouseleave', 'clinics', hidePopup);
+        // });
     </script>
 
 </body>

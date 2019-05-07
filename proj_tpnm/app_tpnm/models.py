@@ -1,12 +1,21 @@
 from django.db import models
-from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import JSONField, ArrayField
 from django import forms
 
 
 class Article(models.Model):
     id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=200)
+    coordinates = ArrayField(ArrayField(models.FloatField()))
+    longitude = models.FloatField()
+    latitude = models.FloatField()
     data = JSONField()
+    place_class = models.CharField(max_length=200, blank=True, null=True)
+    place_type = models.CharField(max_length=200, blank=True, null=True)
+    name = models.CharField(max_length=200, blank=True, null=True)
+    name_en = models.CharField(max_length=200, blank=True, null=True)
+    mapbox_id = models.PositiveIntegerField(blank=True, null=True)
+    place_type = models.CharField(max_length=200, blank=True, null=True)
     created_by = models.CharField(max_length=50)
     created = models.DateField(auto_now_add=True)
     favorited = models.PositiveIntegerField(blank=True, null=True)
