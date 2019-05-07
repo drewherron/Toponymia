@@ -249,7 +249,6 @@
         <div id="header">
             {% load static %}
             <img src="{% static "app_tpnm/tpnmlogo1.png" %}" id="header-logo" alt="Toponymia">
-            <a href="#" id="openbtn" class="header-btn" onclick="openSidebar()">Open</a>
             <a href="#" class="header-btn">Language</a>
             <a href="#" class="header-btn">Random</a>
             <a href="#" class="header-btn">About</a>
@@ -351,21 +350,29 @@
             document.getElementById("map").style.marginLeft = "0";
         }
 
+        function markerToggleOn() {
+            markerToggle.innerHTML = 'Cancel';
+            markerToggle.style.borderStyle = 'inset';
+            markerToggle.style.backgroundColor = '#eedf9c';
+            addMarkerMode = true;
+            return addMarkerMode;
+        }
+
+        function markerToggleOff() {
+
+            markerToggle.innerHTML = 'Add Marker';
+            markerToggle.style.borderStyle = 'outset';
+            markerToggle.style.backgroundColor = 'lightgray';
+            addMarkerMode = false;
+            return addMarkerMode;
+        }
         var markerToggle = document.getElementById("marker-toggle");
         var addMarkerMode = false;
         markerToggle.addEventListener('click', function() {
             if (markerToggle.innerHTML == 'Add Marker') {
-                markerToggle.innerHTML = 'Cancel';
-                markerToggle.style.borderStyle = 'inset';
-                markerToggle.style.backgroundColor = '#eedf9c';
-                addMarkerMode = true;
-                return addMarkerMode;
+                markerToggleOn()
             } else {
-                markerToggle.innerHTML = 'Add Marker';
-                markerToggle.style.borderStyle = 'outset';
-                markerToggle.style.backgroundColor = 'lightgray';
-                addMarkerMode = false;
-                return addMarkerMode;
+                markerToggleOff()
             }
         });
         map.on('click', function() {
@@ -406,6 +413,7 @@
                     map.flyTo({
                         center: longLat
                     });
+                    markerToggleOff();
                     // openSidebar()
                 } else if (jsonfeatures[0]["geometry"]["type"] == "LineString") {
                     marker.setLngLat(longLat[Math.floor((longLat.length) / 2)])
@@ -413,10 +421,12 @@
                     map.flyTo({
                         center: longLat[Math.floor((longLat.length) / 2)]
                     });
+                    markerToggleOff();
                     // openSidebar()
                 } else if (jsonfeatures[0]["geometry"]["type"] == "MultiLineString") {
                     marker.setLngLat(longLat[Math.floor((longLat.length) / 2)])
                     marker.addTo(map);
+                    markerToggleOff();
                     // openSidebar()
                 }
             }
