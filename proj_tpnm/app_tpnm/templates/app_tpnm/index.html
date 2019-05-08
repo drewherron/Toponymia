@@ -296,17 +296,16 @@
             <pre id='features'></pre>
         </div>
     </div>
+    <!-- Axios CDN -->
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
-        // Axios CDN
-        // TODO: Add Axios
-
         // Vue app for Article
         var app = new Vue({
             el: '#sidebar',
             delimiters: ['[[', ']]'],
             data: {
                 title: 'Title',
-                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
+                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
                 username: 'username',
                 datetime: 'datetime'
             }
@@ -314,9 +313,9 @@
         // This is mapbox's public demo key, only using while testing
         mapboxgl.accessToken = 'pk.eyJ1IjoieWF4eDByIiwiYSI6ImNqdW9rYXd1ODBjbjg0NHA3emp4ZDZiZWgifQ.0KqNiYI2LlrzR1lNSFJ6IA';
         // mapboxgl.accessToken = {
-        //     {
-        //         MAP_KEY
-        //     }
+        // {
+        // MAP_KEY
+        // }
         // }
 
         // Add Map
@@ -393,6 +392,22 @@
 
         // Add a marker when map is clicked
         map.on('click', function(e) {
+            // temp ajax code
+            var jsonfeatures = map.queryRenderedFeatures(e.point);
+            let ajax_data = {
+                name: (jsonfeatures[0]["properties"]["name"]),
+                nameEn: (jsonfeatures[0]["properties"]["name"]),
+                longLat: (jsonfeatures[0]["geometry"]["coordinates"])
+            }
+            let config = {
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            }
+            axios.post('{% url 'app_tpnm:new_article' %}', ajax_data, config).then(function(response) {
+                console.log(response.data)
+            })
+            // temp ajax code
             if (addMarkerMode == true) {
                 var marker = new mapboxgl.Marker()
                 var jsonfeatures = map.queryRenderedFeatures(e.point);
@@ -424,6 +439,8 @@
                     });
                     markerToggleOff();
                     // openSidebar()
+
+
                 } else if (jsonfeatures[0]["geometry"]["type"] == "LineString") {
                     marker.setLngLat(longLat[Math.floor((longLat.length) / 2)])
                     marker.addTo(map);
@@ -442,8 +459,8 @@
         });
 
         // var geojson_markers = {
-        //     type: 'FeatureCollection',
-        //     features: [{%
+        // type: 'FeatureCollection',
+        // features: [{%
         //             for i in marker_locations %
         //         } {
         //             type: 'Feature',

@@ -22,8 +22,9 @@ def save_article(request):
     return HttpResponse('saved')
 
 def new_article(request):
-    print(request.body)
-    return render (request, 'app_tpnm/create.html')
+    data = json.loads(request.body)
+    print(data)
+    return render (request, 'app_tpnm/new_article.html')
     # return HttpResponseRedirect(reverse('app_tpnm:index'))
 
 def edit_article(request):
