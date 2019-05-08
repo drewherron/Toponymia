@@ -8,8 +8,7 @@ from .models import Article
 def index(request):
     marker_locations = Article.objects.get()
     context = {
-        'MAP_KEY': settings.MAP_KEY
-
+        'MAP_KEY': settings.MAP_KEY,
     }
     return render(request, 'app_tpnm/index.html', context)
 
