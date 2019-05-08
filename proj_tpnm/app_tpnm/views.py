@@ -7,23 +7,26 @@ import json
 
 
 def index(request):
-    marker_locations = Article.objects.get()
-    post_json = json.loads(request.body)
+    # marker_locations = Article.objects.get()
+    # post_json = json.loads(request.body)
     context = {
-        'MAP_KEY': settings.MAP_KEY,
+    #     'MAP_KEY': settings.MAP_KEY,
     }
     return render(request, 'app_tpnm/index.html', context)
 
 def save_article(request):
     data = json.loads(request.body)
+    print(data)
+    # text = data['text']
+    # ajax_demo_data = Article(title=title, etc)
     return HttpResponse('saved')
 
-def create(request):
+def new_article(request):
     print(request.body)
     return render (request, 'app_tpnm/create.html')
     # return HttpResponseRedirect(reverse('app_tpnm:index'))
 
-def edit(request):
+def edit_article(request):
     context = {
         'message': 'test_message',
     }
