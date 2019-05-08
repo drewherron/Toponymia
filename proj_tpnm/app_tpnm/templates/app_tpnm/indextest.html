@@ -332,11 +332,24 @@
                 console.log(longLat)
                 // if (longLat.length == 2) {
                 if (jsonfeatures[0]["geometry"]["type"] == "Point") {
-                    marker.setLngLat(longLat)
-                    marker.addTo(map);
-                    map.flyTo({
-                        center: longLat
+                    var el = document.createElement('div');
+                    el.className = 'marker';
+                    el.style.backgroundImage = 'url(https://cdn.pixabay.com/photo/2014/04/02/10/45/location-304467_960_720.png' + marker.properties.iconSize.join('/') + '/)';
+                    el.style.width = '20px'
+                    el.style.height = '20px'
+
+                    el.addEventListener('click', function() {
+                        console.log('YEAHHEAHS')
                     });
+
+                    // add marker to map
+                    new mapboxgl.Marker(el).setLngLat(longLat)
+                        .addTo(map);
+                    // marker.setLngLat(longLat)
+                    // marker.addTo(map);
+                    // map.flyTo({
+                    //     center: longLat
+                    // });
                     // openSidebar()
                 } else if (jsonfeatures[0]["geometry"]["type"] == "LineString") {
                     marker.setLngLat(longLat[Math.floor((longLat.length) / 2)])
