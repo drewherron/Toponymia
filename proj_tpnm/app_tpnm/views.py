@@ -3,17 +3,23 @@ from django.http import HttpResponse
 from django.conf import settings
 from django.urls import reverse
 from .models import Article
+import json
 
 
 def index(request):
     marker_locations = Article.objects.get()
+    post_json = json.loads(request.body)
     context = {
         'MAP_KEY': settings.MAP_KEY,
     }
     return render(request, 'app_tpnm/index.html', context)
 
+def save_article(request):
+    data = json.loads(request.body)
+    return HttpResponse('saved')
+
 def create(request):
-    print(request.POST)
+    print(request.body)
     return render (request, 'app_tpnm/create.html')
     # return HttpResponseRedirect(reverse('app_tpnm:index'))
 
