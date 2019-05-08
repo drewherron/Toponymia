@@ -262,6 +262,7 @@
 </head>
 
 <body>
+    <!-- Mapbox CDN -->
     <script src='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.0.0/mapbox-gl-geocoder.min.js'></script>
     <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.0.0/mapbox-gl-geocoder.css' type='text/css' />
     <div id="page-wrapper">
@@ -296,6 +297,10 @@
         </div>
     </div>
     <script>
+        // Axios CDN
+        // TODO: Add Axios
+
+        // Vue app for Article
         var app = new Vue({
             el: '#sidebar',
             delimiters: ['[[', ']]'],
@@ -306,13 +311,15 @@
                 datetime: 'datetime'
             }
         })
-        // this is mapbox's demo key
+        // This is mapbox's public demo key, only using while testing
         mapboxgl.accessToken = 'pk.eyJ1IjoieWF4eDByIiwiYSI6ImNqdW9rYXd1ODBjbjg0NHA3emp4ZDZiZWgifQ.0KqNiYI2LlrzR1lNSFJ6IA';
         // mapboxgl.accessToken = {
         //     {
         //         MAP_KEY
         //     }
         // }
+
+        // Add Map
         var map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/mapbox/streets-v11',
@@ -325,6 +332,7 @@
         }));
         map.addControl(new mapboxgl.NavigationControl());
 
+        // Opens sidebar
         function openSidebar() {
             windowWidth = window.outerWidth;
             document.getElementById("sidebar").style.width = "800px";
@@ -332,12 +340,14 @@
             document.getElementById("map").style.marginLeft = "20%";
         }
 
+        // Closes sidebar
         function closeSidebar() {
             document.getElementById("sidebar").style.width = "0";
             document.getElementById("map").style.marginLeft = "0";
         }
         document.getElementById("close-btn").onclick = closeSidebar;
 
+        // Switches toggle button on
         function markerToggleOn() {
             markerToggle.innerHTML = 'Cancel';
             markerToggle.style.borderStyle = 'inset';
@@ -346,14 +356,16 @@
             return addMarkerMode;
         }
 
+        // Switches toggle button off
         function markerToggleOff() {
-
             markerToggle.innerHTML = 'Add Marker';
             markerToggle.style.borderStyle = 'outset';
             markerToggle.style.backgroundColor = 'lightgray';
             addMarkerMode = false;
             return addMarkerMode;
         }
+
+        // Toggle button change on click
         var markerToggle = document.getElementById("marker-toggle");
         var addMarkerMode = false;
         markerToggle.addEventListener('click', function() {
@@ -363,9 +375,14 @@
                 markerToggleOff()
             }
         });
+
+        // Set marker size
         var markerHeight = 50,
             markerRadius = 10,
-            linearOffset = 25; // after this was commented
+            linearOffset = 25;
+
+        // This shows the json in side window
+        // TODO: this will be deleted eventually, get definitions out if needed
         map.on('click', function(e) {
             var features = map.queryRenderedFeatures(e.point);
             document.getElementById('features').innerHTML = JSON.stringify(features, null, 2);
@@ -373,13 +390,15 @@
             // var jsonfeatures = JSON.stringify(features, null, 2);
             console.log(jsonfeatures[0]["geometry"]["type"])
         });
+
+        // Add a marker when map is clicked
         map.on('click', function(e) {
             if (addMarkerMode == true) {
                 var marker = new mapboxgl.Marker()
                 var jsonfeatures = map.queryRenderedFeatures(e.point);
                 var popup = new mapboxgl.Popup({
                         offset: 25,
-                closeButton: false,
+                        closeButton: false,
                     })
                     .setText('test');
                 longLat = (jsonfeatures[0]["geometry"]["coordinates"])
