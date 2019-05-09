@@ -13,7 +13,6 @@ class Article(models.Model):
     name = models.CharField(max_length=200, blank=True, null=True)
     name_en = models.CharField(max_length=200, blank=True, null=True)
     mapbox_id = models.PositiveIntegerField(blank=True, null=True)
-    place_type = models.CharField(max_length=200, blank=True, null=True)
     created_by = models.CharField(max_length=50)
     created = models.DateField(auto_now_add=True)
     favorited = models.PositiveIntegerField(blank=True, null=True)
@@ -28,8 +27,7 @@ class Article(models.Model):
 class Edit(models.Model):
     id = models.AutoField(primary_key=True)
     article = models.ForeignKey('Article', on_delete=models.CASCADE)
-    in_language = models.ForeignKey(
-        'Language', blank=False, null=True, on_delete=models.SET_NULL)
+    in_language = models.ForeignKey('Language', blank=False, null=True, on_delete=models.SET_NULL)
     from_language = models.CharField(max_length=200, blank=True, null=True)
     content = models.TextField()
     reference = models.CharField(max_length=2500, blank=True, null=True)
