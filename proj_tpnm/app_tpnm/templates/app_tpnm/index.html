@@ -119,63 +119,8 @@
             border-right: 2px solid gray;
         }
 
-        #sidebar-wrapper {}
-
         #sidebar h1 {
             margin-top: 0;
-        }
-
-        /* #sidebar #closebtn {
-            position: relative;
-            float: right;
-            top: 20px;
-            right: 20px;
-            font-size: 36px;
-            height: 36px;
-            margin-left: 50px;
-            color: #000;
-            z-index: 200;
-            text-decoration: none;
-        }
- */
-        #sidebar1 {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-        }
-
-        #sidebar2 {
-            /* display: flex;
-            flex-direction: row; */
-            flex-shrink: 1;
-            justify-content: center;
-            min-width: 60%;
-            word-break: break-all;
-
-        }
-
-        #sidebar3 {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-        }
-
-        #sidebar4 {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-        }
-
-        #sidebar5 {
-            display: flex;
-            flex-direction: row;
-            justify-content: center;
-        }
-
-        #sidebar6 {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-around;
         }
 
         #marker-toggle {
@@ -193,23 +138,13 @@
             background-color: #eedf9c;
         }
 
-        /* if you get to using red/custom colors:  */
-        /* .marker-red {
-            background-image: url(red_pin.png);
-            background-size: cover;
-            width: 15px;
-            height: 15px;
-            border-radius: 50%;
-            cursor: pointer;
-        } */
-
-        #username {
+        /* #username {
             left: 5px;
         }
 
         #datetime {
             text-align: right;
-        }
+        } */
 
         #tabbar {
             display: flex;
@@ -234,30 +169,6 @@
         .tablink:hover {
             background-color: #777;
         }
-
-        #Home {
-            background-color: white;
-        }
-
-        #News {
-            background-color: green;
-        }
-
-        #Contact {
-            background-color: blue;
-        }
-
-        #About {
-            background-color: orange;
-        }
-
-            {
-            % block style %
-        }
-
-            {
-            % endblock %
-        }
     </style>
 </head>
 
@@ -275,19 +186,25 @@
         </div>
         <div id='content-wrapper'>
             <div id="sidebar">
-                <!-- <div>
-                    <a href="javascript:void(0)" id="closebtn" onclick="closeSidebar()">&times;</a>
-                </div> -->
                 <div class="tabbar">
-                    <button class="tablink" id="defaultOpen">Article</button>
+                    <button class="tablink" id="article-tab">Article</button>
                     <button class="tablink" id="talk-tab">Talk</button>
                     <button class="tablink" id="edit-tab">Edit</button>
                     <button class="tablink" id="history-tab">History</button>
-                    <button class="tablink" id="close-btn">Close</button>
+                    <button class="tablink" id="close-tab">Close</button>
                 </div>
-                <div id="article">
-                    {% block content %}
-                    {% endblock %}
+                <div class="sidebar-content" id="article">
+                    <div id="article-title"></div>
+                    <p>Article</p>
+                </div>
+                <div class="sidebar-content" id="talk">
+                    <p>Talk</p>
+                </div>
+                <div class="sidebar-content" id="edit">
+                    <p>Edit</p>
+                </div>
+                <div class="sidebar-content" id="history">
+                    <p>History</p>
                 </div>
             </div>
             <div id='map'>
@@ -299,17 +216,6 @@
     <!-- Axios CDN -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
-        // Vue app for Article
-        var app = new Vue({
-            el: '#sidebar',
-            delimiters: ['[[', ']]'],
-            data: {
-                title: 'Title',
-                content: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur.Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.',
-                username: 'username',
-                datetime: 'datetime'
-            }
-        })
         // This is mapbox's public demo key, only using while testing
         mapboxgl.accessToken = 'pk.eyJ1IjoieWF4eDByIiwiYSI6ImNqdW9rYXd1ODBjbjg0NHA3emp4ZDZiZWgifQ.0KqNiYI2LlrzR1lNSFJ6IA';
         // mapboxgl.accessToken = {
@@ -331,20 +237,39 @@
         }));
         map.addControl(new mapboxgl.NavigationControl());
 
+        var sidebar = document.getElementById('sidebar');
+        var articleTab = document.getElementById("article-tab");
+        var articleContent = document.getElementById("article-content");
+        var talkTab = document.getElementById("talk-tab");
+        var talkContent = document.getElementById("talk-content");
+        var editTab = document.getElementById("edit-tab");
+        var editContent = document.getElementById("edit-content");
+        var historyTab = document.getElementById("history-tab");
+        var historyContent = document.getElementById("history-content");
+        var closeTab = document.getElementById("close-tab");
+        var markerToggle = document.getElementById("marker-toggle");
+        var articleTitle = document.getElementById("article-title");
+
         // Opens sidebar
         function openSidebar() {
             windowWidth = window.outerWidth;
-            document.getElementById("sidebar").style.width = "800px";
-            document.getElementById("sidebar").style.maxWidth = "windowWidth";
+            sidebar.style.width = "800px";
+            sidebar.style.maxWidth = "windowWidth";
             document.getElementById("map").style.marginLeft = "20%";
+            // map.style.marginLeft = "20%";
+            console.log('openSidebar')
         }
 
         // Closes sidebar
+        // document.getElementById('close-tab').onclick = closeSidebar();
+        closeTab.onclick = closeSidebar;
+
         function closeSidebar() {
             document.getElementById("sidebar").style.width = "0";
             document.getElementById("map").style.marginLeft = "0";
+            // sidebar.style.width = "0";
+            // map.style.marginLeft = "0";
         }
-        document.getElementById("close-btn").onclick = closeSidebar;
 
         // Switches toggle button on
         function markerToggleOn() {
@@ -364,8 +289,56 @@
             return addMarkerMode;
         }
 
+        function openTab(thisTab) {
+            tablinks = document.getElementsByClassName("tablink");
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].style.backgroundColor = '#555';
+                tablinks[i].style.color = 'white';
+            }
+            let activeTab = document.getElementById(thisTab.toLowerCase() + "-tab");
+            activeTab.style.backgroundColor = 'white';
+            activeTab.style.color = 'black';
+            console.log(activeTab)
+            sidebarContent = document.getElementsByClassName("sidebar-content");
+            for (i = 0; i < sidebarContent.length; i++) {
+                sidebarContent[i].style.display = "none";
+                // sidebarContent[i].style.visibility = 'hidden';
+            }
+            let activeContent = document.getElementById(thisTab.toLowerCase());
+            // activeContent.style.visibility = 'visible';
+            activeContent.style.display = 'block';
+            activeContent.style.height = '100%';
+        }
+
+        document.getElementById("article-tab").addEventListener("click", function() {
+            openTab(this.innerText)
+        });
+        document.getElementById("talk-tab").addEventListener("click", function() {
+            openTab(this.innerText)
+        });
+        document.getElementById("edit-tab").addEventListener("click", function() {
+            openTab(this.innerText)
+        });
+        document.getElementById("history-tab").addEventListener("click", function() {
+            openTab(this.innerText)
+        });
+        // function openTab() {
+        //     var i, sidebarContent, tablinks;
+        //     sidebarContent = document.getElementsByClassName("sidebar-content");
+        //     for (i = 0; i < sidebarContent.length; i++) {
+        //         sidebarContent[i].style.display = "none";
+        //     }
+        //     tablinks = document.getelementsbyclassname("tablink");
+        //     for (i = 0; i < tablinks.length; i++) {
+        //         tablinks[i].style.backgroundcolor = "#555";
+        //     }
+        //
+        //     // Show the specific tab content
+        //     document.getElementById('tabName').style.display = "block";
+        //     el.style.backgroundColor = 'white';
+        // }
+        //
         // Toggle button change on click
-        var markerToggle = document.getElementById("marker-toggle");
         var addMarkerMode = false;
         markerToggle.addEventListener('click', function() {
             if (markerToggle.innerHTML == 'Add Marker') {
@@ -380,34 +353,17 @@
             markerRadius = 10,
             linearOffset = 25;
 
-        // This shows the json in side window
+        // Show the json in side window
         // TODO: this will be deleted eventually, get definitions out if needed
         map.on('click', function(e) {
             var features = map.queryRenderedFeatures(e.point);
             document.getElementById('features').innerHTML = JSON.stringify(features, null, 2);
             var jsonfeatures = map.queryRenderedFeatures(e.point);
             // var jsonfeatures = JSON.stringify(features, null, 2);
-            console.log(jsonfeatures[0]["geometry"]["type"])
         });
 
         // Add a marker when map is clicked
         map.on('click', function(e) {
-            // temp ajax code
-            var jsonfeatures = map.queryRenderedFeatures(e.point);
-            let ajax_data = {
-                name: (jsonfeatures[0]["properties"]["name"]),
-                nameEn: (jsonfeatures[0]["properties"]["name"]),
-                longLat: (jsonfeatures[0]["geometry"]["coordinates"])
-            }
-            let config = {
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}'
-                }
-            }
-            axios.post('{% url 'app_tpnm:new_article' %}', ajax_data, config).then(function(response) {
-                console.log(response.data)
-            })
-            // temp ajax code
             if (addMarkerMode == true) {
                 var marker = new mapboxgl.Marker()
                 var jsonfeatures = map.queryRenderedFeatures(e.point);
@@ -416,41 +372,45 @@
                         closeButton: false,
                     })
                     .setText('test');
-                longLat = (jsonfeatures[0]["geometry"]["coordinates"])
-                nameEn = (jsonfeatures[0]["properties"]["name_en"])
-                name = (jsonfeatures[0]["properties"]["name"])
+                geo_type = jsonfeatures[0]["geometry"]["type"]
+                coordinates = jsonfeatures[0]["geometry"]["coordinates"]
+                longitude = coordinates[0]
+                latitude = coordinates[1]
+                nameEn = jsonfeatures[0]["properties"]["name_en"]
+                name = jsonfeatures[0]["properties"]["name"]
+                place_type = jsonfeatures[0]["properties"]["type"]
+                place_class = jsonfeatures[0]["properties"]["class"]
                 if (typeof nameEn != "undefined" && nameEn) {
-                    console.log(nameEn)
-                    openSidebar()
+                    articleTitle.innerText = nameEn;
+                    openTab('Edit');
                     // } else if (typeof name != "undefined" && name) {
                     // sidebarIframe.setAttribute("src","http://159.69.145.236/index.php/"+name)
-                    // openSidebar()
+                    openSidebar();
                 } else {
                     closeSidebar()
                 }
-                console.log(longLat)
-                // if (longLat.length == 2) {
+                // if (coordinates.length == 2) {
                 if (jsonfeatures[0]["geometry"]["type"] == "Point") {
-                    marker.setLngLat(longLat)
+                    marker.setLngLat(coordinates)
                         .setPopup(popup)
                     marker.addTo(map);
                     map.flyTo({
-                        center: longLat
+                        center: coordinates
                     });
                     markerToggleOff();
                     // openSidebar()
 
 
                 } else if (jsonfeatures[0]["geometry"]["type"] == "LineString") {
-                    marker.setLngLat(longLat[Math.floor((longLat.length) / 2)])
+                    marker.setLngLat(coordinates[Math.floor((coordinates.length) / 2)])
                     marker.addTo(map);
                     map.flyTo({
-                        center: longLat[Math.floor((longLat.length) / 2)]
+                        center: coordinates[Math.floor((coordinates.length) / 2)]
                     });
                     markerToggleOff();
                     // openSidebar()
                 } else if (jsonfeatures[0]["geometry"]["type"] == "MultiLineString") {
-                    marker.setLngLat(longLat[Math.floor((longLat.length) / 2)])
+                    marker.setLngLat(coordinates[Math.floor((coordinates.length) / 2)])
                     marker.addTo(map);
                     markerToggleOff();
                     // openSidebar()
