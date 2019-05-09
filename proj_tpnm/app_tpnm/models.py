@@ -5,11 +5,9 @@ from django import forms
 
 class Article(models.Model):
     id = models.AutoField(primary_key=True)
-    title = models.CharField(max_length=200)
     coordinates = ArrayField(ArrayField(models.FloatField()))
     longitude = models.FloatField()
     latitude = models.FloatField()
-    data = JSONField()
     place_class = models.CharField(max_length=200, blank=True, null=True)
     place_type = models.CharField(max_length=200, blank=True, null=True)
     name = models.CharField(max_length=200, blank=True, null=True)
