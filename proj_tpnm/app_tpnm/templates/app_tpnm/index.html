@@ -169,6 +169,18 @@
         .tablink:hover {
             background-color: #777;
         }
+
+        .article-title {
+            font-size: 30px;
+            font-weight: bold;
+            font-family: sans-serif;
+            padding: 10px;
+            margin-top: 15px;
+        }
+
+        .article-coordinates {
+            color: #1a1a1a
+        }
     </style>
 </head>
 
@@ -194,17 +206,24 @@
                     <button class="tablink" id="close-tab">Close</button>
                 </div>
                 <div class="sidebar-content" id="article">
-                    <div id="article-title"></div>
-                    <p>Article</p>
+                    <div class="article-title"></div>
+                    <div class="article-coordinates"></div>
+                    <hr>
                 </div>
                 <div class="sidebar-content" id="talk">
-                    <p>Talk</p>
+                    <div class="article-title"></div>
+                    <div class="article-coordinates"></div>
+                    <hr>
                 </div>
                 <div class="sidebar-content" id="edit">
-                    <p>Edit</p>
+                    <div class="article-title"></div>
+                    <div class="article-coordinates"></div>
+                    <hr>
                 </div>
                 <div class="sidebar-content" id="history">
-                    <p>History</p>
+                    <div class="article-title"></div>
+                    <div class="article-coordinates"></div>
+                    <hr>
                 </div>
             </div>
             <div id='map'>
@@ -248,7 +267,8 @@
         var historyContent = document.getElementById("history-content");
         var closeTab = document.getElementById("close-tab");
         var markerToggle = document.getElementById("marker-toggle");
-        var articleTitle = document.getElementById("article-title");
+        var articleTitle = document.getElementsByClassName("article-title");
+        var articleCoordinates = document.getElementsByClassName("article-coordinates");
 
         // Opens sidebar
         function openSidebar() {
@@ -289,55 +309,73 @@
             return addMarkerMode;
         }
 
-        function openTab(thisTab) {
+        function newArticle(title, coordinates) {
             tablinks = document.getElementsByClassName("tablink");
             for (let i = 0; i < tablinks.length; i++) {
-                tablinks[i].style.backgroundColor = '#555';
+                tablinks[i].style.backgroundcolor = '#555';
                 tablinks[i].style.color = 'white';
             }
-            let activeTab = document.getElementById(thisTab.toLowerCase() + "-tab");
-            activeTab.style.backgroundColor = 'white';
-            activeTab.style.color = 'black';
-            console.log(activeTab)
+            let newArticleTab = document.getElementById("edit-tab");
+            newArticleTab.style.backgroundColor = 'white';
+            newArticleTab.style.color = 'black';
+            newArticleTab.innerText = 'New';
+
             sidebarContent = document.getElementsByClassName("sidebar-content");
-            for (i = 0; i < sidebarContent.length; i++) {
+            for (let i = 0; i < sidebarContent.length; i++) {
                 sidebarContent[i].style.display = "none";
                 // sidebarContent[i].style.visibility = 'hidden';
             }
-            let activeContent = document.getElementById(thisTab.toLowerCase());
+            let activeContent = document.getElementById("edit");
             // activeContent.style.visibility = 'visible';
             activeContent.style.display = 'block';
             activeContent.style.height = '100%';
-        }
+            for (let i = 0; i < articleTitle.length; i++) {
+                articleTitle[i].innerText = title;
+            }
+            for (let i = 0; i < articleCoordinates.length; i++) {
+                articleCoordinates[i].innerText = '(' + coordinates.toString() + ')';
+            }
+            openSidebar();
 
-        document.getElementById("article-tab").addEventListener("click", function() {
-            openTab(this.innerText)
-        });
-        document.getElementById("talk-tab").addEventListener("click", function() {
-            openTab(this.innerText)
-        });
-        document.getElementById("edit-tab").addEventListener("click", function() {
-            openTab(this.innerText)
-        });
-        document.getElementById("history-tab").addEventListener("click", function() {
-            openTab(this.innerText)
-        });
-        // function openTab() {
-        //     var i, sidebarContent, tablinks;
-        //     sidebarContent = document.getElementsByClassName("sidebar-content");
-        //     for (i = 0; i < sidebarContent.length; i++) {
-        //         sidebarContent[i].style.display = "none";
-        //     }
-        //     tablinks = document.getelementsbyclassname("tablink");
-        //     for (i = 0; i < tablinks.length; i++) {
-        //         tablinks[i].style.backgroundcolor = "#555";
-        //     }
-        //
-        //     // Show the specific tab content
-        //     document.getElementById('tabName').style.display = "block";
-        //     el.style.backgroundColor = 'white';
-        // }
-        //
+        }
+        // TODO: Reset edit tab inner text on save
+
+        function openArticle() {
+            function openTab(thisTab) {
+                document.getElementById("edit").innerText = "Edit"
+                tablinks = document.getElementsByClassName("tablink");
+                for (let i = 0; i < tablinks.length; i++) {
+                    tablinks[i].style.backgroundColor = '#555';
+                    tablinks[i].style.color = 'white';
+                }
+                let activeTab = document.getElementById(thisTab.toLowerCase() + "-tab");
+                activeTab.style.backgroundColor = 'white';
+                activeTab.style.color = 'black';
+                console.log(activeTab)
+                sidebarContent = document.getElementsByClassName("sidebar-content");
+                for (let i = 0; i < sidebarContent.length; i++) {
+                    sidebarContent[i].style.display = "none";
+                    // sidebarContent[i].style.visibility = 'hidden';
+                }
+                let activeContent = document.getElementById(thisTab.toLowerCase());
+                // activeContent.style.visibility = 'visible';
+                activeContent.style.display = 'block';
+                activeContent.style.height = '100%';
+            }
+
+            document.getElementById("article-tab").addEventListener("click", function() {
+                openTab(this.innerText)
+            });
+            document.getElementById("talk-tab").addEventListener("click", function() {
+                openTab(this.innerText)
+            });
+            document.getElementById("edit-tab").addEventListener("click", function() {
+                openTab(this.innerText)
+            });
+            document.getElementById("history-tab").addEventListener("click", function() {
+                openTab(this.innerText)
+            });
+        }
         // Toggle button change on click
         var addMarkerMode = false;
         markerToggle.addEventListener('click', function() {
@@ -378,16 +416,24 @@
                 latitude = coordinates[1]
                 nameEn = jsonfeatures[0]["properties"]["name_en"]
                 name = jsonfeatures[0]["properties"]["name"]
-                place_type = jsonfeatures[0]["properties"]["type"]
-                place_class = jsonfeatures[0]["properties"]["class"]
-                if (typeof nameEn != "undefined" && nameEn) {
-                    articleTitle.innerText = nameEn;
-                    openTab('Edit');
+                placeType = jsonfeatures[0]["properties"]["type"]
+                placeClass = jsonfeatures[0]["properties"]["class"]
+                nameScript = jsonfeatures[0]["properties"]["name_script"]
+                if ((typeof nameEn != "undefined" && nameEn) || (typeof name != "undefined" && name)) {
+                    if (typeof nameEn != "undefined") {
+                        if (nameScript != 'Latin' && typeof nameScript != "undefined") {
+                            var title = nameEn + ' (' + name + ')'
+
+                        } else {
+                            var title = nameEn
+                        }
+                    } else {
+                        var title = name
+                    }
+                    articleTitle.innerText = title;
+                    newArticle(title, coordinates)
                     // } else if (typeof name != "undefined" && name) {
                     // sidebarIframe.setAttribute("src","http://159.69.145.236/index.php/"+name)
-                    openSidebar();
-                } else {
-                    closeSidebar()
                 }
                 // if (coordinates.length == 2) {
                 if (jsonfeatures[0]["geometry"]["type"] == "Point") {
