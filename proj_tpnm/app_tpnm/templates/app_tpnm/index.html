@@ -276,8 +276,6 @@
             sidebar.style.width = "800px";
             sidebar.style.maxWidth = "windowWidth";
             document.getElementById("map").style.marginLeft = "20%";
-            // map.style.marginLeft = "20%";
-            console.log('openSidebar')
         }
 
         // Closes sidebar
@@ -309,7 +307,7 @@
             return addMarkerMode;
         }
 
-        function newArticle(title, coordinates) {
+        function newArticlePoint(title, coordinates) {
             tablinks = document.getElementsByClassName("tablink");
             for (let i = 0; i < tablinks.length; i++) {
                 tablinks[i].style.backgroundcolor = '#555';
@@ -421,45 +419,48 @@
                 nameScript = jsonfeatures[0]["properties"]["name_script"]
                 if ((typeof nameEn != "undefined" && nameEn) || (typeof name != "undefined" && name)) {
                     if (typeof nameEn != "undefined") {
-                        if (nameScript != 'Latin' && typeof nameScript != "undefined") {
+                        if (nameEn != name) {
                             var title = nameEn + ' (' + name + ')'
-
                         } else {
                             var title = nameEn
                         }
                     } else {
                         var title = name
                     }
-                    articleTitle.innerText = title;
-                    newArticle(title, coordinates)
                     // } else if (typeof name != "undefined" && name) {
                     // sidebarIframe.setAttribute("src","http://159.69.145.236/index.php/"+name)
                 }
                 // if (coordinates.length == 2) {
-                if (jsonfeatures[0]["geometry"]["type"] == "Point") {
-                    marker.setLngLat(coordinates)
-                        .setPopup(popup)
-                    marker.addTo(map);
-                    map.flyTo({
-                        center: coordinates
-                    });
-                    markerToggleOff();
-                    // openSidebar()
+                if (typeof title != undefined) {
+                    if (jsonfeatures[0]["geometry"]["type"] == "Point") {
+                        articleTitle.innerText = title;
+                        newArticlePoint(title, coordinates)
+                        marker.setLngLat(coordinates)
+                            .setPopup(popup)
+                        marker.addTo(map);
+                        map.flyTo({
+                            center: coordinates
+                        });
+                        markerToggleOff();
+                        // openSidebar()
 
 
-                } else if (jsonfeatures[0]["geometry"]["type"] == "LineString") {
-                    marker.setLngLat(coordinates[Math.floor((coordinates.length) / 2)])
-                    marker.addTo(map);
-                    map.flyTo({
-                        center: coordinates[Math.floor((coordinates.length) / 2)]
-                    });
-                    markerToggleOff();
-                    // openSidebar()
-                } else if (jsonfeatures[0]["geometry"]["type"] == "MultiLineString") {
-                    marker.setLngLat(coordinates[Math.floor((coordinates.length) / 2)])
-                    marker.addTo(map);
-                    markerToggleOff();
-                    // openSidebar()
+                    } else if (jsonfeatures[0]["geometry"]["type"] == "LineString") {
+                        console.log('LineString')
+                        // marker.setLngLat(coordinates[Math.floor((coordinates.length) / 2)]) marker.addTo(map); map.flyTo({
+                        //     center: coordinates[Math.floor((coordinates.length) / 2)]
+                        // });
+                        // markerToggleOff();
+                        // openSidebar()
+                    } else if (jsonfeatures[0]["geometry"]["type"] == "MultiLineString") {
+                        console.log('MultiLineString')
+                        // marker.setLngLat(coordinates[Math.floor((coordinates.length) / 2)])
+                        // marker.addTo(map);
+                        // markerToggleOff();
+                        // openSidebar()
+                    } else if (jsonfeatures[0]["geometry"]["type"] == "MultiPolygon") {
+                        console.log('MultiPolygon')
+                    }
                 }
             }
         });
