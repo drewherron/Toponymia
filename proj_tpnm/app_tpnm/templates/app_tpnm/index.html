@@ -4,9 +4,16 @@
     <meta charset='utf-8' />
     <title>Toponymia</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css' rel='stylesheet' />
-    <script src="https://vuejs.org/js/vue.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('.lang-multiselect').select2();
+        });
+    </script>
     {% load static %}
     <style>
         body {
@@ -181,6 +188,11 @@
         .article-coordinates {
             color: #1a1a1a
         }
+
+        .new-article {
+            display: flex;
+            flex-direction: column;
+        }
     </style>
 </head>
 
@@ -219,6 +231,27 @@
                     <div class="article-title"></div>
                     <div class="article-coordinates"></div>
                     <hr>
+                    <div class="new-article">
+                        <form action="/save/" method="post">
+                            {% csrf_token %}
+                            <div>
+                                <label for="inLanguageDropdown">Toponym is IN which Language</label>
+                                <select class="lang-multiselect" id="inLanguageDropdown" name="inLanguage" multiple="multiple">
+                                    {% for language in languages %}
+                                    <option value>{{ language.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div>
+                                <label for="sourceLanguageDropdown">Toponym is FROM which Language(s)</label>
+                                <select class="lang-multiselect" id="sourceLanguageDropdown" name="sourceLanguage" multiple="multiple">
+                                    {% for language in languages %}
+                                    <option value>{{ language.name }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                        </form>
+                    </div>
                 </div>
                 <div class="sidebar-content" id="history">
                     <div class="article-title"></div>
@@ -279,8 +312,6 @@
         }
 
         // Closes sidebar
-        // document.getElementById('close-tab').onclick = closeSidebar();
-        closeTab.onclick = closeSidebar;
 
         function closeSidebar() {
             document.getElementById("sidebar").style.width = "0";
@@ -307,16 +338,24 @@
             return addMarkerMode;
         }
 
-        function newArticlePoint(title, coordinates) {
+        function cancelMarker(marker) {
+            // marker.remove();
+            closeSidebar();
+            console.log('cancelMarker')
+        }
+
+        function newArticlePoint(title, coordinates, mapboxId) {
             tablinks = document.getElementsByClassName("tablink");
             for (let i = 0; i < tablinks.length; i++) {
                 tablinks[i].style.backgroundcolor = '#555';
-                tablinks[i].style.color = 'white';
+                tablinks[i].style.color = '#737070';
             }
             let newArticleTab = document.getElementById("edit-tab");
             newArticleTab.style.backgroundColor = 'white';
             newArticleTab.style.color = 'black';
             newArticleTab.innerText = 'New';
+            closeTab.innerText = 'Cancel';
+            closeTab.style.color = 'white';
 
             sidebarContent = document.getElementsByClassName("sidebar-content");
             for (let i = 0; i < sidebarContent.length; i++) {
@@ -334,13 +373,14 @@
                 articleCoordinates[i].innerText = '(' + coordinates.toString() + ')';
             }
             openSidebar();
+            markerToggleOff();
 
         }
-        // TODO: Reset edit tab inner text on save
 
         function openArticle() {
             function openTab(thisTab) {
                 document.getElementById("edit").innerText = "Edit"
+                document.getElementById("close-tab").innerText = "Close"
                 tablinks = document.getElementsByClassName("tablink");
                 for (let i = 0; i < tablinks.length; i++) {
                     tablinks[i].style.backgroundColor = '#555';
@@ -373,6 +413,9 @@
             document.getElementById("history-tab").addEventListener("click", function() {
                 openTab(this.innerText)
             });
+
+            // document.getElementById('close-tab').onclick = closeSidebar();
+            closeTab.onclick = closeSidebar;
         }
         // Toggle button change on click
         var addMarkerMode = false;
@@ -403,11 +446,6 @@
             if (addMarkerMode == true) {
                 var marker = new mapboxgl.Marker()
                 var jsonfeatures = map.queryRenderedFeatures(e.point);
-                var popup = new mapboxgl.Popup({
-                        offset: 25,
-                        closeButton: false,
-                    })
-                    .setText('test');
                 geo_type = jsonfeatures[0]["geometry"]["type"]
                 coordinates = jsonfeatures[0]["geometry"]["coordinates"]
                 longitude = coordinates[0]
@@ -417,6 +455,8 @@
                 placeType = jsonfeatures[0]["properties"]["type"]
                 placeClass = jsonfeatures[0]["properties"]["class"]
                 nameScript = jsonfeatures[0]["properties"]["name_script"]
+                mapboxId = jsonfeatures[0]["id"]
+                console.log(mapboxId)
                 if ((typeof nameEn != "undefined" && nameEn) || (typeof name != "undefined" && name)) {
                     if (typeof nameEn != "undefined") {
                         if (nameEn != name) {
@@ -427,9 +467,12 @@
                     } else {
                         var title = name
                     }
-                    // } else if (typeof name != "undefined" && name) {
-                    // sidebarIframe.setAttribute("src","http://159.69.145.236/index.php/"+name)
                 }
+                var popup = new mapboxgl.Popup({
+                        offset: 25,
+                        closeButton: false,
+                    })
+                    .setText(title)
                 // if (coordinates.length == 2) {
                 if (typeof title != undefined) {
                     if (jsonfeatures[0]["geometry"]["type"] == "Point") {
@@ -441,8 +484,9 @@
                         map.flyTo({
                             center: coordinates
                         });
-                        markerToggleOff();
-                        // openSidebar()
+                        document.getElementById("close-tab").addEventListener("click", function() {
+                            cancelMarker(marker)
+                        });
 
 
                     } else if (jsonfeatures[0]["geometry"]["type"] == "LineString") {
@@ -465,6 +509,7 @@
             }
         });
 
+        // For language multiselect
         // var geojson_markers = {
         // type: 'FeatureCollection',
         // features: [{%

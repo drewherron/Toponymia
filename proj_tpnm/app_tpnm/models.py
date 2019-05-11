@@ -2,16 +2,17 @@ from django.db import models
 from django.contrib.postgres.fields import JSONField, ArrayField
 from django import forms
 
-
 class Article(models.Model):
     id = models.AutoField(primary_key=True)
     coordinates = ArrayField(ArrayField(models.FloatField()))
+    title = models.CharField(max_length=1000)
     longitude = models.FloatField()
     latitude = models.FloatField()
     place_class = models.CharField(max_length=200, blank=True, null=True)
     place_type = models.CharField(max_length=200, blank=True, null=True)
     name = models.CharField(max_length=200, blank=True, null=True)
     name_en = models.CharField(max_length=200, blank=True, null=True)
+    # endonym - models.BooleanField()
     mapbox_id = models.PositiveIntegerField(blank=True, null=True)
     created_by = models.CharField(max_length=50)
     created = models.DateField(auto_now_add=True)
@@ -21,13 +22,13 @@ class Article(models.Model):
     reported_by = models.CharField(max_length=200, blank=True, null=True)
 
     def __str__(self):
-        return self.title + str(self.id)
+        return str(self.id)
 
 
 class Edit(models.Model):
     id = models.AutoField(primary_key=True)
     article = models.ForeignKey('Article', on_delete=models.CASCADE)
-    in_language = models.ForeignKey('Language', blank=False, null=True, on_delete=models.SET_NULL)
+    # in_language = models.ForeignKey('Language', blank=False, null=True, on_delete=models.SET_NULL)
     from_language = models.CharField(max_length=200, blank=True, null=True)
     content = models.TextField()
     reference = models.CharField(max_length=2500, blank=True, null=True)
@@ -54,14 +55,12 @@ class Comment(models.Model):
 
 
     def __str__(self):
-        return self.username +' '+ str(self.created)
+        return self.article +' '+ self.username +' '+ str(self.created)
 
 class Language(models.Model):
     id = models.PositiveSmallIntegerField(primary_key=True)
-    name = models.CharField(max_length=200)
     iso_639_3 = models.CharField(max_length=3)
-    glottocode = models.CharField(max_length=8)
-    macroarea = models.CharField(max_length=100, null=True)
+    name = models.CharField(max_length=200)
 
     def __str__(self):
         return self.name + ' (' + self.iso_639_3 +')'
