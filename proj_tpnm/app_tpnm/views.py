@@ -1,5 +1,5 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.shortcuts import render, reverse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.conf import settings
 from django.urls import reverse
 from .models import Article, Language
@@ -16,7 +16,8 @@ def index(request):
 def save_article(request):
     # data = json.loads(request.body)
     # print(data)
-    return HttpResponse('saved')
+    print(request.POST)
+    return HttpResponseRedirect(reverse('app_tpnm:index'))
 
 class LanguageAutocomplete(autocomplete.Select2QuerySetView):
     def get_queryset(self):

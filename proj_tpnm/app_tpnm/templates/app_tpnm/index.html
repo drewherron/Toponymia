@@ -232,10 +232,10 @@
                     <div class="article-coordinates"></div>
                     <hr>
                     <div class="new-article">
-                        <form action="/save/" method="post">
+                        <form action="/save_article/" method="post">
                             {% csrf_token %}
                             <div>
-                                <label for="inLanguageDropdown">Toponym is IN which Language</label>
+                                <label for="inLanguageDropdown">Create entry for which language</label>
                                 <select class="lang-multiselect" id="inLanguageDropdown" name="inLanguage" multiple="multiple">
                                     {% for language in languages %}
                                     <option value>{{ language.name }}</option>
@@ -243,12 +243,15 @@
                                 </select>
                             </div>
                             <div>
-                                <label for="sourceLanguageDropdown">Toponym is FROM which Language(s)</label>
+                                <label for="sourceLanguageDropdown">Source language(s)</label>
                                 <select class="lang-multiselect" id="sourceLanguageDropdown" name="sourceLanguage" multiple="multiple">
                                     {% for language in languages %}
                                     <option value>{{ language.name }}</option>
                                     {% endfor %}
                                 </select>
+                                <input type="checkbox" name="endonym" value="endonym">Endonym<br>
+                                <textarea name="form_content" rows="8" cols="80"></textarea>
+                                <button type="submit">Submit</button>
                             </div>
                         </form>
                     </div>
