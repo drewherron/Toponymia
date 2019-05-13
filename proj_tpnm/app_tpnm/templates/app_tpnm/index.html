@@ -36,6 +36,8 @@
         }
 
         #header {
+            position: sticky;
+            top: 0px;
             display: flex;
             flex-direction: row;
             align-items: center;
@@ -112,6 +114,7 @@
         }
 
         #sidebar {
+            position: fixed;
             display: flex;
             flex-direction: column;
             flex-shrink: 1;
@@ -193,6 +196,14 @@
             display: flex;
             flex-direction: column;
         }
+
+        form * {
+            margin: 5px;
+        }
+
+        #article-button-div {
+            margin-bottom: 50px;
+        }
     </style>
 </head>
 
@@ -235,22 +246,65 @@
                         <form action="/save_article/" method="post">
                             {% csrf_token %}
                             <div>
+                                <label for="name-field">Name:</label>
+                                <input type="text" id="name-field" name="name-field" value="undefined" required>
+                            </div>
+                            <div>
+                                <input type="hidden" id="title-field" name="title-field" value="undefined">
+                                <input type="hidden" id="coord-field" name="coord-field" value="undefined">
+                                <input type="hidden" id="long-field" name="long-field" value="undefined">
+                                <input type="hidden" id="lat-field" name="lat-field" value="undefined">
+                                <input type="hidden" id="tpnm-id-field" name="tpnm-id-field" value="undefined">
+                                <input type="hidden" id="mapbox-id-field" name="mapbox-id-field" value="undefined">
+                                <input type="hidden" id="place-class-field" name="place-class-field" value="undefined">
+                                <input type="hidden" id="place-type-field" name="place-type-field" value="undefined">
+                                <input type="hidden" id="geo-type-field" name="geo-type-field" value="undefined">
+                                <input type="hidden" id="iso-3166-1-field" name="iso-3166-1-field" value="undefined">
+                                <input type="hidden" id="iso-3166-2-field" name="iso-3166-2-field" value="undefined">
+                                <input type="hidden" id="geo-type-field" name="geo-type-field" value="undefined">
+                            </div>
+                            <div>
                                 <label for="inLanguageDropdown">Create entry for which language</label>
-                                <select class="lang-multiselect" id="inLanguageDropdown" name="inLanguage" multiple="multiple">
+                                <select class="inLanguageDropdown" name="inLanguage" required>
+                                    <!-- <select class="lang-multiselect" id="inLanguageDropdown" name="inLanguage" required>
                                     {% for language in languages %}
                                     <option value>{{ language.name }}</option>
-                                    {% endfor %}
+                                    {% endfor %} -->
+                                    <option value="English">English</option>
+                                    <option value="Spanish">Spanish</option>
+                                    <option value="German">German</option>
+                                    <option value="Dutch">French</option>
+                                    <option value="Dutch">Dutch</option>
                                 </select>
                             </div>
                             <div>
                                 <label for="sourceLanguageDropdown">Source language(s)</label>
-                                <select class="lang-multiselect" id="sourceLanguageDropdown" name="sourceLanguage" multiple="multiple">
+                                <select class="sourceLanguageDropdown" name="sourceLanguage" required>
+                                    <!-- <select class="lang-multiselect" id="sourceLanguageDropdown" name="sourceLanguage" multiple="multiple" required>
                                     {% for language in languages %}
                                     <option value>{{ language.name }}</option>
-                                    {% endfor %}
+                                    {% endfor %} -->
+                                    <option value="English">English</option>
+                                    <option value="Spanish">Spanish</option>
+                                    <option value="German">German</option>
+                                    <option value="Dutch">French</option>
+                                    <option value="Dutch">Dutch</option>
+
                                 </select>
-                                <input type="checkbox" name="endonym" value="endonym">Endonym<br>
-                                <textarea name="form_content" rows="8" cols="80"></textarea>
+                                <label for="endonymDropdown">Endonym: </label>
+                                <select class="endonymDropdown" name="endonym">
+                                    <option value="True">True</option>
+                                    <option value="False">False</option>
+                                </select>
+                                <!-- span id="endonym-question"style='font-size:10px;'>&#10067;</span--><br>
+                                <textarea name="form-content" rows="8" cols="80" required></textarea>
+                            </div>
+                            <div>
+                                <label for="reference-field">Reference(s):</label>
+                                <input type="url" class="reference-field" name="reference-field" placeholder="Enter URL">
+                            </div>
+                            <div id="article-button-div">
+                                <button type="button" id="addAnotherBtn">Add Another</button>
                                 <button type="submit">Submit</button>
                             </div>
                         </form>
@@ -305,6 +359,18 @@
         var markerToggle = document.getElementById("marker-toggle");
         var articleTitle = document.getElementsByClassName("article-title");
         var articleCoordinates = document.getElementsByClassName("article-coordinates");
+        var nameField = document.getElementById("name-field");
+        var titleField = document.getElementById("title-field");
+        var coordField = document.getElementById("coord-field");
+        var longField = document.getElementById("long-field");
+        var latField = document.getElementById("lat-field");
+        var tpnmIdField = document.getElementById("tpnm-id-field");
+        var mapboxIdField = document.getElementById("mapbox-id-field");
+        var placeClassField = document.getElementById("place-class-field");
+        var placeTypeField = document.getElementById("place-type-field");
+        var geoTypeField = document.getElementById("geo-type-field");
+        var iso_3166_1Field = document.getElementById("iso-3166-1-field");
+        var iso_3166_2Field = document.getElementById("iso-3166-2-field");
 
         // Opens sidebar
         function openSidebar() {
@@ -375,6 +441,9 @@
             for (let i = 0; i < articleCoordinates.length; i++) {
                 articleCoordinates[i].innerText = '(' + coordinates.toString() + ')';
             }
+
+            coordField.value = coordinates;
+
             openSidebar();
             markerToggleOff();
 
@@ -449,7 +518,7 @@
             if (addMarkerMode == true) {
                 var marker = new mapboxgl.Marker()
                 var jsonfeatures = map.queryRenderedFeatures(e.point);
-                geo_type = jsonfeatures[0]["geometry"]["type"]
+                geoType = jsonfeatures[0]["geometry"]["type"]
                 coordinates = jsonfeatures[0]["geometry"]["coordinates"]
                 longitude = coordinates[0]
                 latitude = coordinates[1]
@@ -457,18 +526,34 @@
                 name = jsonfeatures[0]["properties"]["name"]
                 placeType = jsonfeatures[0]["properties"]["type"]
                 placeClass = jsonfeatures[0]["properties"]["class"]
-                nameScript = jsonfeatures[0]["properties"]["name_script"]
                 mapboxId = jsonfeatures[0]["id"]
-                console.log(mapboxId)
+                iso_3166_1 = jsonfeatures[0]["properties"]["iso_3166_1"]
+                iso_3166_2 = jsonfeatures[0]["properties"]["iso_3166_2"]
+                mapboxIdField.value = mapboxId;
+                placeClassField.value = placeClass;
+                placeTypeField.value = placeType;
+                geoTypeField.value = geoType;
+                longField.value = longitude;
+                latField.value = latitude;
+                iso_3166_1Field.value = iso_3166_1;
+                iso_3166_2Field.value = iso_3166_2;
+                var tpnmId = Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36) + mapboxId.toString();
+                tpnmIdField.value = tpnmId;
                 if ((typeof nameEn != "undefined" && nameEn) || (typeof name != "undefined" && name)) {
                     if (typeof nameEn != "undefined") {
                         if (nameEn != name) {
                             var title = nameEn + ' (' + name + ')'
+                            titleField.value = title;
+                            nameField.value = nameEn
                         } else {
                             var title = nameEn
+                            titleField.value = title;
+                            nameField.value = nameEn
                         }
                     } else {
                         var title = name
+                        titleField.value = title;
+                        nameField.value = name
                     }
                 }
                 var popup = new mapboxgl.Popup({

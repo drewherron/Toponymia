@@ -3,36 +3,38 @@ from django.contrib.postgres.fields import JSONField, ArrayField
 from django import forms
 
 class Article(models.Model):
-    id = models.AutoField(primary_key=True)
-    coordinates = ArrayField(ArrayField(models.FloatField()))
+    tpnm_id = models.CharField( max_length=500)
+    mapbox_id = models.PositiveIntegerField(blank=True, null=True)
     title = models.CharField(max_length=1000)
-    longitude = models.FloatField()
-    latitude = models.FloatField()
+    # coordinates = ArrayField(ArrayField(models.DecimalField(max_digits=22, decimal_places=16)))
+    longitude = models.DecimalField(max_digits=22, decimal_places=16, blank=False, null=False)
+    latitude = models.DecimalField(max_digits=22, decimal_places=16, blank=False, null=False)
+    iso_3166_1 = models.CharField(max_length=50, blank=True, null=True)
+    iso_3166_2 = models.CharField(max_length=50, blank=True, null=True)
     place_class = models.CharField(max_length=200, blank=True, null=True)
     place_type = models.CharField(max_length=200, blank=True, null=True)
-    name = models.CharField(max_length=200, blank=True, null=True)
-    name_en = models.CharField(max_length=200, blank=True, null=True)
-    # endonym - models.BooleanField()
-    mapbox_id = models.PositiveIntegerField(blank=True, null=True)
-    created_by = models.CharField(max_length=50)
+    geo_type = models.CharField(max_length=200, blank=True, null=True)
     created = models.DateField(auto_now_add=True)
+    created_by = models.CharField(max_length=50)
     favorited = models.PositiveIntegerField(blank=True, null=True)
     favorited_by = models.CharField(max_length=200, blank=True, null=True)
     reported = models.CharField(max_length=200, blank=True, null=True)
     reported_by = models.CharField(max_length=200, blank=True, null=True)
 
     def __str__(self):
-        return str(self.id)
+        return self.title + self.iso_3166_1 + self.tpnm_id
 
 
 class Edit(models.Model):
-    id = models.AutoField(primary_key=True)
     article = models.ForeignKey('Article', on_delete=models.CASCADE)
-    # in_language = models.ForeignKey('Language', blank=False, null=True, on_delete=models.SET_NULL)
+    name = models.CharField(max_length=200, blank=False, null=False)
+    in_language = models.CharField(max_length=200, blank=False, null=False)
     from_language = models.CharField(max_length=200, blank=True, null=True)
     content = models.TextField()
+    endonym = models.NullBooleanField()
     reference = models.CharField(max_length=2500, blank=True, null=True)
     reference_url = models.URLField(max_length=200, blank=True, null=True)
+    created = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
     derived_term = models.CharField(max_length=200, blank=True, null=True)
     derived_url = models.URLField(max_length=200, blank=True, null=True)
@@ -41,7 +43,7 @@ class Edit(models.Model):
     username = models.CharField(max_length=200)
 
     def __str__(self):
-        return self.article + ' Edit' + str(self.id)
+        return Article.title + ' Edit' + str(self.id)
 
 
 class Comment(models.Model):
