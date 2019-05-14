@@ -206,12 +206,68 @@
         }
 
         .marker {
-            background-image: url('mapbox-icon.png');
+            background-image: url("{% static "app_tpnm/marker.svg" %}");
             background-size: cover;
             width: 50px;
             height: 50px;
             border-radius: 50%;
             cursor: pointer;
+        }
+
+        .mapboxgl-popup {
+            max-width: 200px;
+        }
+
+        .mapboxgl-popup-content {
+            text-align: center;
+            font-family: 'Open Sans', sans-serif;
+        }
+
+        /* Tooltip container */
+        /* .tooltip {
+            position: relative;
+            display: inline-block;
+            border-bottom: 1px dotted black;
+            /* If you want dots under the hoverable text */
+
+        /* Tooltip text */
+        .marker .tooltip {
+            visibility: hidden;
+            width: 120px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            padding: 5px 0;
+            border-radius: 6px;
+
+            /* Position the tooltip text */
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -60px;
+
+            /* Fade in tooltip */
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        /* Tooltip arrow */
+        .marker .tooltip::after {
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #555 transparent transparent transparent;
+        }
+
+        /* Show the tooltip text when you mouse over the tooltip container */
+        .marker:hover .tooltip {
+            visibility: visible;
+            opacity: 1;
         }
     </style>
 </head>
@@ -606,22 +662,114 @@
             }
         });
 
+        // // Popup works but no marker image
+        // map.on('load', function() {
+        //     map.addLayer({
+        //         "id": "places",
+        //         "type": "symbol",
+        //         "source": {
+        //             "type": "geojson",
+        //             "data": {
+        //                 "type": "FeatureCollection",
+        //                 "features": [{
+        //                     "type": "Feature",
+        //                     "properties": {
+        //                         "description": "<strong>Big Backyard Beach Bash and Wine Fest</strong>",
+        //                         "icon": "marker"
+        //                     },
+        //                     "geometry": {
+        //                         "type": "Point",
+        //                         "coordinates": [-77.090372, 38.881189]
+        //                     }
+        //                 }]
+        //             }
+        //         },
+        //         "layout": {
+        //             "icon-image": "{icon}-15",
+        //             "icon-allow-overlap": true
+        //         }
+        //     });
+        //
+        //     // Create a popup, but don't add it to the map yet.
+        //     var popup = new mapboxgl.Popup({
+        //         closeButton: false,
+        //         closeOnClick: false
+        //     });
+        //
+        //     map.on('mouseenter', 'places', function(e) {
+        //         // Change the cursor style as a UI indicator.
+        //         map.getCanvas().style.cursor = 'pointer';
+        //
+        //         var coordinates = e.features[0].geometry.coordinates.slice();
+        //         var description = e.features[0].properties.description;
+        //
+        //         // Ensure that if the map is zoomed out such that multiple
+        //         // copies of the feature are visible, the popup appears
+        //         // over the copy being pointed to.
+        //         while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
+        //             coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
+        //         }
+        //
+        //         // Populate the popup and set its coordinates
+        //         // based on the feature found.
+        //         popup.setLngLat(coordinates)
+        //             .setHTML(description)
+        //             .addTo(map);
+        //     });
+        //
+        //     map.on('mouseleave', 'places', function() {
+        //         map.getCanvas().style.cursor = '';
+        //         popup.remove();
+        //     });
+        //     map.on('click', 'places', function() {
+        //         alert('Yo')
+        //     });
+        // });
 
+
+        // this works
         var geojson = {
             type: 'FeatureCollection',
             features: [{
                 type: 'Feature',
                 geometry: {
                     type: 'Point',
-                    coordinates: [-77.032, 38.913]
+                    coordinates: [-77.0364761352, 38.89504104818]
                 },
                 properties: {
-                    title: 'Mapbox',
-                    description: 'Washington, D.C.'
+                    title: 'Washington, D.C.',
+                    id: '5928475093845032945'
                 }
             }, ]
         };
 
+        geojson.features.forEach(function(marker) {
+            var markerDiv = document.createElement('div');
+            markerDiv.className = 'marker';
+            var markerHeight = 50,
+                markerRadius = 10,
+                linearOffset = 25;
+            // new mapboxgl.Marker(el)
+            new mapboxgl.Marker(markerDiv, {
+                    offset: [4, -8]
+                })
+                .setLngLat(marker.geometry.coordinates)
+                // .setPopup(new mapboxgl.Popup({
+                //         offset: 25
+                //     })
+                    // .setHTML('<p>' + marker.properties.description + '</p>'))
+                .addTo(map);
+            markerDiv.setAttribute('id', marker.properties.id);
+            var currentMarker = document.getElementById(marker.properties.id);
+            currentMarker.addEventListener('mouseover', console.log('yes'));
+            var tooltip = document.createElement('span');
+            tooltip.className = 'tooltip';
+            tooltip.innerText = marker.properties.title;
+            currentMarker.appendChild(tooltip);
+            currentMarker.addEventListener('click', console.log(marker.properties.id));
+
+
+        });
 
 
         // var geojson_markers = {

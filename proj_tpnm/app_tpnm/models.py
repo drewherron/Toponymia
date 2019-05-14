@@ -47,7 +47,6 @@ class Edit(models.Model):
 
 
 class Comment(models.Model):
-    id = models.AutoField(primary_key=True)
     article = models.ForeignKey('Article', on_delete=models.CASCADE)
     username = models.CharField(max_length=200)
     created = models.DateTimeField(auto_now_add=True)
@@ -60,7 +59,6 @@ class Comment(models.Model):
         return self.article +' '+ self.username +' '+ str(self.created)
 
 class Language(models.Model):
-    id = models.PositiveSmallIntegerField(primary_key=True)
     iso_639_3 = models.CharField(max_length=3)
     name = models.CharField(max_length=200)
 
