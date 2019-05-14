@@ -283,7 +283,7 @@
     <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.0.0/mapbox-gl-geocoder.css' type='text/css' />
     <div id="page-wrapper">
         <div id="header">
-            <img src="{% static "app_tpnm/tpnmlogo2.png" %}" id="header-logo" alt="Toponymia">
+            <img src="{% static "app_tpnm/tpnmlogo.png" %}" id="header-logo" alt="Toponymia">
             <a href="#" class="header-btn">Language</a>
             <a href="#" class="header-btn">Random</a>
             <a href="#" class="header-btn">About</a>
@@ -784,17 +784,18 @@
                 //     })
                 // .setHTML('<p>' + marker.properties.description + '</p>'))
                 .addTo(map);
-            markerDiv.setAttribute('id', marker.properties.id);
-            var currentMarker = document.getElementById(marker.properties.id);
+            var currentMarkerId = marker.properties.id
+            markerDiv.setAttribute('id', currentMarkerId);
+            var currentMarker = document.getElementById(currentMarkerId);
             var tooltip = document.createElement('span');
             tooltip.className = 'tooltip';
             tooltip.innerText = marker.properties.title;
             currentMarker.appendChild(tooltip);
 
-            function logid() {
-                console.log(marker.properties.id)
+            function markerClick() {
+                console.log(currentMarkerId)
             }
-            currentMarker.addEventListener('click', openArticle(marker.properties.id));
+            currentMarker.addEventListener('click', markerClick);
 
 
         });

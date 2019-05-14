@@ -10,7 +10,8 @@ from dal import autocomplete
 def index(request):
     context = {
         #     'MAP_KEY': settings.MAP_KEY,
-        'languages': Language.objects.all()
+        'languages': Language.objects.all(),
+        'articles': Article.objects.all(),
     }
     return render(request, 'app_tpnm/index.html', context)
 
@@ -33,7 +34,7 @@ def save_article(request):
     endonym = request.POST['endonym']
     content = request.POST['form-content']
     reference = request.POST['reference-field']
-    named_id = title + ' : '+str(mapbox_id)
+    named_id = title + ' ('+str(mapbox_id)+')'
     print(request.POST)
     if endonym != 'True':
         endonym = 'False'
