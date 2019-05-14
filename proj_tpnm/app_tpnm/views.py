@@ -33,10 +33,11 @@ def save_article(request):
     endonym = request.POST['endonym']
     content = request.POST['form-content']
     reference = request.POST['reference-field']
+    named_id = title + ' : '+str(mapbox_id)
     print(request.POST)
     if endonym != 'True':
         endonym = 'False'
-    article = Article(tpnm_id=tpnm_id, mapbox_id=mapbox_id, title=title, longitude=longitude, latitude=latitude, place_class=place_class, place_type=place_type, geo_type=geo_type, iso_3166_1=iso_3166_1, iso_3166_2=iso_3166_2)
+    article = Article(tpnm_id=tpnm_id, mapbox_id=mapbox_id, named_id=named_id, title=title, longitude=longitude, latitude=latitude, place_class=place_class, place_type=place_type, geo_type=geo_type, iso_3166_1=iso_3166_1, iso_3166_2=iso_3166_2)
     article.save()
     edit = Edit(article=article, name=name, in_language=in_language, from_language=from_language, endonym=endonym, content=content, reference=reference)
     edit.save()

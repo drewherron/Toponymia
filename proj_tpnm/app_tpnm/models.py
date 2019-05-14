@@ -6,6 +6,7 @@ class Article(models.Model):
     tpnm_id = models.CharField( max_length=500)
     mapbox_id = models.PositiveIntegerField(blank=True, null=True)
     title = models.CharField(max_length=1000)
+    named_id = models.CharField(max_length=1000)
     # coordinates = ArrayField(ArrayField(models.DecimalField(max_digits=22, decimal_places=16)))
     longitude = models.DecimalField(max_digits=22, decimal_places=16, blank=False, null=False)
     latitude = models.DecimalField(max_digits=22, decimal_places=16, blank=False, null=False)

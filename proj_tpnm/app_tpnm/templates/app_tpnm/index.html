@@ -208,6 +208,11 @@
         .marker {
             background-image: url("{% static "app_tpnm/marker.svg" %}");
             background-size: cover;
+            position: absolute;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
             width: 50px;
             height: 50px;
             border-radius: 50%;
@@ -243,8 +248,8 @@
             /* Position the tooltip text */
             position: absolute;
             z-index: 1;
-            bottom: 125%;
-            left: 50%;
+            bottom: 100%;
+            left: 40%;
             margin-left: -60px;
 
             /* Fade in tooltip */
@@ -258,7 +263,7 @@
             position: absolute;
             top: 100%;
             left: 50%;
-            margin-left: -5px;
+            margin-left: -7px;
             border-width: 5px;
             border-style: solid;
             border-color: #555 transparent transparent transparent;
@@ -514,8 +519,8 @@
 
         }
 
-        function openArticle() {
-            function openTab(thisTab) {
+        function openArticle(id) {
+            function openTab(thisTab, id) {
                 document.getElementById("edit").innerText = "Edit"
                 document.getElementById("close-tab").innerText = "Close"
                 tablinks = document.getElementsByClassName("tablink");
@@ -550,9 +555,12 @@
             document.getElementById("history-tab").addEventListener("click", function() {
                 openTab(this.innerText)
             });
-
             // document.getElementById('close-tab').onclick = closeSidebar();
             closeTab.onclick = closeSidebar;
+            function loadArticle(id) {
+                console.log(id)
+            }
+            loadArticle()
         }
         // Toggle button change on click
         var addMarkerMode = false;
@@ -581,7 +589,11 @@
         // Add a marker when map is clicked
         map.on('click', function(e) {
             if (addMarkerMode == true) {
-                var marker = new mapboxgl.Marker()
+                var markerDiv = document.createElement('div');
+                markerDiv.className = 'marker';
+                var marker = new mapboxgl.Marker(markerDiv, {
+                    offset: [9, -18]
+                })
                 var jsonfeatures = map.queryRenderedFeatures(e.point);
                 geoType = jsonfeatures[0]["geometry"]["type"]
                 coordinates = jsonfeatures[0]["geometry"]["coordinates"]
@@ -621,22 +633,35 @@
                         nameField.value = name
                     }
                 }
-                var popup = new mapboxgl.Popup({
-                        offset: 25,
-                        closeButton: false,
-                    })
-                    .setText(title)
+                // var popup = new mapboxgl.Popup({
+                //         offset: 25,
+                //         closeButton: false,
+                //     })
+                //     .setText(title)
                 // if (coordinates.length == 2) {
+                var named_id = title + mapboxId.toString()
+
                 if (typeof title != undefined) {
                     if (jsonfeatures[0]["geometry"]["type"] == "Point") {
                         articleTitle.innerText = title;
                         newArticlePoint(title, coordinates)
                         marker.setLngLat(coordinates)
-                            .setPopup(popup)
+                        // .setPopup(popup)
                         marker.addTo(map);
                         map.flyTo({
                             center: coordinates
                         });
+                        markerDiv.setAttribute('id', named_id);
+                        var currentMarker = document.getElementById(named_id);
+                        var tooltip = document.createElement('span');
+                        tooltip.className = 'tooltip';
+                        tooltip.innerText = title;
+                        currentMarker.appendChild(tooltip);
+
+                        function logid() {
+                            console.log(named_id)
+                        }
+                        currentMarker.addEventListener('click', openArticle(named_id));
                         document.getElementById("close-tab").addEventListener("click", function() {
                             cancelMarker(marker)
                         });
@@ -740,33 +765,46 @@
                     title: 'Washington, D.C.',
                     id: '5928475093845032945'
                 }
+            }, {
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: [-3.810110092163086, 43.4622955069143]
+                },
+                properties: {
+                    title: 'Santander',
+                    id: '983475093845032945'
+                }
             }, ]
         };
 
         geojson.features.forEach(function(marker) {
             var markerDiv = document.createElement('div');
             markerDiv.className = 'marker';
-            var markerHeight = 50,
-                markerRadius = 10,
-                linearOffset = 25;
+            // var markerHeight = 50,
+            //     markerRadius = 10,
+            //     linearOffset = 25;
             // new mapboxgl.Marker(el)
             new mapboxgl.Marker(markerDiv, {
-                    offset: [4, -8]
+                    offset: [8, -18]
                 })
                 .setLngLat(marker.geometry.coordinates)
                 // .setPopup(new mapboxgl.Popup({
                 //         offset: 25
                 //     })
-                    // .setHTML('<p>' + marker.properties.description + '</p>'))
+                // .setHTML('<p>' + marker.properties.description + '</p>'))
                 .addTo(map);
             markerDiv.setAttribute('id', marker.properties.id);
             var currentMarker = document.getElementById(marker.properties.id);
-            currentMarker.addEventListener('mouseover', console.log('yes'));
             var tooltip = document.createElement('span');
             tooltip.className = 'tooltip';
             tooltip.innerText = marker.properties.title;
             currentMarker.appendChild(tooltip);
-            currentMarker.addEventListener('click', console.log(marker.properties.id));
+
+            function logid() {
+                console.log(marker.properties.id)
+            }
+            currentMarker.addEventListener('click', openArticle(marker.properties.id));
 
 
         });
