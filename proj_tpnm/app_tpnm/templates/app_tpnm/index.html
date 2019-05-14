@@ -204,6 +204,15 @@
         #article-button-div {
             margin-bottom: 50px;
         }
+
+        .marker {
+            background-image: url('mapbox-icon.png');
+            background-size: cover;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
     </style>
 </head>
 
@@ -597,18 +606,36 @@
             }
         });
 
-        // For language multiselect
+
+        var geojson = {
+            type: 'FeatureCollection',
+            features: [{
+                type: 'Feature',
+                geometry: {
+                    type: 'Point',
+                    coordinates: [-77.032, 38.913]
+                },
+                properties: {
+                    title: 'Mapbox',
+                    description: 'Washington, D.C.'
+                }
+            }, ]
+        };
+
+
+
         // var geojson_markers = {
-        // type: 'FeatureCollection',
-        // features: [{%
-        //             for i in marker_locations %
+        //     type: 'FeatureCollection',
+        //     features: [{
+        //             %
+        //             for marker in marker_locations %
         //         } {
         //             type: 'Feature',
         //             geometry: {
         //                 type: 'Point',
         //                 coordinates: [{
         //                         {
-        //                             i.coord_h
+        //                             .coord_h
         //                         }
         //                     },
         //                     {
