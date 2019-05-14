@@ -103,7 +103,7 @@
         }
 
         #features {
-            /* visibility: hidden; */
+            visibility: hidden;
             position: absolute;
             top: 12%;
             right: 0;
@@ -283,7 +283,7 @@
     <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.0.0/mapbox-gl-geocoder.css' type='text/css' />
     <div id="page-wrapper">
         <div id="header">
-            <img src="{% static "app_tpnm/tpnmlogo1.png" %}" id="header-logo" alt="Toponymia">
+            <img src="{% static "app_tpnm/tpnmlogo2.png" %}" id="header-logo" alt="Toponymia">
             <a href="#" class="header-btn">Language</a>
             <a href="#" class="header-btn">Random</a>
             <a href="#" class="header-btn">About</a>
@@ -478,7 +478,7 @@
         }
 
         function cancelMarker(marker) {
-            // marker.remove();
+            marker.remove();
             closeSidebar();
             console.log('cancelMarker')
         }
@@ -557,10 +557,6 @@
             });
             // document.getElementById('close-tab').onclick = closeSidebar();
             closeTab.onclick = closeSidebar;
-            function loadArticle(id) {
-                console.log(id)
-            }
-            loadArticle()
         }
         // Toggle button change on click
         var addMarkerMode = false;
@@ -639,7 +635,7 @@
                 //     })
                 //     .setText(title)
                 // if (coordinates.length == 2) {
-                var named_id = title + mapboxId.toString()
+                var named_id = title +' ('+ mapboxId.toString()+')'
 
                 if (typeof title != undefined) {
                     if (jsonfeatures[0]["geometry"]["type"] == "Point") {
@@ -755,27 +751,21 @@
         // this works
         var geojson = {
             type: 'FeatureCollection',
-            features: [{
-                type: 'Feature',
+            features: [{% for article in articles %}
+                {
+                type: '{{ article.place_type }}',
                 geometry: {
-                    type: 'Point',
-                    coordinates: [-77.0364761352, 38.89504104818]
+                    type: '{{ article.geo_type }}',
+                    coordinates: [{{ article.longitude }}, {{ article.latitude }}]
                 },
                 properties: {
-                    title: 'Washington, D.C.',
-                    id: '5928475093845032945'
+                    class: '{{ article.place_class }}',
+                    title: '{{ article.title }}',
+                    id: '{{ article.tpnm_id }}',
+                    named_id: '{{ article.named_id }}'
                 }
-            }, {
-                type: 'Feature',
-                geometry: {
-                    type: 'Point',
-                    coordinates: [-3.810110092163086, 43.4622955069143]
-                },
-                properties: {
-                    title: 'Santander',
-                    id: '983475093845032945'
-                }
-            }, ]
+            },
+        {% endfor %} ]
         };
 
         geojson.features.forEach(function(marker) {
