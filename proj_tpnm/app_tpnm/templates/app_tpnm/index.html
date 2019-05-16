@@ -659,17 +659,17 @@
                         map.flyTo({
                             center: coordinates
                         });
-                        markerDiv.setAttribute('id', named_id);
-                        var currentMarker = document.getElementById(named_id);
+                        markerDiv.setAttribute('id', tpnmId);
+                        var currentMarker = document.getElementById(tpnmId);
                         var tooltip = document.createElement('span');
                         tooltip.className = 'tooltip';
                         tooltip.innerText = title;
                         currentMarker.appendChild(tooltip);
 
                         function logid() {
-                            console.log(named_id)
+                            console.log(tpnmId)
                         }
-                        currentMarker.addEventListener('click', openArticle(named_id));
+                        currentMarker.addEventListener('click', openArticle(tpnmId));
                         document.getElementById("close-tab").addEventListener("click", function() {
                             cancelMarker(marker)
                         });
@@ -773,7 +773,7 @@
                 properties: {
                     class: '{{ article.place_class }}',
                     title: '{{ article.title }}',
-                    id: '{{ article.tpnm_id }}',
+                    tpnm_id: '{{ article.tpnm_id }}',
                     named_id: '{{ article.named_id }}'
                 }
             },
@@ -796,7 +796,7 @@
                 //     })
                 // .setHTML('<p>' + marker.properties.description + '</p>'))
                 .addTo(map);
-            var currentMarkerId = marker.properties.named_id
+            var currentMarkerId = marker.properties.tpnm_id
             markerDiv.setAttribute('id', currentMarkerId);
             var currentMarker = document.getElementById(currentMarkerId);
             var tooltip = document.createElement('span');
@@ -807,7 +807,7 @@
             function markerClick() {
                 console.log(currentMarkerId)
                 let data = {
-                    named_id: currentMarkerId
+                    tpnm_id: currentMarkerId
                 }
                 let config = {
                     headers: {
@@ -818,7 +818,11 @@
                     console.log(response.data)
                     // get_todos()
                 })
-            }
+
+                // axios.get('{% url 'app_tpnm:get_article' %}').then(function(response) {
+                //     console.log(response.data)
+                // });
+            };
             currentMarker.addEventListener('click', markerClick);
 
 

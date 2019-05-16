@@ -15,17 +15,30 @@ def index(request):
     }
     return render(request, 'app_tpnm/index.html', context)
 
+
 def get_article(request):
-    print(request.GET)
-    # data = {'todos': []}
-    # articles = Article.objects.all()
-    # edit = Edit.objects.all()
-    # for todo_item in todo_items:
-    #     data['todos'].append({
-    #         'text': todo_item.text
-    #     })
     data = json.loads(request.body)
-    return JsonResponse(data)
+    # current_id = data['id']
+    article = Article.objects.get(tpnm_id=data['tpnm_id'])
+    jsondata = {
+        'type': 'FeatureCollection',
+        'features': [{
+                'type': article.place_type,
+                'geometry': {
+                    'type': article.geo_type,
+                    'coordinates': [article.longitude, article.latitude]
+                },
+            'properties': {
+                    'class': article.place_class,
+                    'title': article.title,
+                    'tpnm_id': article.tpnm_id,
+                    'named_id': article.named_id
+            }
+        },
+        ]}
+
+    return JsonResponse(jsondata)
+
 
 def save_article(request):
     tpnm_id = request.POST['tpnm-id-field']
@@ -45,13 +58,16 @@ def save_article(request):
     endonym = request.POST['endonym']
     content = request.POST['form-content']
     reference = request.POST['reference-field']
-    named_id = title + ' id:'+str(mapbox_id)
+    named_id = title + ' id:' + str(mapbox_id)
     print(request.POST)
-    article = Article(tpnm_id=tpnm_id, mapbox_id=mapbox_id, named_id=named_id, title=title, longitude=longitude, latitude=latitude, place_class=place_class, place_type=place_type, geo_type=geo_type, iso_3166_1=iso_3166_1, iso_3166_2=iso_3166_2)
+    article = Article(tpnm_id=tpnm_id, mapbox_id=mapbox_id, named_id=named_id, title=title, longitude=longitude, latitude=latitude,
+                      place_class=place_class, place_type=place_type, geo_type=geo_type, iso_3166_1=iso_3166_1, iso_3166_2=iso_3166_2)
     article.save()
-    edit = Edit(article=article, name=name, in_language=in_language, from_language=from_language, endonym=endonym, content=content, reference=reference)
+    edit = Edit(article=article, name=name, in_language=in_language,
+                from_language=from_language, endonym=endonym, content=content, reference=reference)
     edit.save()
     return HttpResponseRedirect(reverse('app_tpnm:index'))
+
 
 def about(request):
     context = {
