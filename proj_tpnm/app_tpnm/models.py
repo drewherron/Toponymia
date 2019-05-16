@@ -23,7 +23,7 @@ class Article(models.Model):
     reported_by = models.CharField(max_length=200, blank=True, null=True)
 
     def __str__(self):
-        return self.title + self.iso_3166_1 + self.tpnm_id
+        return self.title + ' ' + self.tpnm_id
 
 
 class Edit(models.Model):
