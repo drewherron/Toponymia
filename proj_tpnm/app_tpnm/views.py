@@ -31,8 +31,11 @@ def get_article(request):
             'properties': {
                     'class': article.place_class,
                     'title': article.title,
+                    'iso_3166_1': article.iso_3166_1,
                     'tpnm_id': article.tpnm_id,
-                    'named_id': article.named_id
+                    'named_id': article.named_id,
+                    'created': article.created,
+                    'created_by': article.created_by
             }
         },
         ]}

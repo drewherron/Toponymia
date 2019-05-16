@@ -10,7 +10,7 @@
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css' rel='stylesheet' />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
-    <link rel="icon" href="{% static "app_tpnm/tpnmicon.png" %}">
+    <link rel="icon" href="{% static "app_tpnm/favicon.ico" %}">
 </script>
     <script>
         $(document).ready(function() {
@@ -532,6 +532,8 @@
         }
 
         function openArticle(id) {
+            // console.log(id)
+            // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
             function openTab(thisTab) {
                 document.getElementById("edit").innerText = "Edit"
                 document.getElementById("close-tab").innerText = "Close"
@@ -543,7 +545,7 @@
                 let activeTab = document.getElementById(thisTab.toLowerCase() + "-tab");
                 activeTab.style.backgroundColor = 'white';
                 activeTab.style.color = 'black';
-                console.log(activeTab)
+                // console.log(activeTab.id)
                 sidebarContent = document.getElementsByClassName("sidebar-content");
                 for (let i = 0; i < sidebarContent.length; i++) {
                     sidebarContent[i].style.display = "none";
@@ -569,6 +571,9 @@
             });
             // document.getElementById('close-tab').onclick = closeSidebar();
             closeTab.onclick = closeSidebar;
+            openTab("article");
+            
+            openSidebar();
         }
         // Toggle button change on click
         var addMarkerMode = false;
@@ -765,16 +770,16 @@
             type: 'FeatureCollection',
             features: [{% for article in articles %}
                 {
-                type: '{{ article.place_type }}',
+                // type: '{{ article.place_type }}',
                 geometry: {
-                    type: '{{ article.geo_type }}',
+                    // type: '{{ article.geo_type }}',
                     coordinates: [{{ article.longitude }}, {{ article.latitude }}]
                 },
                 properties: {
-                    class: '{{ article.place_class }}',
+                    // class: '{{ article.place_class }}',
                     title: '{{ article.title }}',
                     tpnm_id: '{{ article.tpnm_id }}',
-                    named_id: '{{ article.named_id }}'
+                    // named_id: '{{ article.named_id }}'
                 }
             },
         {% endfor %} ]
@@ -783,18 +788,10 @@
         geojson.features.forEach(function(marker) {
             var markerDiv = document.createElement('div');
             markerDiv.className = 'marker';
-            // var markerHeight = 50,
-            //     markerRadius = 10,
-            //     linearOffset = 25;
-            // new mapboxgl.Marker(el)
             new mapboxgl.Marker(markerDiv, {
                     offset: [8, -18]
                 })
                 .setLngLat(marker.geometry.coordinates)
-                // .setPopup(new mapboxgl.Popup({
-                //         offset: 25
-                //     })
-                // .setHTML('<p>' + marker.properties.description + '</p>'))
                 .addTo(map);
             var currentMarkerId = marker.properties.tpnm_id
             markerDiv.setAttribute('id', currentMarkerId);
@@ -804,8 +801,7 @@
             tooltip.innerText = marker.properties.title;
             currentMarker.appendChild(tooltip);
 
-            function markerClick() {
-                console.log(currentMarkerId)
+            function getArticle() {
                 let data = {
                     tpnm_id: currentMarkerId
                 }
@@ -816,104 +812,14 @@
                 }
                 axios.post('{% url 'app_tpnm:get_article' %}', data, config).then(function(response) {
                     console.log(response.data)
-                    // get_todos()
+                    return response.data
                 })
-
-                // axios.get('{% url 'app_tpnm:get_article' %}').then(function(response) {
-                //     console.log(response.data)
-                // });
             };
-            currentMarker.addEventListener('click', markerClick);
-
-
+            currentMarker.addEventListener('click', getArticle);
+            currentMarker.addEventListener('click', function() {
+                openArticle(currentMarkerId)
+            });
         });
-
-
-        // var geojson_markers = {
-        //     type: 'FeatureCollection',
-        //     features: [{
-        //             %
-        //             for marker in marker_locations %
-        //         } {
-        //             type: 'Feature',
-        //             geometry: {
-        //                 type: 'Point',
-        //                 coordinates: [{
-        //                         {
-        //                             .coord_h
-        //                         }
-        //                     },
-        //                     {
-        //                         {
-        //                             i.coord_v
-        //                         }
-        //                     }
-        //                 ]
-        //             },
-        //             properties: {
-        //                 title: '{{ i.name }}',
-        //                 description: '{{ i.status }}'
-        //             }
-        //         },
-        //         {
-        //             %
-        //             endfor %
-        //         }
-        //     ]
-        // };
-        //
-        // // add markers to map
-        // geojson_markers.features.forEach(function(marker) {
-        //
-        //     // create a HTML element for each feature
-        //     var el = document.createElement('div');
-        //     el.className = 'marker-light-red';
-        //
-        //     new mapboxgl.Marker(el)
-        //         .setLngLat(marker.geometry.coordinates)
-        //         .setPopup(new mapboxgl.Popup({
-        //                 offset: 25
-        //             }) // add popups
-        //             .setHTML('<h3>' + marker.properties.title + '</h3><p>' + marker.properties.description + '</p>'))
-        //         .addTo(map);
-        // });
-        //
-        //for popups
-        // map.on('load', function() {
-        //
-        //     // Create a popup, but don't add it to the map yet.
-        //     var popup = new mapboxgl.Popup({
-        //         closeButton: false,
-        //         closeOnClick: false
-        //     });
-        //
-        //     function showPopup(e) {
-        //         // Updates the cursor to a hand (interactivity)
-        //         map.getCanvas().style.cursor = 'pointer';
-        //
-        //         // Show the popup at the coordinates with some data
-        //         popup.setLngLat(e.features[0].geometry.coordinates)
-        //             .setHTML(checkEmpty(e.features[0].properties.name))
-        //             .addTo(map);
-        //     }
-        //
-        //     function hidePopup() {
-        //         map.getCanvas().style.cursor = '';
-        //         popup.remove();
-        //     }
-        //
-        //     function checkEmpty(info) {
-        //         return (info) ? info : "No data";
-        //     }
-        //
-        //     // CHANGE: Add layer names that need to be interactive
-        //
-        //     map.on('mouseenter', 'hospitals', showPopup);
-        //     map.on('mouseleave', 'hospitals', hidePopup);
-        //
-        //     map.on('mouseenter', 'clinics', showPopup);
-        //     map.on('mouseleave', 'clinics', hidePopup);
-        // });
     </script>
 
 </body>
