@@ -15,7 +15,7 @@ class Article(models.Model):
     place_class = models.CharField(max_length=200, blank=True, null=True)
     place_type = models.CharField(max_length=200, blank=True, null=True)
     geo_type = models.CharField(max_length=200, blank=True, null=True)
-    created = models.DateField(auto_now_add=True)
+    created = models.DateTimeField(auto_now_add=True)
     created_by = models.CharField(max_length=50)
     favorited = models.PositiveIntegerField(blank=True, null=True)
     favorited_by = models.CharField(max_length=200, blank=True, null=True)
