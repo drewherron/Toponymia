@@ -30,7 +30,9 @@ class Edit(models.Model):
     article = models.ForeignKey('Article', on_delete=models.CASCADE)
     name = models.CharField(max_length=200, blank=False, null=False)
     in_language = models.CharField(max_length=200, blank=False, null=False)
-    from_language = models.CharField(max_length=200, blank=True, null=True)
+    # from_language = models.CharField(max_length=200, blank=True, null=True)
+    from_language = ArrayField(
+        models.CharField(max_length=3, blank=True), default=list, size=5, null=True, blank=True)
     content = models.TextField()
     endonym = models.NullBooleanField()
     reference = models.CharField(max_length=2500, blank=True, null=True)
@@ -44,7 +46,7 @@ class Edit(models.Model):
     username = models.CharField(max_length=200)
 
     def __str__(self):
-        return Article.title + ' Edit' + str(self.id)
+        return self.article.title + ' Edit' + str(self.id)
 
 
 class Comment(models.Model):

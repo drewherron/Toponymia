@@ -1,10 +1,10 @@
 from django.shortcuts import render, reverse
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.conf import settings
 from django.urls import reverse
 from .models import Article, Edit, Comment, Language
 import json
-from dal import autocomplete
+# from dal import autocomplete
 
 
 def index(request):
@@ -15,6 +15,17 @@ def index(request):
     }
     return render(request, 'app_tpnm/index.html', context)
 
+def get_article(request):
+    print(request.GET)
+    # data = {'todos': []}
+    # articles = Article.objects.all()
+    # edit = Edit.objects.all()
+    # for todo_item in todo_items:
+    #     data['todos'].append({
+    #         'text': todo_item.text
+    #     })
+    data = json.loads(request.body)
+    return JsonResponse(data)
 
 def save_article(request):
     tpnm_id = request.POST['tpnm-id-field']
@@ -30,27 +41,30 @@ def save_article(request):
     iso_3166_2 = request.POST['iso-3166-2-field']
     name = request.POST['name-field']
     in_language = request.POST['inLanguage']
-    from_language = request.POST['sourceLanguage']
+    from_language = request.POST.getlist('sourceLanguage')
     endonym = request.POST['endonym']
     content = request.POST['form-content']
     reference = request.POST['reference-field']
-    named_id = title + ' ('+str(mapbox_id)+')'
+    named_id = title + ' id:'+str(mapbox_id)
     print(request.POST)
-    if endonym != 'True':
-        endonym = 'False'
     article = Article(tpnm_id=tpnm_id, mapbox_id=mapbox_id, named_id=named_id, title=title, longitude=longitude, latitude=latitude, place_class=place_class, place_type=place_type, geo_type=geo_type, iso_3166_1=iso_3166_1, iso_3166_2=iso_3166_2)
     article.save()
     edit = Edit(article=article, name=name, in_language=in_language, from_language=from_language, endonym=endonym, content=content, reference=reference)
     edit.save()
     return HttpResponseRedirect(reverse('app_tpnm:index'))
 
+def about(request):
+    context = {
+    }
+    return render(request, 'app_tpnm/about.html', context)
 
-class LanguageAutocomplete(autocomplete.Select2QuerySetView):
-    def get_queryset(self):
 
-        qs = Language.objects.all()
-
-        if self.q:
-            qs = qs.filter(name__icontains=self.q)
-
-        return qs
+# class LanguageAutocomplete(autocomplete.Select2QuerySetView):
+#     def get_queryset(self):
+#
+#         qs = Language.objects.all()
+#
+#         if self.q:
+#             qs = qs.filter(name__icontains=self.q)
+#
+#         return qs

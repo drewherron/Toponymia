@@ -4,23 +4,17 @@
     <meta charset='utf-8' />
     <title>Toponymia</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
-    {% load static %}
     <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
     <script src='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.js'></script>
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css' rel='stylesheet' />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
-    <link rel="icon" href="{% static "app_tpnm/tpnmicon.png" %}">
-</script>
     <script>
         $(document).ready(function() {
             $('.lang-multiselect').select2();
-            $('.lang-singleselect').select2();
         });
-        // $(document).ready(function() {
-        // });
-</script>
     </script>
+    {% load static %}
     <style>
         body {
             margin: 0;
@@ -120,7 +114,7 @@
         }
 
         #sidebar {
-            position: relative;
+            position: fixed;
             display: flex;
             flex-direction: column;
             flex-shrink: 1;
@@ -133,16 +127,6 @@
             overflow: hidden;
             white-space: nowrap;
             border-right: 2px solid gray;
-        }
-
-        .sidebar-content {
-            position: absolute;
-            top: 40px;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            overflow: auto;
-            z-index: 9
         }
 
         #sidebar h1 {
@@ -173,8 +157,6 @@
         } */
 
         #tabbar {
-            /* position: absolute; */
-            z-index: 10;
             display: flex;
             flex-direction: row;
             word-wrap: normal;
@@ -217,11 +199,6 @@
 
         form * {
             margin: 5px;
-        }
-
-        .form-div {
-            margin: auto;
-            height: auto;
         }
 
         #article-button-div {
@@ -309,12 +286,12 @@
             <img src="{% static "app_tpnm/tpnmlogo.png" %}" id="header-logo" alt="Toponymia">
             <a href="#" class="header-btn">Language</a>
             <a href="#" class="header-btn">Random</a>
-            <a href="{% url 'app_tpnm:about' %}" class="header-btn">About</a>
+            <a href="#" class="header-btn">About</a>
             <a href="#" class="header-btn">Login</a>
         </div>
         <div id='content-wrapper'>
             <div id="sidebar">
-                <div id="tabbar">
+                <div class="tabbar">
                     <button class="tablink" id="article-tab">Article</button>
                     <button class="tablink" id="talk-tab">Talk</button>
                     <button class="tablink" id="edit-tab">Edit</button>
@@ -338,41 +315,9 @@
                     <div class="new-article">
                         <form action="/save_article/" method="post">
                             {% csrf_token %}
-                            <div class="form-div">
+                            <div>
                                 <label for="name-field">Name:</label>
                                 <input type="text" id="name-field" name="name-field" value="undefined" required>
-                            </div>
-                            <div class="form-div">
-                                <label for="inLanguageDropdown">Create entry for which language</label>
-                                <!-- <select class="inLanguageDropdown" name="inLanguage" required> -->
-                                <select class="lang-singleselect" id="inLanguageDropdown" name="inLanguage" required>
-                                    {% for language in languages %}
-                                    <option value="{{ language.iso_639_3 }}">{{ language.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-div">
-                                <label for="sourceLanguageDropdown">Source language(s)</label>
-                                <select class="lang-multiselect" id="sourceLanguageDropdown" name="sourceLanguage" multiple="multiple" required>
-                                    {% for language in languages %}
-                                    <option value="{{ language.iso_639_3 }}">{{ language.name }}</option>
-                                    {% endfor %}
-                                </select>
-                                <label for="endonymDropdown">Endonym: </label>
-                                <select class="endonymDropdown" name="endonym">
-                                    <option value="True">True</option>
-                                    <option value="False">False</option>
-                                </select>
-                                <!-- span id="endonym-question"style='font-size:10px;'>&#10067;</span--><br>
-                                <textarea name="form-content" rows="8" cols="80" required></textarea>
-                            </div>
-                            <div class="form-div">
-                                <label for="reference-field">Reference(s):</label>
-                                <input type="url" class="reference-field" name="reference-field" placeholder="Enter URL">
-                            </div>
-                            <div class="form-div" id="article-button-div">
-                                <button type="button" id="addAnotherBtn">Add Another</button>
-                                <button type="submit">Submit</button>
                             </div>
                             <div>
                                 <input type="hidden" id="title-field" name="title-field" value="undefined">
@@ -387,6 +332,50 @@
                                 <input type="hidden" id="iso-3166-1-field" name="iso-3166-1-field" value="undefined">
                                 <input type="hidden" id="iso-3166-2-field" name="iso-3166-2-field" value="undefined">
                                 <input type="hidden" id="geo-type-field" name="geo-type-field" value="undefined">
+                            </div>
+                            <div>
+                                <label for="inLanguageDropdown">Create entry for which language</label>
+                                <select class="inLanguageDropdown" name="inLanguage" required>
+                                    <!-- <select class="lang-multiselect" id="inLanguageDropdown" name="inLanguage" required>
+                                    {% for language in languages %}
+                                    <option value>{{ language.name }}</option>
+                                    {% endfor %} -->
+                                    <option value="English">English</option>
+                                    <option value="Spanish">Spanish</option>
+                                    <option value="German">German</option>
+                                    <option value="Dutch">French</option>
+                                    <option value="Dutch">Dutch</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="sourceLanguageDropdown">Source language(s)</label>
+                                <select class="sourceLanguageDropdown" name="sourceLanguage" required>
+                                    <!-- <select class="lang-multiselect" id="sourceLanguageDropdown" name="sourceLanguage" multiple="multiple" required>
+                                    {% for language in languages %}
+                                    <option value>{{ language.name }}</option>
+                                    {% endfor %} -->
+                                    <option value="English">English</option>
+                                    <option value="Spanish">Spanish</option>
+                                    <option value="German">German</option>
+                                    <option value="Dutch">French</option>
+                                    <option value="Dutch">Dutch</option>
+
+                                </select>
+                                <label for="endonymDropdown">Endonym: </label>
+                                <select class="endonymDropdown" name="endonym">
+                                    <option value="True">True</option>
+                                    <option value="False">False</option>
+                                </select>
+                                <!-- span id="endonym-question"style='font-size:10px;'>&#10067;</span--><br>
+                                <textarea name="form-content" rows="8" cols="80" required></textarea>
+                            </div>
+                            <div>
+                                <label for="reference-field">Reference(s):</label>
+                                <input type="url" class="reference-field" name="reference-field" placeholder="Enter URL">
+                            </div>
+                            <div id="article-button-div">
+                                <button type="button" id="addAnotherBtn">Add Another</button>
+                                <button type="submit">Submit</button>
                             </div>
                         </form>
                     </div>
@@ -458,6 +447,7 @@
             windowWidth = window.outerWidth;
             sidebar.style.width = "800px";
             sidebar.style.maxWidth = "windowWidth";
+            sidebar.style.height = '100%'
             document.getElementById("map").style.marginLeft = "20%";
         }
 
@@ -524,37 +514,34 @@
             }
 
             coordField.value = coordinates;
-            $('.lang-singleselect').val(null).trigger('change');
-            $('.lang-multiselect').val(null).trigger('change');
+
             openSidebar();
             markerToggleOff();
 
         }
 
-        function openArticle(id) {
-            function openTab(thisTab) {
-                document.getElementById("edit").innerText = "Edit"
-                document.getElementById("close-tab").innerText = "Close"
-                tablinks = document.getElementsByClassName("tablink");
-                for (let i = 0; i < tablinks.length; i++) {
-                    tablinks[i].style.backgroundColor = '#555';
-                    tablinks[i].style.color = 'white';
-                }
-                let activeTab = document.getElementById(thisTab.toLowerCase() + "-tab");
-                activeTab.style.backgroundColor = 'white';
-                activeTab.style.color = 'black';
-                console.log(activeTab)
-                sidebarContent = document.getElementsByClassName("sidebar-content");
-                for (let i = 0; i < sidebarContent.length; i++) {
-                    sidebarContent[i].style.display = "none";
-                    // sidebarContent[i].style.visibility = 'hidden';
-                }
-                let activeContent = document.getElementById(thisTab.toLowerCase());
-                // activeContent.style.visibility = 'visible';
-                activeContent.style.display = 'block';
-                activeContent.style.height = '100%';
+        function openTab(thisTab) {
+            document.getElementById("edit").innerText = "Edit"
+            document.getElementById("close-tab").innerText = "Close"
+            tablinks = document.getElementsByClassName("tablink");
+            for (let i = 0; i < tablinks.length; i++) {
+                tablinks[i].style.backgroundColor = '#555';
+                tablinks[i].style.color = 'white';
             }
-
+            let activeTab = document.getElementById(thisTab.toLowerCase() + "-tab");
+            activeTab.style.backgroundColor = 'white';
+            activeTab.style.color = 'black';
+            sidebarContent = document.getElementsByClassName("sidebar-content");
+            for (let i = 0; i < sidebarContent.length; i++) {
+                sidebarContent[i].style.display = "none";
+                // sidebarContent[i].style.visibility = 'hidden';
+            }
+            let activeContent = document.getElementById(thisTab.toLowerCase());
+            // activeContent.style.visibility = 'visible';
+            activeContent.style.display = 'block';
+            activeContent.style.height = '100%';
+        }
+        function resetTabs() {
             document.getElementById("article-tab").addEventListener("click", function() {
                 openTab(this.innerText)
             });
@@ -569,6 +556,16 @@
             });
             // document.getElementById('close-tab').onclick = closeSidebar();
             closeTab.onclick = closeSidebar;
+        }
+
+        function openArticle(articleId) {
+            for (let i = 0; i < articleTitle.length; i++) {
+                articleTitle.innerText = articleId;
+            }
+            resetTabs();
+            console.log(articleId);
+            openTab('article')
+            openSidebar();
         }
         // Toggle button change on click
         var addMarkerMode = false;
@@ -652,7 +649,7 @@
                 if (typeof title != undefined) {
                     if (jsonfeatures[0]["geometry"]["type"] == "Point") {
                         articleTitle.innerText = title;
-                        newArticlePoint(title, coordinates)
+                        newArticlePoint(title, coordinates, mapboxId)
                         marker.setLngLat(coordinates)
                         // .setPopup(popup)
                         marker.addTo(map);
@@ -695,72 +692,6 @@
             }
         });
 
-        // // Popup works but no marker image
-        // map.on('load', function() {
-        //     map.addLayer({
-        //         "id": "places",
-        //         "type": "symbol",
-        //         "source": {
-        //             "type": "geojson",
-        //             "data": {
-        //                 "type": "FeatureCollection",
-        //                 "features": [{
-        //                     "type": "Feature",
-        //                     "properties": {
-        //                         "description": "<strong>Big Backyard Beach Bash and Wine Fest</strong>",
-        //                         "icon": "marker"
-        //                     },
-        //                     "geometry": {
-        //                         "type": "Point",
-        //                         "coordinates": [-77.090372, 38.881189]
-        //                     }
-        //                 }]
-        //             }
-        //         },
-        //         "layout": {
-        //             "icon-image": "{icon}-15",
-        //             "icon-allow-overlap": true
-        //         }
-        //     });
-        //
-        //     // Create a popup, but don't add it to the map yet.
-        //     var popup = new mapboxgl.Popup({
-        //         closeButton: false,
-        //         closeOnClick: false
-        //     });
-        //
-        //     map.on('mouseenter', 'places', function(e) {
-        //         // Change the cursor style as a UI indicator.
-        //         map.getCanvas().style.cursor = 'pointer';
-        //
-        //         var coordinates = e.features[0].geometry.coordinates.slice();
-        //         var description = e.features[0].properties.description;
-        //
-        //         // Ensure that if the map is zoomed out such that multiple
-        //         // copies of the feature are visible, the popup appears
-        //         // over the copy being pointed to.
-        //         while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-        //             coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-        //         }
-        //
-        //         // Populate the popup and set its coordinates
-        //         // based on the feature found.
-        //         popup.setLngLat(coordinates)
-        //             .setHTML(description)
-        //             .addTo(map);
-        //     });
-        //
-        //     map.on('mouseleave', 'places', function() {
-        //         map.getCanvas().style.cursor = '';
-        //         popup.remove();
-        //     });
-        //     map.on('click', 'places', function() {
-        //         alert('Yo')
-        //     });
-        // });
-
-
-        // this works
         var geojson = {
             type: 'FeatureCollection',
             features: [{% for article in articles %}
@@ -783,18 +714,10 @@
         geojson.features.forEach(function(marker) {
             var markerDiv = document.createElement('div');
             markerDiv.className = 'marker';
-            // var markerHeight = 50,
-            //     markerRadius = 10,
-            //     linearOffset = 25;
-            // new mapboxgl.Marker(el)
             new mapboxgl.Marker(markerDiv, {
                     offset: [8, -18]
                 })
                 .setLngLat(marker.geometry.coordinates)
-                // .setPopup(new mapboxgl.Popup({
-                //         offset: 25
-                //     })
-                // .setHTML('<p>' + marker.properties.description + '</p>'))
                 .addTo(map);
             var currentMarkerId = marker.properties.named_id
             markerDiv.setAttribute('id', currentMarkerId);
@@ -805,111 +728,10 @@
             currentMarker.appendChild(tooltip);
 
             function markerClick() {
-                console.log(currentMarkerId)
-                let data = {
-                    named_id: currentMarkerId
-                }
-                let config = {
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    }
-                }
-                axios.post('{% url 'app_tpnm:get_article' %}', data, config).then(function(response) {
-                    console.log(response.data)
-                    // get_todos()
-                })
+                openArticle(currentMarkerId)
             }
             currentMarker.addEventListener('click', markerClick);
-
-
         });
-
-
-        // var geojson_markers = {
-        //     type: 'FeatureCollection',
-        //     features: [{
-        //             %
-        //             for marker in marker_locations %
-        //         } {
-        //             type: 'Feature',
-        //             geometry: {
-        //                 type: 'Point',
-        //                 coordinates: [{
-        //                         {
-        //                             .coord_h
-        //                         }
-        //                     },
-        //                     {
-        //                         {
-        //                             i.coord_v
-        //                         }
-        //                     }
-        //                 ]
-        //             },
-        //             properties: {
-        //                 title: '{{ i.name }}',
-        //                 description: '{{ i.status }}'
-        //             }
-        //         },
-        //         {
-        //             %
-        //             endfor %
-        //         }
-        //     ]
-        // };
-        //
-        // // add markers to map
-        // geojson_markers.features.forEach(function(marker) {
-        //
-        //     // create a HTML element for each feature
-        //     var el = document.createElement('div');
-        //     el.className = 'marker-light-red';
-        //
-        //     new mapboxgl.Marker(el)
-        //         .setLngLat(marker.geometry.coordinates)
-        //         .setPopup(new mapboxgl.Popup({
-        //                 offset: 25
-        //             }) // add popups
-        //             .setHTML('<h3>' + marker.properties.title + '</h3><p>' + marker.properties.description + '</p>'))
-        //         .addTo(map);
-        // });
-        //
-        //for popups
-        // map.on('load', function() {
-        //
-        //     // Create a popup, but don't add it to the map yet.
-        //     var popup = new mapboxgl.Popup({
-        //         closeButton: false,
-        //         closeOnClick: false
-        //     });
-        //
-        //     function showPopup(e) {
-        //         // Updates the cursor to a hand (interactivity)
-        //         map.getCanvas().style.cursor = 'pointer';
-        //
-        //         // Show the popup at the coordinates with some data
-        //         popup.setLngLat(e.features[0].geometry.coordinates)
-        //             .setHTML(checkEmpty(e.features[0].properties.name))
-        //             .addTo(map);
-        //     }
-        //
-        //     function hidePopup() {
-        //         map.getCanvas().style.cursor = '';
-        //         popup.remove();
-        //     }
-        //
-        //     function checkEmpty(info) {
-        //         return (info) ? info : "No data";
-        //     }
-        //
-        //     // CHANGE: Add layer names that need to be interactive
-        //
-        //     map.on('mouseenter', 'hospitals', showPopup);
-        //     map.on('mouseleave', 'hospitals', hidePopup);
-        //
-        //     map.on('mouseenter', 'clinics', showPopup);
-        //     map.on('mouseleave', 'clinics', hidePopup);
-        // });
     </script>
 
 </body>
