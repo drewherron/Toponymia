@@ -456,6 +456,7 @@
 
         // Opens sidebar
         function openSidebar() {
+            console.log('openSidebar')
             windowWidth = window.outerWidth;
             sidebar.style.width = "800px";
             sidebar.style.maxWidth = "windowWidth";
@@ -465,6 +466,7 @@
         // Closes sidebar
 
         function closeSidebar() {
+            console.log('closeSidebar')
             document.getElementById("sidebar").style.width = "0";
             document.getElementById("map").style.marginLeft = "0";
             // sidebar.style.width = "0";
@@ -495,12 +497,59 @@
             console.log('cancelMarker')
         }
 
-        function newArticlePoint(title, coordinates, mapboxId) {
+        var listentime = function() {
+            openTab(this.innerText)
+        }
+
+        function addTabListeners() {
+            console.log('addTabListeners')
+            document.getElementById("article-tab").addEventListener("click", listentime);
+            document.getElementById("talk-tab").addEventListener("click", listentime);
+            document.getElementById("edit-tab").addEventListener("click", listentime);
+            document.getElementById("history-tab").addEventListener("click", listentime);
+        }
+
+        function removeTabListeners() {
+            console.log('removeTabListeners')
+
+            document.getElementById("article-tab").removeEventListener("click", listentime);
+            document.getElementById("talk-tab").removeEventListener("click", listentime);
+            document.getElementById("edit-tab").removeEventListener("click", listentime);
+            document.getElementById("history-tab").removeEventListener("click", listentime);
+        }
+
+        function openTab(thisTab) {
+            console.log('openTab')
+            // Resets tabs and allows click to navigate. Only really needed within openArticle()
             tablinks = document.getElementsByClassName("tablink");
             for (let i = 0; i < tablinks.length; i++) {
-                tablinks[i].style.backgroundcolor = '#555';
-                tablinks[i].style.color = '#737070';
+                tablinks[i].style.backgroundColor = '#555';
+                tablinks[i].style.color = 'white';
             }
+            let activeTab = document.getElementById(thisTab.toLowerCase() + "-tab");
+            activeTab.style.backgroundColor = 'white';
+            activeTab.style.color = 'black';
+            // console.log(activeTab.id)
+            sidebarContent = document.getElementsByClassName("sidebar-content");
+            for (let i = 0; i < sidebarContent.length; i++) {
+                sidebarContent[i].style.display = "none";
+                // sidebarContent[i].style.visibility = 'hidden';
+            }
+            let activeContent = document.getElementById(thisTab.toLowerCase());
+            // activeContent.style.visibility = 'visible';
+            activeContent.style.display = 'block';
+            activeContent.style.height = '100%';
+        }
+
+        function newArticlePoint(title, coordinates, mapboxId) {
+            console.log('newArticlePoint')
+            removeTabListeners();
+            articleTab.style.backgroundColor = '#555';
+            articleTab.style.color = '#737070';
+            talkTab.style.backgroundColor = '#555';
+            talkTab.style.color = '#737070';
+            historyTab.style.backgroundColor = '#555';
+            historyTab.style.color = '#737070';
             let newArticleTab = document.getElementById("edit-tab");
             newArticleTab.style.backgroundColor = 'white';
             newArticleTab.style.color = 'black';
@@ -533,42 +582,10 @@
         }
 
         function openArticle(tpnm_id) {
-            function openTab(thisTab) {
-                // Resets tabs and allows click to navigate. Only really needed within openArticle()
-                document.getElementById("edit-tab").innerText = "Edit"
-                document.getElementById("close-tab").innerText = "Close"
-                tablinks = document.getElementsByClassName("tablink");
-                for (let i = 0; i < tablinks.length; i++) {
-                    tablinks[i].style.backgroundColor = '#555';
-                    tablinks[i].style.color = 'white';
-                }
-                let activeTab = document.getElementById(thisTab.toLowerCase() + "-tab");
-                activeTab.style.backgroundColor = 'white';
-                activeTab.style.color = 'black';
-                // console.log(activeTab.id)
-                sidebarContent = document.getElementsByClassName("sidebar-content");
-                for (let i = 0; i < sidebarContent.length; i++) {
-                    sidebarContent[i].style.display = "none";
-                    // sidebarContent[i].style.visibility = 'hidden';
-                }
-                let activeContent = document.getElementById(thisTab.toLowerCase());
-                // activeContent.style.visibility = 'visible';
-                activeContent.style.display = 'block';
-                activeContent.style.height = '100%';
-            }
-
-            document.getElementById("article-tab").addEventListener("click", function() {
-                openTab(this.innerText)
-            });
-            document.getElementById("talk-tab").addEventListener("click", function() {
-                openTab(this.innerText)
-            });
-            document.getElementById("edit-tab").addEventListener("click", function() {
-                openTab(this.innerText)
-            });
-            document.getElementById("history-tab").addEventListener("click", function() {
-                openTab(this.innerText)
-            });
+            console.log('openArticle');
+            addTabListeners();
+            document.getElementById("edit-tab").innerText = "Edit"
+            document.getElementById("close-tab").innerText = "Close"
             // document.getElementById('close-tab').onclick = closeSidebar();
             closeTab.onclick = closeSidebar;
             newArticle.style.display = 'none';
@@ -583,7 +600,7 @@
                 }
             }
             axios.post('{% url 'app_tpnm:get_article' %}', data, config).then(function(response) {
-                console.log(response.data)
+                console.log('Axios')
                 var jsondata = response.data.features
                 title = jsondata[0]['properties']['title']
                 coordinates = jsondata[0]["geometry"]["coordinates"]
@@ -730,90 +747,24 @@
             }
         });
 
-        // // Popup works but no marker image
-        // map.on('load', function() {
-        //     map.addLayer({
-        //         "id": "places",
-        //         "type": "symbol",
-        //         "source": {
-        //             "type": "geojson",
-        //             "data": {
-        //                 "type": "FeatureCollection",
-        //                 "features": [{
-        //                     "type": "Feature",
-        //                     "properties": {
-        //                         "description": "<strong>Big Backyard Beach Bash and Wine Fest</strong>",
-        //                         "icon": "marker"
-        //                     },
-        //                     "geometry": {
-        //                         "type": "Point",
-        //                         "coordinates": [-77.090372, 38.881189]
-        //                     }
-        //                 }]
-        //             }
-        //         },
-        //         "layout": {
-        //             "icon-image": "{icon}-15",
-        //             "icon-allow-overlap": true
-        //         }
-        //     });
-        //
-        //     // Create a popup, but don't add it to the map yet.
-        //     var popup = new mapboxgl.Popup({
-        //         closeButton: false,
-        //         closeOnClick: false
-        //     });
-        //
-        //     map.on('mouseenter', 'places', function(e) {
-        //         // Change the cursor style as a UI indicator.
-        //         map.getCanvas().style.cursor = 'pointer';
-        //
-        //         var coordinates = e.features[0].geometry.coordinates.slice();
-        //         var description = e.features[0].properties.description;
-        //
-        //         // Ensure that if the map is zoomed out such that multiple
-        //         // copies of the feature are visible, the popup appears
-        //         // over the copy being pointed to.
-        //         while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-        //             coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-        //         }
-        //
-        //         // Populate the popup and set its coordinates
-        //         // based on the feature found.
-        //         popup.setLngLat(coordinates)
-        //             .setHTML(description)
-        //             .addTo(map);
-        //     });
-        //
-        //     map.on('mouseleave', 'places', function() {
-        //         map.getCanvas().style.cursor = '';
-        //         popup.remove();
-        //     });
-        //     map.on('click', 'places', function() {
-        //         alert('Yo')
-        //     });
-        // });
-
-
-        // this works
         var geojson = {
             type: 'FeatureCollection',
             features: [{% for article in articles %}
                 {
-                // type: '{{ article.place_type }}',
-                geometry: {
-                    // type: '{{ article.geo_type }}',
-                    coordinates: [{{ article.longitude }}, {{ article.latitude }}]
+                    // type: '{{ article.place_type }}',
+                    geometry: {
+                        // type: '{{ article.geo_type }}',
+                        coordinates: [{{ article.longitude }}, {{ article.latitude }}]
+                    },
+                    properties: {
+                        // class: '{{ article.place_class }}',
+                        title: '{{ article.title }}',
+                        tpnm_id: '{{ article.tpnm_id }}',
+                        // named_id: '{{ article.named_id }}'
+                    }
                 },
-                properties: {
-                    // class: '{{ article.place_class }}',
-                    title: '{{ article.title }}',
-                    tpnm_id: '{{ article.tpnm_id }}',
-                    // named_id: '{{ article.named_id }}'
-                }
-            },
-        {% endfor %} ]
-        };
+            {% endfor %} ]
+            };
 
         geojson.features.forEach(function(marker) {
             var markerDiv = document.createElement('div');
