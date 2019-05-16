@@ -210,7 +210,7 @@
             color: #1a1a1a
         }
 
-        .new-article {
+        #new-article {
             display: flex;
             flex-direction: column;
         }
@@ -335,7 +335,7 @@
                     <div class="article-title"></div>
                     <div class="article-coordinates"></div>
                     <hr>
-                    <div class="new-article">
+                    <div id="new-article">
                         <form action="/save_article/" method="post">
                             {% csrf_token %}
                             <div class="form-div">
@@ -438,6 +438,7 @@
         var historyContent = document.getElementById("history-content");
         var closeTab = document.getElementById("close-tab");
         var markerToggle = document.getElementById("marker-toggle");
+        var newArticle = document.getElementById("new-article");
         var articleTitle = document.getElementsByClassName("article-title");
         var articleCoordinates = document.getElementsByClassName("article-coordinates");
         var nameField = document.getElementById("name-field");
@@ -531,11 +532,10 @@
 
         }
 
-        function openArticle(id) {
-            // console.log(id)
-            // console.log('!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
+        function openArticle(tpnm_id) {
             function openTab(thisTab) {
-                document.getElementById("edit").innerText = "Edit"
+                // Resets tabs and allows click to navigate. Only really needed within openArticle()
+                document.getElementById("edit-tab").innerText = "Edit"
                 document.getElementById("close-tab").innerText = "Close"
                 tablinks = document.getElementsByClassName("tablink");
                 for (let i = 0; i < tablinks.length; i++) {
@@ -571,8 +571,38 @@
             });
             // document.getElementById('close-tab').onclick = closeSidebar();
             closeTab.onclick = closeSidebar;
+            newArticle.style.display = 'none';
             openTab("article");
-            
+
+            let data = {
+                tpnm_id: tpnm_id
+            }
+            let config = {
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            }
+            axios.post('{% url 'app_tpnm:get_article' %}', data, config).then(function(response) {
+                console.log(response.data)
+                var jsondata = response.data.features
+                title = jsondata[0]['properties']['title']
+                coordinates = jsondata[0]["geometry"]["coordinates"]
+
+                let activeContent = document.getElementById("article");
+                // activeContent.style.visibility = 'visible';
+                activeContent.style.display = 'block';
+                activeContent.style.height = '100%';
+
+                for (let i = 0; i < articleTitle.length; i++) {
+                    articleTitle[i].innerText = title;
+                }
+                for (let i = 0; i < articleCoordinates.length; i++) {
+                    articleCoordinates[i].innerText = '(' + coordinates.toString() + ')';
+                }
+
+                coordField.value = coordinates;
+            });
+
             openSidebar();
         }
         // Toggle button change on click
@@ -674,7 +704,7 @@
                         function logid() {
                             console.log(tpnmId)
                         }
-                        currentMarker.addEventListener('click', openArticle(tpnmId));
+                        // currentMarker.addEventListener('click', openArticle(tpnmId));
                         document.getElementById("close-tab").addEventListener("click", function() {
                             cancelMarker(marker)
                         });
@@ -801,21 +831,6 @@
             tooltip.innerText = marker.properties.title;
             currentMarker.appendChild(tooltip);
 
-            function getArticle() {
-                let data = {
-                    tpnm_id: currentMarkerId
-                }
-                let config = {
-                    headers: {
-                        'X-CSRFToken': '{{ csrf_token }}'
-                    }
-                }
-                axios.post('{% url 'app_tpnm:get_article' %}', data, config).then(function(response) {
-                    console.log(response.data)
-                    return response.data
-                })
-            };
-            currentMarker.addEventListener('click', getArticle);
             currentMarker.addEventListener('click', function() {
                 openArticle(currentMarkerId)
             });
