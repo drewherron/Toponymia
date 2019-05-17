@@ -20,7 +20,8 @@
 
         #content-wrapper {
             display: flex;
-            flex-direction: row;
+            flex-direction: column;
+            align-items: center;
             flex-shrink: 1;
             height: 100%;
             transition: 400ms;
@@ -45,6 +46,7 @@
             margin: 20px;
             margin-right: auto;
             margin-left: 3rem;
+            cursor: pointer;
         }
 
         .header-btn {
@@ -70,7 +72,7 @@
     <link rel='stylesheet' href='https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-geocoder/v4.0.0/mapbox-gl-geocoder.css' type='text/css' />
     <div id="page-wrapper">
         <div id="header">
-            <img src="{% static "app_tpnm/tpnmlogo.png" %}" id="header-logo" alt="Toponymia">
+            <img src="{% static "app_tpnm/tpnmlogo.png" %}" id="header-logo" onclick="window.location.href='http://127.0.0.1:8000'" alt="Toponymia">
             <a href="#" class="header-btn">Language</a>
             <a href="#" class="header-btn">Random</a>
             <a href="#" class="header-btn">About</a>
@@ -78,8 +80,12 @@
         </div>
         <div id='content-wrapper'>
             <h1>About</h1>
-            <p>Bla bla bla</p>
+            <p>Toponymia is a map-based wiki for toponyms.</p>
+            <p></p>
+            <h3>Help us out</h3>
+            <p>I</p>
         </div>
+
     </div>
 </body>
 

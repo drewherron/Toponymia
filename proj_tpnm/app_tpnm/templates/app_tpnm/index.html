@@ -247,6 +247,7 @@
             height: 50px;
             border-radius: 50%;
             cursor: pointer;
+            z-index: 8
         }
 
         .mapboxgl-popup {
@@ -277,7 +278,7 @@
 
             /* Position the tooltip text */
             position: absolute;
-            z-index: 1;
+            z-index: 10;
             bottom: 100%;
             left: 40%;
             margin-left: -60px;
@@ -347,11 +348,7 @@
                         <form action="/save_article/" method="post">
                             {% csrf_token %}
                             <div class="form-div">
-                                <label for="name-field">Name:</label>
-                                <input type="text" id="name-field" name="name-field" value="undefined" required>
-                            </div>
-                            <div class="form-div">
-                                <label for="inLanguageDropdown">Create entry for which language</label>
+                                <label for="inLanguageDropdown">Create entry for which language:</label>
                                 <!-- <select class="inLanguageDropdown" name="inLanguage" required> -->
                                 <select class="lang-singleselect" id="inLanguageDropdown" name="inLanguage" required>
                                     {% for language in languages %}
@@ -360,7 +357,11 @@
                                 </select>
                             </div>
                             <div class="form-div">
-                                <label for="sourceLanguageDropdown">Source language(s)</label>
+                                <label for="name-field">Name in this language:</label>
+                                <input type="text" id="name-field" name="name-field" value="undefined" required>
+                            </div>
+                            <div class="form-div">
+                                <label for="sourceLanguageDropdown">Source language(s):</label>
                                 <select class="lang-multiselect" id="sourceLanguageDropdown" name="sourceLanguage" multiple="multiple" required>
                                     {% for language in languages %}
                                     <option value="{{ language.iso_639_3 }}">{{ language.name }}</option>
