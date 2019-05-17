@@ -27,7 +27,7 @@ class Article(models.Model):
 
 
 class Edit(models.Model):
-    article = models.ForeignKey('Article', on_delete=models.CASCADE)
+    article = models.ForeignKey('Article', related_name='edits', on_delete=models.CASCADE)
     name = models.CharField(max_length=200, blank=False, null=False)
     in_language = models.CharField(max_length=200, blank=False, null=False)
     # from_language = models.CharField(max_length=200, blank=True, null=True)
@@ -42,7 +42,7 @@ class Edit(models.Model):
     derived_term = models.CharField(max_length=200, blank=True, null=True)
     derived_url = models.URLField(max_length=200, blank=True, null=True)
     see_also_title = models.CharField(max_length=200, blank=True, null=True)
-    see_also_link = models.URLField(max_length=200, blank=True, null=True)
+    see_also_url = models.URLField(max_length=200, blank=True, null=True)
     username = models.CharField(max_length=200)
 
     def __str__(self):
