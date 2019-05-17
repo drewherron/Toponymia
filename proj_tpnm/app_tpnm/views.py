@@ -11,7 +11,7 @@ def index(request):
     context = {
         #     'MAP_KEY': settings.MAP_KEY,
         'languages': Language.objects.all(),
-        'articles': Article.objects.all(),
+        'articles': Article.objects.all().order_by('-latitude'),
     }
     return render(request, 'app_tpnm/index.html', context)
 

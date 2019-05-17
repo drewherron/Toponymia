@@ -315,8 +315,8 @@
     <div id="page-wrapper">
         <div id="header">
             <img src="{% static "app_tpnm/tpnmlogo.png" %}" id="header-logo" alt="Toponymia">
-            <a href="#" class="header-btn">Language</a>
-            <a href="#" class="header-btn">Random</a>
+            <!-- <a href="#" class="header-btn">Language</a> -->
+            <a href="#" class="header-btn" id="random-btn">Random</a>
             <a href="{% url 'app_tpnm:about' %}" class="header-btn">About</a>
             <a href="#" class="header-btn">Login</a>
         </div>
@@ -436,6 +436,7 @@
         }));
         map.addControl(new mapboxgl.NavigationControl());
 
+        var randomBtn = document.getElementById('random-btn');
         var sidebar = document.getElementById('sidebar');
         var articleTab = document.getElementById("article-tab");
         var articleContent = document.getElementById("article-content");
@@ -646,6 +647,11 @@
             markerRadius = 10,
             linearOffset = 25;
 
+        randomBtn.addEventListener('click', function() {
+            var randomArticle = articleIdList[Math.floor(Math.random()*articleIdList.length)];
+            openArticle(randomArticle)
+        });
+
         // Show the json in side window
         // TODO: this will be deleted eventually, get definitions out if needed
         map.on('click', function(e) {
@@ -774,7 +780,11 @@
                 },
             {% endfor %} ]
             };
-
+        // Get list of available articles, for random choice option
+        var articleIdList = []
+        {% for article in articles %}
+        articleIdList.push('{{ article.tpnm_id }}')
+        {% endfor %}
         geojson.features.forEach(function(marker) {
             var markerDiv = document.createElement('div');
             markerDiv.className = 'marker';
