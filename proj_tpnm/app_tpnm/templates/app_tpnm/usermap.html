@@ -15,8 +15,6 @@
         $(document).ready(function() {
             $('.lang-multiselect').select2();
             $('.lang-singleselect').select2();
-            $('.edit-lang-multiselect').select2();
-            $('.edit-lang-singleselect').select2();
         });
         // $(document).ready(function() {
         // });
@@ -190,11 +188,7 @@
             cursor: pointer;
             padding: 14px 16px;
             font-size: 17px;
-            {% if user.is_authenticated %}
-            width: 25%;
-            {% else %}
-            width: 25%;
-            {% endif %}
+            width: 20%;
             font-family: sans-serif;
             flex-shrink: 1
         }
@@ -214,24 +208,7 @@
         .article-coordinates {
             color: #1a1a1a
         }
-        #article-div1 {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-around;
-        }
-        #article-div2 {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-around;
-        }
-        #article-div3 {
 
-        }
-        #article-div4 {
-            display: flex;
-            flex-direction: row;
-            justify-content: space-around;
-        }
         #article-content {
             margin: 5%;
             word-wrap: break-word;
@@ -350,13 +327,12 @@
             {% endif %}
         </div>
         <div id='content-wrapper'>
+            {% if user.is_authenticated %}
             <div id="sidebar">
                 <div id="tabbar">
                     <button class="tablink" id="article-tab">Article</button>
                     <button class="tablink" id="talk-tab">Talk</button>
-                    {% if user.is_authenticated %}
                     <button class="tablink" id="edit-tab">Edit</button>
-                    {% endif %}
                     <button class="tablink" id="history-tab">History</button>
                     <button class="tablink" id="close-tab">Close</button>
                 </div>
@@ -364,21 +340,7 @@
                     <div class="article-title"></div>
                     <div class="article-coordinates"></div>
                     <hr>
-                    <div id="article-div1">
-                        <div><h2 id="article-inLanguage"></h2></div>
-                        <div><h3 id="article-name"></h3></div>
-                    </div>
-                    <div id="article-div2">
-                        <div><h4 id="article-fromLanguage"></h4></div>
-                        <div><p id="article-endonym"></p></div>
-                    </div>
-                    <div id="article-div3">
-                        <div id="article-content"></div>
-                    </div>
-                    <div id="article-div4">
-                        <div><p id="article-username"></p></div>
-                        <div><p id="article-datetime"></p></div>
-                    </div>
+                    <div id="article-content"></div>
                 </div>
                 <div class="sidebar-content" id="talk">
                     <div class="article-title"></div>
@@ -444,62 +406,6 @@
                             </div>
                         </form>
                     </div>
-                    <div id="edit-article">
-                        <form action="/save_article/" method="post">
-                            {% csrf_token %}
-                            <div class="edit-form-div">
-                                <label for="edit-inLanguageDropdown">Edit entry for which language:</label>
-                                <!-- <select class="inLanguageDropdown" name="inLanguage" required> -->
-                                <select class="edit-lang-singleselect" id="edit-inLanguageDropdown" name="inLanguage" required>
-                                    {% for language in languages %}
-                                    <option value="{{ language.iso_639_3 }}">{{ language.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="edit-form-div">
-                                <label for="edit-name-field">Name in this language:</label>
-                                <input type="text" id="edit-name-field" name="edit-name-field" value="undefined" required>
-                            </div>
-                            <div class="edit-form-div">
-                                <label for="edit-sourceLanguageDropdown">Source language(s):</label>
-                                <select class="edit-lang-multiselect" id="edit-sourceLanguageDropdown" name="edit-sourceLanguage" multiple="multiple" required>
-                                    {% for language in languages %}
-                                    <option value="{{ language.iso_639_3 }}">{{ language.name }}</option>
-                                    {% endfor %}
-                                </select>
-                                <label for="edit-endonymDropdown">Endonym: </label>
-                                <select class="edit-endonymDropdown" id="edit-endonymDropdown" name="edit-endonym">
-                                    <option value="True">True</option>
-                                    <option value="False">False</option>
-                                </select>
-                                <!-- span id="endonym-question"style='font-size:10px;'>&#10067;</span--><br>
-                                <textarea id="edit-form-content" name="edit-form-content" rows="8" cols="80" required></textarea>
-                            </div>
-                            <div class="edit-form-div">
-                                <label for="edit-reference-field">Reference(s):</label>
-                                <input type="url" class="edit-reference-field" name="edit-reference-field" placeholder="Enter URL">
-                            </div>
-                            <div class="edit-form-div" id="edit-article-button-div">
-                                <button type="button" id="edit-addAnotherBtn">Add Another</button>
-                                <button type="submit">Submit</button>
-                            </div>
-                            <div>
-                                <input type="hidden" id="title-field" name="title-field" value="undefined">
-                                <input type="hidden" id="coord-field" name="coord-field" value="undefined">
-                                <input type="hidden" id="long-field" name="long-field" value="undefined">
-                                <input type="hidden" id="lat-field" name="lat-field" value="undefined">
-                                <input type="hidden" id="tpnm-id-field" name="tpnm-id-field" value="undefined">
-                                <input type="hidden" id="mapbox-id-field" name="mapbox-id-field" value="undefined">
-                                <input type="hidden" id="place-class-field" name="place-class-field" value="undefined">
-                                <input type="hidden" id="place-type-field" name="place-type-field" value="undefined">
-                                <input type="hidden" id="geo-type-field" name="geo-type-field" value="undefined">
-                                <input type="hidden" id="iso-3166-1-field" name="iso-3166-1-field" value="undefined">
-                                <input type="hidden" id="iso-3166-2-field" name="iso-3166-2-field" value="undefined">
-                                <input type="hidden" id="geo-type-field" name="geo-type-field" value="undefined">
-                            </div>
-                        </form>
-
-                    </div>
                 </div>
                 <div class="sidebar-content" id="history">
                     <div class="article-title"></div>
@@ -508,9 +414,7 @@
                 </div>
             </div>
             <div id='map'>
-                {% if user.is_authenticated %}
                 <button id="marker-toggle" type="button" name="marker-toggle">Add Marker</button>
-                {% endif %}
             </div>
             <pre id='features'></pre>
         </div>
@@ -542,20 +446,16 @@
         var randomBtn = document.getElementById('random-btn');
         var sidebar = document.getElementById('sidebar');
         var articleTab = document.getElementById("article-tab");
-        var articleName = document.getElementById("article-name");
         var articleContent = document.getElementById("article-content");
         var talkTab = document.getElementById("talk-tab");
         var talkContent = document.getElementById("talk-content");
-        {% if user.is_authenticated %}
         var editTab = document.getElementById("edit-tab");
         var editContent = document.getElementById("edit-content");
-        {% endif %}
         var historyTab = document.getElementById("history-tab");
         var historyContent = document.getElementById("history-content");
         var closeTab = document.getElementById("close-tab");
         var markerToggle = document.getElementById("marker-toggle");
-        var newArticleDiv = document.getElementById("new-article");
-        var editArticleDiv = document.getElementById("edit-article");
+        var newArticle = document.getElementById("new-article");
         var articleTitle = document.getElementsByClassName("article-title");
         var articleCoordinates = document.getElementsByClassName("article-coordinates");
         var nameField = document.getElementById("name-field");
@@ -622,9 +522,7 @@
             console.log('addTabListeners')
             document.getElementById("article-tab").addEventListener("click", listentime);
             document.getElementById("talk-tab").addEventListener("click", listentime);
-            {% if user.is_authenticated %}
             document.getElementById("edit-tab").addEventListener("click", listentime);
-            {% endif %}
             document.getElementById("history-tab").addEventListener("click", listentime);
         }
 
@@ -633,9 +531,7 @@
 
             document.getElementById("article-tab").removeEventListener("click", listentime);
             document.getElementById("talk-tab").removeEventListener("click", listentime);
-            {% if user.is_authenticated %}
             document.getElementById("edit-tab").removeEventListener("click", listentime);
-            {% endif %}
             document.getElementById("history-tab").removeEventListener("click", listentime);
         }
 
@@ -662,7 +558,6 @@
             activeContent.style.height = '100%';
         }
 
-        {% if user.is_authenticated %}
         function newArticlePoint(title, coordinates, mapboxId) {
             console.log('newArticlePoint')
             removeTabListeners();
@@ -700,23 +595,17 @@
             $('.lang-multiselect').val(null).trigger('change');
             openSidebar();
             markerToggleOff();
-        }
 
-        function editArticle(tpnm_id) {
-            console.log('editArticle')
         }
-
-        {% endif %}
 
         function openArticle(tpnm_id) {
             console.log('openArticle');
             addTabListeners();
+            document.getElementById("edit-tab").innerText = "Edit"
             document.getElementById("close-tab").innerText = "Close"
             // document.getElementById('close-tab').onclick = closeSidebar();
             closeTab.onclick = closeSidebar;
-            {% if user.is_authenticated %}
-            newArticleDiv.style.display = 'none';
-            {% endif %}
+            newArticle.style.display = 'none';
             openTab("article");
 
             let data = {
@@ -734,15 +623,7 @@
                 title = jsondata[0]['properties']['title']
                 coordinates = jsondata[0]["geometry"]["coordinates"]
                 content = jsondata[0]['edit']['content']
-                endonymValue = jsondata[0]['edit']['endonym']
-                editCreated = jsondata[0]['edit']['created']
-                editUsername = jsondata[0]['edit']['username']
-                name = jsondata[0]['edit']['name']
                 let activeContent = document.getElementById("article");
-                let inLanguage = jsondata[0]['edit']['in_language']
-                console.log(inLanguage)
-                let fromLanguage = jsondata[0]['edit']['from_language']
-                console.log(fromLanguage)
                 // activeContent.style.visibility = 'visible';
                 activeContent.style.display = 'block';
                 activeContent.style.height = '100%';
@@ -754,37 +635,12 @@
                     articleCoordinates[i].innerText = '(' + coordinates.toString() + ')';
                 }
                 coordField.value = coordinates;
-                articleName.innerText = name;
                 articleContent.innerText = content;
-                document.getElementById("article-inLanguage").innerText = inLanguage
-                document.getElementById("article-fromLanguage").innerText = "Source: "+fromLanguage
-                document.getElementById("article-username").innerText =editUsername
-                document.getElementById("article-datetime").innerText = editCreated
-                if (endonymValue == true){
-                    document.getElementById("article-endonym").innerText = "Endonym: True"
-                {% if user.is_authenticated %}
-                    document.getElementById("edit-endonymDropdown").value = "True";
-                {% endif %}
-                } else {
-                    document.getElementById("article-endonym").innerText = "Endonym: False"
-                {% if user.is_authenticated %}
-                    document.getElementById("edit-endonymDropdown").value = "False";
-                {% endif %}
-                }
-                {% if user.is_authenticated %}
-                document.getElementById("edit-tab").innerText = "Edit"
-                document.getElementById("edit-tab").addEventListener("click", editArticle(tpnm_id));
-                $('.edit-lang-singleselect').val(inLanguage).trigger('change');
-                $('.edit-lang-multiselect').val(fromLanguage).trigger('change');
-                document.getElementById("edit-form-content").value = content;
-                document.getElementById("edit-name-field").value = name;
-                {% endif %}
             });
             openSidebar();
         }
         // Toggle button change on click
         var addMarkerMode = false;
-        {% if user.is_authenticated %}
         markerToggle.addEventListener('click', function() {
             if (markerToggle.innerHTML == 'Add Marker') {
                 markerToggleOn()
@@ -792,7 +648,6 @@
                 markerToggleOff()
             }
         });
-        {% endif %}
 
         // Set marker size
         var markerHeight = 50,
@@ -810,10 +665,10 @@
             var features = map.queryRenderedFeatures(e.point);
             document.getElementById('features').innerHTML = JSON.stringify(features, null, 2);
             var jsonfeatures = map.queryRenderedFeatures(e.point);
+            // var jsonfeatures = JSON.stringify(features, null, 2);
         });
 
         // Add a marker when map is clicked
-        {% if user.is_authenticated %}
         map.on('click', function(e) {
             if (addMarkerMode == true) {
                 var markerDiv = document.createElement('div');
@@ -913,7 +768,6 @@
                 }
             }
         });
-        {% endif %}
 
         var geojson = {
             type: 'FeatureCollection',
@@ -959,6 +813,13 @@
             });
         });
     </script>
+            {% else %}
+            <p id="authfail">Authentication Failed</p>
+        </div>
+        <script type="text/javascript">
+            window.location.replace("{% url 'app_tpnm:index'%}");
+        </script>
+        {% endif %}
 </body>
 
 </html>

@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path, include
 from django.conf.urls import url
 
 from . import views
@@ -10,9 +10,5 @@ urlpatterns = [
     path('save_article/', views.save_article, name='save_article'),
     path('get_article/', views.get_article, name='get_article'),
     path('about/', views.about, name='about'),
-    # url(
-    #     r'^language-autocomplete/$',
-    #     LanguageAutocomplete.as_view(),
-    #     name='language-autocomplete',
-    # ),
+    path('accounts/', include('django.contrib.auth.urls')),
 ]

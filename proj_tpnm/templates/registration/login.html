@@ -2,7 +2,7 @@
 
 <head>
     <meta charset='utf-8' />
-    <title>About Toponymia</title>
+    <title>Toponymia</title>
     <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
     {% load static %}
     <link rel="icon" href="{% static "app_tpnm/favicon.ico" %}">
@@ -24,18 +24,11 @@
             align-items: center;
             flex-shrink: 1;
             height: 100%;
+            transition: 400ms;
             background-image: url("{% static "app_tpnm/wordworld.png" %}");
+            background-position: center;
         }
 
-        #about-wrapper {
-            width: 80%;
-            height: 100%;
-            background-color: #f4f0eb;
-        }
-
-        #about-content {
-            margin: 50px 100px;
-        }
         #header {
             position: sticky;
             top: 0px;
@@ -72,35 +65,34 @@
         .header-btn:hover {
             background-color: #75cff075
         }
+
+        #login-div {
+            margin: 8%;
+            padding: 30px;
+            background-color: #d6cdcd99;
+            box-shadow: -2px 2px 3px gray;
+        }
     </style>
 </head>
 
 <body>
-    <!-- Mapbox CDN -->
     <div id="page-wrapper">
         <div id="header">
-            <img src="{% static "app_tpnm/tpnmlogo.png" %}" id="header-logo" onclick="window.location.href='http://127.0.0.1:8000'" alt="Toponymia">
+            <img src="{% static 'app_tpnm/tpnmlogo.png' %}" id="header-logo" onclick="window.location.href='http://127.0.0.1:8000'" alt="Toponymia">
+            <a href="{% url 'app_tpnm:about' %}" class="header-btn">About</a>
             <a href="{% url 'app_tpnm:index' %}" class="header-btn">Map</a>
-            {% if user.is_authenticated %}
-            <a href="{% url 'app_tpnm:logout' %}" class="header-btn">Logout</a>
-            {% else %}
-            <a href="{% url 'app_tpnm:login' %}" class="header-btn">Login</a>
-            {% endif %}
+            <!-- <a href="#" class="header-btn">Login</a> -->
         </div>
-        <div id='content-wrapper'>
-            <div id='about-wrapper'>
-                <div id='about-content'>
-                    <h1>About</h1>
-                    <p>Toponymia is a map-based wiki for toponyms.</p>
-                    <p></p>
-                    <h3>Bla bla bla</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-                        consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
-                    </p>
-                </div>
+        <div id="content-wrapper">
+            <div id="login-div">
+                <h2>Login</h2>
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    <button type="submit">Login</button>
+                </form>
             </div>
         </div>
-
     </div>
 </body>
 
