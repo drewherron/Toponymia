@@ -131,7 +131,7 @@
             z-index: 10;
             width: 0%;
             overflow: hidden;
-            white-space: nowrap;
+            /* white-space: nowrap; */
             border-right: 2px solid gray;
         }
 
@@ -208,6 +208,13 @@
 
         .article-coordinates {
             color: #1a1a1a
+        }
+
+        #article-content {
+            margin: 5%;
+            word-wrap: break-word;
+            text-align: left;
+
         }
 
         #new-article {
@@ -325,6 +332,7 @@
                     <div class="article-title"></div>
                     <div class="article-coordinates"></div>
                     <hr>
+                    <div id="article-content"></div>
                 </div>
                 <div class="sidebar-content" id="talk">
                     <div class="article-title"></div>
@@ -556,7 +564,7 @@
             newArticleTab.innerText = 'New';
             closeTab.innerText = 'Cancel';
             closeTab.style.color = 'white';
-
+            newArticle.style.display = 'block';
             sidebarContent = document.getElementsByClassName("sidebar-content");
             for (let i = 0; i < sidebarContent.length; i++) {
                 sidebarContent[i].style.display = "none";
@@ -601,25 +609,25 @@
             }
             axios.post('{% url 'app_tpnm:get_article' %}', data, config).then(function(response) {
                 console.log('Axios')
+                // Parse data from Axios response
                 var jsondata = response.data.features
                 title = jsondata[0]['properties']['title']
                 coordinates = jsondata[0]["geometry"]["coordinates"]
-
+                content = jsondata[0]['edit']['content']
                 let activeContent = document.getElementById("article");
                 // activeContent.style.visibility = 'visible';
                 activeContent.style.display = 'block';
                 activeContent.style.height = '100%';
-
+                // Show title and coordinates on page
                 for (let i = 0; i < articleTitle.length; i++) {
                     articleTitle[i].innerText = title;
                 }
                 for (let i = 0; i < articleCoordinates.length; i++) {
                     articleCoordinates[i].innerText = '(' + coordinates.toString() + ')';
                 }
-
                 coordField.value = coordinates;
+                articleContent.innerText = content;
             });
-
             openSidebar();
         }
         // Toggle button change on click
