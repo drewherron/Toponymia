@@ -20,6 +20,10 @@ def get_article(request):
     data = json.loads(request.body)
     # current_id = data['id']
     article = Article.objects.get(tpnm_id=data['tpnm_id'])
+    edits = Edit.objects.filter(article__tpnm_id=data['tpnm_id'])
+    for edit in edits:
+        print(edit.name)
+    # edits = Article.edits.filter(tpnm_id=data['tpnm_id']).order_by('-edited')
     jsondata = {
         'type': 'FeatureCollection',
         'features': [{
@@ -29,17 +33,31 @@ def get_article(request):
                     'coordinates': [article.longitude, article.latitude]
                 },
             'properties': {
-                    'class': article.place_class,
-                    'title': article.title,
-                    'iso_3166_1': article.iso_3166_1,
-                    'tpnm_id': article.tpnm_id,
-                    'named_id': article.named_id,
-                    'created': article.created,
-                    'created_by': article.created_by
+                'class': article.place_class,
+                'title': article.title,
+                'iso_3166_1': article.iso_3166_1,
+                'tpnm_id': article.tpnm_id,
+                'named_id': article.named_id,
+                'created': article.created,
+                'created_by': article.created_by
+            },
+            'edit': {
+                'name': edit.name,
+                'in_language': edit.in_language,
+                'from_language': edit.from_language,
+                'endonym': edit.endonym,
+                'content': edit.content,
+                'created': edit.created,
+                'edited': edit.edited,
+                'username': edit.username,
+                'reference': edit.reference,
+                'reference_url': edit.reference_url,
+                'see_also_title': edit.see_also_title,
+                'see_also_url': edit.see_also_url,
             }
         },
         ]}
-
+    print(edits)
     return JsonResponse(jsondata)
 
 
