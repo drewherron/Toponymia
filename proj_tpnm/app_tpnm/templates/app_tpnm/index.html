@@ -149,7 +149,13 @@
         #sidebar h1 {
             margin-top: 0;
         }
-
+        hr.thin {
+            height: 1px;
+            border: 0;
+            color: #333;
+            background-color: #333;
+            width: 80%;
+        }
         #marker-toggle {
             position: fixed;
             text-align: center;
@@ -215,25 +221,33 @@
             color: #1a1a1a
         }
         #article-div1 {
+            margin: 0px 10%;
             display: flex;
             flex-direction: row;
-            justify-content: space-around;
+            justify-content: space-between;
+            align-items: baseline;
         }
         #article-div2 {
+            margin: 0px 10%;
             display: flex;
             flex-direction: row;
-            justify-content: space-around;
+            justify-content: space-between;
+            align-items: baseline;
         }
         #article-div3 {
-
-        }
-        #article-div4 {
+            margin: 0px 10%;
             display: flex;
             flex-direction: row;
-            justify-content: space-around;
+            justify-content: space-between;
+            align-items: baseline;
+        }
+        #article-div4 {
+            margin: 0px 10%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
         }
         #article-content {
-            margin: 5%;
             word-wrap: break-word;
             text-align: left;
 
@@ -281,13 +295,6 @@
             font-family: 'Open Sans', sans-serif;
         }
 
-        /* Tooltip container */
-        /* .tooltip {
-            position: relative;
-            display: inline-block;
-            border-bottom: 1px dotted black;
-            /* If you want dots under the hoverable text */
-
         /* Tooltip text */
         .marker .tooltip {
             visibility: hidden;
@@ -298,14 +305,14 @@
             padding: 5px 0;
             border-radius: 6px;
 
-            /* Position the tooltip text */
+            /* Tooltip position */
             position: absolute;
             z-index: 10;
             bottom: 100%;
             left: 40%;
             margin-left: -60px;
 
-            /* Fade in tooltip */
+            /* Tooltop transition */
             opacity: 0;
             transition: opacity 0.3s;
         }
@@ -322,11 +329,12 @@
             border-color: #555 transparent transparent transparent;
         }
 
-        /* Show the tooltip text when you mouse over the tooltip container */
+        /* Tooltip on hover */
         .marker:hover .tooltip {
             visibility: visible;
             opacity: 1;
         }
+
         #authfail {
             padding: 10%;
         }
@@ -365,12 +373,12 @@
                     <div class="article-coordinates"></div>
                     <hr>
                     <div id="article-div1">
-                        <div><h2 id="article-inLanguage"></h2></div>
-                        <div><h3 id="article-name"></h3></div>
+                        <div><h2 id="article-name"></h2></div>
+                        <div id="article-endonym"></div>
                     </div>
                     <div id="article-div2">
+                        <div><h3 id="article-inLanguage"></h3></div>
                         <div><h4 id="article-fromLanguage"></h4></div>
-                        <div><p id="article-endonym"></p></div>
                     </div>
                     <div id="article-div3">
                         <div id="article-content"></div>
@@ -379,6 +387,7 @@
                         <div><p id="article-username"></p></div>
                         <div><p id="article-datetime"></p></div>
                     </div>
+                    <hr class="thin">
                 </div>
                 <div class="sidebar-content" id="talk">
                     <div class="article-title"></div>
@@ -445,7 +454,7 @@
                         </form>
                     </div>
                     <div id="edit-article">
-                        <form action="/save_article/" method="post">
+                        <form action="/save_edit/" method="post">
                             {% csrf_token %}
                             <div class="edit-form-div">
                                 <label for="edit-inLanguageDropdown">Edit entry for which language:</label>
@@ -662,6 +671,21 @@
             activeContent.style.height = '100%';
         }
 
+        function formatDate(date) {
+            var monthNames = [
+                "January", "February", "March",
+                "April", "May", "June", "July",
+                "August", "September", "October",
+                "November", "December"
+            ];
+
+            var day = date.getDate();
+            var monthIndex = date.getMonth();
+            var year = date.getFullYear();
+
+            return day + ' ' + monthNames[monthIndex] + ' ' + year;
+        }
+
         {% if user.is_authenticated %}
         function newArticlePoint(title, coordinates, mapboxId) {
             console.log('newArticlePoint')
@@ -756,17 +780,17 @@
                 coordField.value = coordinates;
                 articleName.innerText = name;
                 articleContent.innerText = content;
-                document.getElementById("article-inLanguage").innerText = inLanguage
-                document.getElementById("article-fromLanguage").innerText = "Source: "+fromLanguage
-                document.getElementById("article-username").innerText =editUsername
-                document.getElementById("article-datetime").innerText = editCreated
+                document.getElementById("article-inLanguage").innerText = inLanguage;
+                document.getElementById("article-fromLanguage").innerText = "Source: "+fromLanguage;
+                document.getElementById("article-username").innerText = "Last edit by: "+editUsername;
+                document.getElementById("article-datetime").innerText = editCreated;
                 if (endonymValue == true){
-                    document.getElementById("article-endonym").innerText = "Endonym: True"
+                    document.getElementById("article-endonym").innerHTML = "<p>Endonym</p>"
                 {% if user.is_authenticated %}
                     document.getElementById("edit-endonymDropdown").value = "True";
                 {% endif %}
                 } else {
-                    document.getElementById("article-endonym").innerText = "Endonym: False"
+                    document.getElementById("article-endonym").innerHTML = "<p>Exonym</p>"
                 {% if user.is_authenticated %}
                     document.getElementById("edit-endonymDropdown").value = "False";
                 {% endif %}

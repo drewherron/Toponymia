@@ -29,7 +29,7 @@ def get_article(request):
     # current_id = data['id']
     article = Article.objects.get(tpnm_id=data['tpnm_id'])
     edits = Edit.objects.filter(article__tpnm_id=data['tpnm_id']).order_by('edited')
-    
+
     for edit in edits:
         print(edit)
     # edits = Article.edits.filter(tpnm_id=data['tpnm_id']).order_by('-edited')
@@ -81,13 +81,13 @@ def save_article(request):
     geo_type = request.POST['geo-type-field']
     iso_3166_1 = request.POST['iso-3166-1-field']
     iso_3166_2 = request.POST['iso-3166-2-field']
+    named_id = title + ' id:' + str(mapbox_id)
     name = request.POST['name-field']
     in_language = request.POST['inLanguage']
     from_language = request.POST.getlist('sourceLanguage')
     endonym = request.POST['endonym']
     content = request.POST['form-content']
     reference = request.POST['reference-field']
-    named_id = title + ' id:' + str(mapbox_id)
     username = request.user.get_username()
     print(request.POST)
     article = Article(tpnm_id=tpnm_id, mapbox_id=mapbox_id, named_id=named_id, title=title, longitude=longitude, latitude=latitude,
@@ -98,6 +98,19 @@ def save_article(request):
     edit.save()
     return HttpResponseRedirect(reverse('app_tpnm:index'))
 
+@login_required
+def save_edit(request):
+    name = request.POST['name-field']
+    in_language = request.POST['inLanguage']
+    from_language = request.POST.getlist('sourceLanguage')
+    endonym = request.POST['endonym']
+    content = request.POST['form-content']
+    reference = request.POST['reference-field']
+    username = request.user.get_username()
+    edit = Edit(name=name, in_language=in_language,
+                from_language=from_language, endonym=endonym, content=content, reference=reference, username=username)
+    edit.save()
+    return HttpResponseRedirect(reverse('app_tpnm:index'))
 
 def about(request):
     context = {

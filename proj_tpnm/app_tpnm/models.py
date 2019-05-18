@@ -50,16 +50,26 @@ class Edit(models.Model):
 
 
 class Comment(models.Model):
-    article = models.ForeignKey('Article', on_delete=models.CASCADE)
+    article = models.ForeignKey('Comment', related_name='categories', on_delete=models.CASCADE)
     username = models.CharField(max_length=200)
     created = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
     content = models.TextField()
     reported = models.PositiveSmallIntegerField(blank=True, null=True)
 
-
     def __str__(self):
         return self.article +' '+ self.username +' '+ str(self.created)
+
+# class CommentCategory(model.Models):
+#     article = models.ForeignKey('Article', related_name='comments', on_delete=models.CASCADE)
+#     category_name = models.CharField(max_length=200)
+#     created = models.DateTimeField(auto_now_add=True)
+#     edited = models.DateTimeField(auto_now=True)
+#     content = models.TextField()
+#     username = models.CharField(max_length=200)
+#
+#     def __str__(self):
+#         return self.article +' '+ self.username +' '+ str(self.created)
 
 class Language(models.Model):
     iso_639_3 = models.CharField(max_length=3)
