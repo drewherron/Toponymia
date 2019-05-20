@@ -32,7 +32,6 @@ def get_article(request):
 
     for edit in edits:
         print(edit)
-    # edits = Article.edits.filter(tpnm_id=data['tpnm_id']).order_by('-edited')
     jsondata = {
         'type': 'FeatureCollection',
         'features': [{
