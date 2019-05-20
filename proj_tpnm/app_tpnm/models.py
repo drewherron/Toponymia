@@ -25,13 +25,19 @@ class Article(models.Model):
     def __str__(self):
         return self.title + ' ' + self.tpnm_id
 
+class ArticleName(models.Model):
+    tpnm_id = models.CharField( max_length=500)
+    article = models.ForeignKey('Article', related_name='article_names', on_delete=models.CASCADE)
+    name = models.CharField(max_length=200, blank=False, null=False)
+
+    def __str__(self):
+        return self.article.title +' '+ self.name
+
 
 class Edit(models.Model):
-    article = models.ForeignKey('Article', related_name='edits', on_delete=models.CASCADE)
-    name = models.CharField(max_length=200, blank=False, null=False)
+    article_name = models.ForeignKey('ArticleName', related_name='edits', on_delete=models.CASCADE)
     in_language = ArrayField(
         models.CharField(max_length=250, blank=True), default=list, size=250, null=True, blank=True)
-    # from_language = models.CharField(max_length=200, blank=True, null=True)
     from_language = ArrayField(
         models.CharField(max_length=250, blank=True), default=list, size=50, null=True, blank=True)
     content = models.TextField()
@@ -47,7 +53,7 @@ class Edit(models.Model):
     username = models.CharField(max_length=200)
 
     def __str__(self):
-        return self.article.title + ' Edit' + str(self.id)
+        return self.article_name.name + ' Edit' + str(self.id)
 
 
 class Comment(models.Model):

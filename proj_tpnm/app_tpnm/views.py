@@ -2,7 +2,7 @@ from django.shortcuts import render, reverse
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.conf import settings
 from django.urls import reverse
-from .models import Article, Edit, Comment, Language
+from .models import Article, ArticleName, Edit, Comment, Language
 from django.contrib.auth.decorators import login_required
 import json
 # from dal import autocomplete
@@ -28,10 +28,13 @@ def get_article(request):
     data = json.loads(request.body)
     # current_id = data['id']
     article = Article.objects.get(tpnm_id=data['tpnm_id'])
-    edits = Edit.objects.filter(article__tpnm_id=data['tpnm_id']).order_by('edited')
+    article_names = ArticleName.objects.filter(article__tpnm_id=data['tpnm_id']).order_by('id')
+    edits = Edit.objects.filter(article_name__tpnm_id=data['tpnm_id']).order_by('edited')
 
     for edit in edits:
         print(edit)
+    for article_name in article_names:
+        print(article_name)
     jsondata = {
         'type': 'FeatureCollection',
         'features': [{
@@ -51,7 +54,7 @@ def get_article(request):
                 'created_by': article.created_by
             },
             'edit': {
-                'name': edit.name,
+                'name': article_name.name,
                 'in_language': edit.in_language,
                 'from_language': edit.from_language,
                 'endonym': edit.endonym,
@@ -64,6 +67,7 @@ def get_article(request):
             }
         },
         ]}
+    print(jsondata)
     return JsonResponse(jsondata)
 
 @login_required
@@ -91,9 +95,12 @@ def save_article(request):
     article = Article(tpnm_id=tpnm_id, mapbox_id=mapbox_id, named_id=named_id, title=title, longitude=longitude, latitude=latitude,
                       place_class=place_class, place_type=place_type, geo_type=geo_type, iso_3166_1=iso_3166_1, iso_3166_2=iso_3166_2)
     article.save()
-    edit = Edit(article=article, name=name, in_language=in_language,
+    article_name = ArticleName(tpnm_id=tpnm_id, article=article, name=name)
+    article_name.save()
+    edit = Edit(article_name=article_name, in_language=in_language,
                 from_language=from_language, endonym=endonym, content=content, reference=reference, username=username)
     edit.save()
+
     return HttpResponseRedirect(reverse('app_tpnm:index'))
 
 @login_required
