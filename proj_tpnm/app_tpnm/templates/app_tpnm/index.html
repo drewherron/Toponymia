@@ -15,8 +15,8 @@
         $(document).ready(function() {
             $('.inlang-multiselect').select2();
             $('.fromlang-multiselect').select2();
-            $('#edit-inlang-multiselect').select2();
-            $('#edit-fromlang-multiselect').select2();
+            $('.edit-inlang-multiselect').select2();
+            $('.edit-fromlang-multiselect').select2();
         });
 </script>
     </script>
@@ -231,20 +231,31 @@
             align-items: baseline;
         }
         #article-div2 {
-            margin: 0px 10%;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: baseline;
+            margin-top: 0px;
+            margin-left: 10%;
+            text-align: left;
+        }
+        #article-div2 *{
+            margin-top: 0px;
         }
         #article-div3 {
-            margin: 0px 10%;
+            margin-left: 10%;
+            text-align: left;
+            /* display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: baseline; */
+        }
+        #article-div4 {
+            margin-top: 15px;
+            margin-bottom: 15px;
+            margin-left: 10%;
             display: flex;
             flex-direction: row;
             justify-content: space-between;
             align-items: baseline;
         }
-        #article-div4 {
+        #article-div5 {
             margin: 0px 10%;
             display: flex;
             flex-direction: row;
@@ -401,13 +412,15 @@
                         <div id="article-endonym"></div>
                     </div>
                     <div id="article-div2">
-                        <div><h3 id="article-inLanguage"></h3></div>
                         <div><h4 id="article-fromLanguage"></h4></div>
                     </div>
                     <div id="article-div3">
-                        <div id="article-content"></div>
+                        <div><h5 id="article-inLanguage"></h5></div>
                     </div>
                     <div id="article-div4">
+                        <div id="article-content"></div>
+                    </div>
+                    <div id="article-div5">
                         <div><p id="article-username"></p></div>
                         <div><p id="article-datetime"></p></div>
                     </div>
@@ -432,7 +445,7 @@
                             <div class="form-div">
                                 <label for="inlang-multiselect">Which languages use this (exact) topnym:</label>
                                 <!-- <select class="inlang-multiselect" name="inLanguage" required> -->
-                                <select class="inlang-multiselect" id="inlang-multiselect" name="inLanguage" multiple="multiple" required>
+                                <select class="inlang-multiselect" id="inlang-multiselect" name="inlang-multiselect" multiple="multiple" required>
                                     {% for language in languages %}
                                     <option value="{{ language.name }}">{{ language.name }}</option>
                                     {% endfor %}
@@ -440,7 +453,7 @@
                             </div>
                             <div class="form-div">
                                 <label for="fromlang-multiselect">Toponym is derived from which language(s):</label>
-                                <select class="fromlang-multiselect" id="fromlang-multiselect" name="fromLanguage" multiple="multiple" required>
+                                <select class="fromlang-multiselect" id="fromlang-multiselect" name="fromlang-multiselect" multiple="multiple" required>
                                     {% for language in languages %}
                                     <option value="{{ language.name }}">{{ language.name }}</option>
                                     {% endfor %}
@@ -451,6 +464,7 @@
                                     <option value="False">False</option>
                                 </select><br>
                                 <!-- span id="endonym-question"style='font-size:10px;'>&#10067;</span-->
+                                <label for="form-content">Description:</label>
                                 <textarea id="form-content" name="form-content" rows="8" cols="80" required></textarea>
                             </div>
                             <div class="form-div">
@@ -482,22 +496,22 @@
                             {% csrf_token %}
                             <div class="edit-form-div">
                                 <label for="edit-name-field">Toponym: </label>
-                                <input type="text" id="edit-name-field" name="edit-name-field" value="undefined" required>
+                                <input type="text" id="edit-name-field" name="edit-name-field" required>
                             </div>
                             <div class="edit-form-div">
-                                <label for="edit-inlang-multiselect">Which language(s) use this toponym?:</label>
+                                <label for="edit-inlang-multiselect">Which language(s) use this (exact) toponym?:</label>
                                 <!-- <select class="inlang-multiselect" name="inLanguage" required> -->
-                                <select class="edit-inlang-multiselect" id="edit-inlang-multiselect" name="inLanguage" multiple="multiple" required>
+                                <select class="edit-inlang-multiselect" id="edit-inlang-multiselect" name="edit-inlang-multiselect" multiple="multiple" required>
                                     {% for language in languages %}
-                                    <option value="{{ language.iso_639_3 }}">{{ language.name }}</option>
+                                    <option value="{{ language.name }}">{{ language.name }}</option>
                                     {% endfor %}
                                 </select>
                             </div>
                             <div class="edit-form-div">
                                 <label for="edit-fromlang-multiselect">Toponym is derived from which language(s)?:</label>
-                                <select class="edit-fromlang-multiselect" id="edit-fromlang-multiselect" name="edit-fromLanguage" multiple="multiple" required>
+                                <select class="edit-fromlang-multiselect" id="edit-fromlang-multiselect" name="edit-fromlang-multiselect" multiple="multiple" required>
                                     {% for language in languages %}
-                                    <option value="{{ language.iso_639_3 }}">{{ language.name }}</option>
+                                    <option value="{{ language.name }}">{{ language.name }}</option>
                                     {% endfor %}
                                 </select><br>
                                 <label for="edit-endonymDropdown">Endonym: </label>
@@ -505,7 +519,7 @@
                                     <option value="True">True</option>
                                     <option value="False">False</option>
                                 </select><br>
-                                <!-- span id="endonym-question"style='font-size:10px;'>&#10067;</span-->
+                                <label for="form-content">Description:</label><br>
                                 <textarea id="edit-form-content" name="edit-form-content" rows="8" cols="80" required></textarea>
                             </div>
                             <div class="edit-form-div">
@@ -517,18 +531,8 @@
                                 <button type="submit">Submit</button>
                             </div>
                             <div>
-                                <input type="hidden" id="title-field" name="title-field" value="undefined">
-                                <input type="hidden" id="coord-field" name="coord-field" value="undefined">
-                                <input type="hidden" id="long-field" name="long-field" value="undefined">
-                                <input type="hidden" id="lat-field" name="lat-field" value="undefined">
+                                <input type="hidden" id="id-field" name="id-field" value="undefined">
                                 <input type="hidden" id="tpnm-id-field" name="tpnm-id-field" value="undefined">
-                                <input type="hidden" id="mapbox-id-field" name="mapbox-id-field" value="undefined">
-                                <input type="hidden" id="place-class-field" name="place-class-field" value="undefined">
-                                <input type="hidden" id="place-type-field" name="place-type-field" value="undefined">
-                                <input type="hidden" id="geo-type-field" name="geo-type-field" value="undefined">
-                                <input type="hidden" id="iso-3166-1-field" name="iso-3166-1-field" value="undefined">
-                                <input type="hidden" id="iso-3166-2-field" name="iso-3166-2-field" value="undefined">
-                                <input type="hidden" id="geo-type-field" name="geo-type-field" value="undefined">
                             </div>
                         </form>
 
@@ -597,6 +601,7 @@
         var longField = document.getElementById("long-field");
         var latField = document.getElementById("lat-field");
         var tpnmIdField = document.getElementById("tpnm-id-field");
+        var idField = document.getElementById("id-field");
         var mapboxIdField = document.getElementById("mapbox-id-field");
         var placeClassField = document.getElementById("place-class-field");
         var placeTypeField = document.getElementById("place-type-field");
@@ -783,6 +788,7 @@
                 console.log('Axios')
                 // Parse data from Axios response
                 var jsondata = response.data.features
+                id = jsondata[0]['properties']['id']
                 title = jsondata[0]['properties']['title']
                 coordinates = jsondata[0]["geometry"]["coordinates"]
                 content = jsondata[0]['edit']['content']
@@ -806,7 +812,8 @@
                 coordField.value = coordinates;
                 articleName.innerText = name;
                 articleContent.innerText = content;
-                document.getElementById("article-inLanguage").innerText = inLanguage;
+                idField.value = id
+                document.getElementById("article-inLanguage").innerText = "Used in: "+inLanguage;
                 document.getElementById("article-fromLanguage").innerText = "Source: "+fromLanguage;
                 document.getElementById("article-username").innerText = "Last edit by: "+editUsername;
                 document.getElementById("article-datetime").innerText = editCreated;
@@ -824,38 +831,9 @@
                 {% if user.is_authenticated %}
                 document.getElementById("edit-tab").innerText = "Edit"
                 document.getElementById("edit-tab").addEventListener("click", editArticle(tpnm_id));
-                $('.edit-inlang-multiselect').val(inLanguage);  // doesn't work
-                $('#edit-inlang-multiselect').select2("data", {id: inLanguage, text: inLanguage});
-
-                // Set up the Select2 control
-                // THIS IS HOW TO DO IT WITH AJAX
-                // $('#mySelect2').select2({
-                //     ajax: {
-                //         url: '/api/students'
-                //     }
-                // });
-                //
-                // // Fetch the preselected item, and add to the control
-                // var studentSelect = $('#mySelect2');
-                // $.ajax({
-                //     type: 'GET',
-                //     url: '/api/students/s/' + studentId
-                // }).then(function (data) {
-                //     // create the option and append to Select2
-                //     var option = new Option(data.full_name, data.id, true, true);
-                //     studentSelect.append(option).trigger('change');
-                //
-                //     // manually trigger the `select2:select` event
-                //     studentSelect.trigger({
-                //         type: 'select2:select',
-                //         params: {
-                //             data: data
-                //         }
-                //     });
-                // });
-
+                $('.edit-inlang-multiselect').val(inLanguage).trigger('change');
                 console.log(inLanguage)
-                $('.edit-fromlang-multiselect').append(fromLanguage).trigger('change');
+                $('.edit-fromlang-multiselect').val(fromLanguage).trigger('change');
                 console.log(fromLanguage)
                 document.getElementById("edit-form-content").value = content;
                 document.getElementById("edit-name-field").value = name;
@@ -996,6 +974,7 @@
         });
         {% endif %}
 
+        // Populate map with markers on load
         var geojson = {
             type: 'FeatureCollection',
             features: [{% for article in articles %}

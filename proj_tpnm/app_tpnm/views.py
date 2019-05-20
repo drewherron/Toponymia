@@ -45,6 +45,7 @@ def get_article(request):
                 'class': article.place_class,
                 'title': article.title,
                 'iso_3166_1': article.iso_3166_1,
+                'id': article.id,
                 'tpnm_id': article.tpnm_id,
                 'named_id': article.named_id,
                 'created': article.created,
@@ -81,8 +82,8 @@ def save_article(request):
     iso_3166_2 = request.POST['iso-3166-2-field']
     named_id = title + ' id:' + str(mapbox_id)
     name = request.POST['name-field']
-    in_language = request.POST.getlist('inLanguage')
-    from_language = request.POST.getlist('fromLanguage')
+    in_language = request.POST.getlist('inlang-multiselect')
+    from_language = request.POST.getlist('fromlang-multiselect')
     endonym = request.POST['endonym']
     content = request.POST['form-content']
     reference = request.POST.getlist('reference-field')
@@ -98,15 +99,17 @@ def save_article(request):
 
 @login_required
 def save_edit(request):
-    name = request.POST['name-field']
-    in_language = request.POST.getlist('inLanguage')
-    from_language = request.POST.getlist('fromLanguage')
-    endonym = request.POST['endonym']
-    content = request.POST['form-content']
-    reference = request.POST.getlist('reference-field')
+    id = request.POST['id-field']
+    article = Article.objects.get(id=id)
+    name = request.POST['edit-name-field']
+    in_language = request.POST.getlist('edit-inlang-multiselect')
+    from_language = request.POST.getlist('edit-fromlang-multiselect')
+    endonym = request.POST['edit-endonym']
+    content = request.POST['edit-form-content']
+    reference = request.POST.getlist('edit-reference-field')
     username = request.user.get_username()
-    see_also = request.POST.getlist('see-also')
-    edit = Edit(name=name, in_language=in_language,
+    see_also = request.POST.getlist('edit-see-also')
+    edit = Edit(article = article, name=name, in_language=in_language,
                 from_language=from_language, endonym=endonym, content=content, reference=reference, username=username, see_also=see_also)
     edit.save()
     return HttpResponseRedirect(reverse('app_tpnm:index'))
