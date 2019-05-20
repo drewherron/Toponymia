@@ -29,20 +29,21 @@ class Article(models.Model):
 class Edit(models.Model):
     article = models.ForeignKey('Article', related_name='edits', on_delete=models.CASCADE)
     name = models.CharField(max_length=200, blank=False, null=False)
-    in_language = models.CharField(max_length=200, blank=False, null=False)
+    in_language = ArrayField(
+        models.CharField(max_length=250, blank=True), default=list, size=250, null=True, blank=True)
     # from_language = models.CharField(max_length=200, blank=True, null=True)
     from_language = ArrayField(
-        models.CharField(max_length=3, blank=True), default=list, size=5, null=True, blank=True)
+        models.CharField(max_length=250, blank=True), default=list, size=50, null=True, blank=True)
     content = models.TextField()
     endonym = models.NullBooleanField()
-    reference = models.CharField(max_length=2500, blank=True, null=True)
-    reference_url = models.URLField(max_length=200, blank=True, null=True)
+    reference = ArrayField(
+        models.CharField(max_length=500, blank=True), default=list, size=50, null=True, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     edited = models.DateTimeField(auto_now=True)
     derived_term = models.CharField(max_length=200, blank=True, null=True)
     derived_url = models.URLField(max_length=200, blank=True, null=True)
-    see_also_title = models.CharField(max_length=200, blank=True, null=True)
-    see_also_url = models.URLField(max_length=200, blank=True, null=True)
+    see_also = ArrayField(
+        models.CharField(max_length=500, blank=True), default=list, size=50, null=True, blank=True)
     username = models.CharField(max_length=200)
 
     def __str__(self):

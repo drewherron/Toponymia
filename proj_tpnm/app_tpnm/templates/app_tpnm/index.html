@@ -13,13 +13,11 @@
 </script>
     <script>
         $(document).ready(function() {
-            $('.lang-multiselect').select2();
-            $('.lang-singleselect').select2();
-            $('.edit-lang-multiselect').select2();
-            $('.edit-lang-singleselect').select2();
+            $('.inlang-multiselect').select2();
+            $('.fromlang-multiselect').select2();
+            $('#edit-inlang-multiselect').select2();
+            $('#edit-fromlang-multiselect').select2();
         });
-        // $(document).ready(function() {
-        // });
 </script>
     </script>
     <style>
@@ -155,6 +153,7 @@
             color: #333;
             background-color: #333;
             width: 80%;
+            margin-bottom: 50px;
         }
         #marker-toggle {
             position: fixed;
@@ -196,17 +195,21 @@
             cursor: pointer;
             padding: 14px 16px;
             font-size: 17px;
+            font-family: sans-serif;
+            flex-shrink: 1;
             {% if user.is_authenticated %}
             width: 25%;
             {% else %}
             width: 25%;
             {% endif %}
-            font-family: sans-serif;
-            flex-shrink: 1
         }
 
         .tablink:hover {
             background-color: #777;
+        }
+
+        #article {
+            height: 100%;
         }
 
         .article-title {
@@ -250,12 +253,20 @@
         #article-content {
             word-wrap: break-word;
             text-align: left;
-
         }
 
         #new-article {
             display: flex;
             flex-direction: column;
+        }
+
+        #edit-new-article {
+            display: flex;
+            flex-direction: column;
+        }
+
+        #edit {
+            height: 100%;
         }
 
         form * {
@@ -267,7 +278,20 @@
             height: auto;
         }
 
+        edit-form * {
+            margin: 5px;
+        }
+
+        .edit-form-div {
+            margin: auto;
+            height: auto;
+        }
+
         #article-button-div {
+            margin-bottom: 50px;
+        }
+
+        #edit-article-button-div {
             margin-bottom: 50px;
         }
 
@@ -402,36 +426,36 @@
                         <form action="/save_article/" method="post">
                             {% csrf_token %}
                             <div class="form-div">
-                                <label for="inLanguageDropdown">Create entry for which language:</label>
-                                <!-- <select class="inLanguageDropdown" name="inLanguage" required> -->
-                                <select class="lang-singleselect" id="inLanguageDropdown" name="inLanguage" required>
-                                    {% for language in languages %}
-                                    <option value="{{ language.iso_639_3 }}">{{ language.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-div">
-                                <label for="name-field">Name in this language:</label>
+                                <label for="name-field">Toponym:</label>
                                 <input type="text" id="name-field" name="name-field" value="undefined" required>
                             </div>
                             <div class="form-div">
-                                <label for="sourceLanguageDropdown">Source language(s):</label>
-                                <select class="lang-multiselect" id="sourceLanguageDropdown" name="sourceLanguage" multiple="multiple" required>
+                                <label for="inlang-multiselect">Which languages use this (exact) topnym:</label>
+                                <!-- <select class="inlang-multiselect" name="inLanguage" required> -->
+                                <select class="inlang-multiselect" id="inlang-multiselect" name="inLanguage" multiple="multiple" required>
                                     {% for language in languages %}
-                                    <option value="{{ language.iso_639_3 }}">{{ language.name }}</option>
+                                    <option value="{{ language.name }}">{{ language.name }}</option>
                                     {% endfor %}
                                 </select>
+                            </div>
+                            <div class="form-div">
+                                <label for="fromlang-multiselect">Toponym is derived from which language(s):</label>
+                                <select class="fromlang-multiselect" id="fromlang-multiselect" name="fromLanguage" multiple="multiple" required>
+                                    {% for language in languages %}
+                                    <option value="{{ language.name }}">{{ language.name }}</option>
+                                    {% endfor %}
+                                </select><br>
                                 <label for="endonymDropdown">Endonym: </label>
                                 <select class="endonymDropdown" name="endonym">
                                     <option value="True">True</option>
                                     <option value="False">False</option>
-                                </select>
-                                <!-- span id="endonym-question"style='font-size:10px;'>&#10067;</span--><br>
-                                <textarea name="form-content" rows="8" cols="80" required></textarea>
+                                </select><br>
+                                <!-- span id="endonym-question"style='font-size:10px;'>&#10067;</span-->
+                                <textarea id="form-content" name="form-content" rows="8" cols="80" required></textarea>
                             </div>
                             <div class="form-div">
                                 <label for="reference-field">Reference(s):</label>
-                                <input type="url" class="reference-field" name="reference-field" placeholder="Enter URL">
+                                <input type="url" id="reference-field" class="reference-field" name="reference-field" placeholder="Enter URL">
                             </div>
                             <div class="form-div" id="article-button-div">
                                 <button type="button" id="addAnotherBtn">Add Another</button>
@@ -457,31 +481,31 @@
                         <form action="/save_edit/" method="post">
                             {% csrf_token %}
                             <div class="edit-form-div">
-                                <label for="edit-inLanguageDropdown">Edit entry for which language:</label>
-                                <!-- <select class="inLanguageDropdown" name="inLanguage" required> -->
-                                <select class="edit-lang-singleselect" id="edit-inLanguageDropdown" name="inLanguage" required>
-                                    {% for language in languages %}
-                                    <option value="{{ language.iso_639_3 }}">{{ language.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="edit-form-div">
-                                <label for="edit-name-field">Name in this language:</label>
+                                <label for="edit-name-field">Toponym: </label>
                                 <input type="text" id="edit-name-field" name="edit-name-field" value="undefined" required>
                             </div>
                             <div class="edit-form-div">
-                                <label for="edit-sourceLanguageDropdown">Source language(s):</label>
-                                <select class="edit-lang-multiselect" id="edit-sourceLanguageDropdown" name="edit-sourceLanguage" multiple="multiple" required>
+                                <label for="edit-inlang-multiselect">Which language(s) use this toponym?:</label>
+                                <!-- <select class="inlang-multiselect" name="inLanguage" required> -->
+                                <select class="edit-inlang-multiselect" id="edit-inlang-multiselect" name="inLanguage" multiple="multiple" required>
                                     {% for language in languages %}
                                     <option value="{{ language.iso_639_3 }}">{{ language.name }}</option>
                                     {% endfor %}
                                 </select>
+                            </div>
+                            <div class="edit-form-div">
+                                <label for="edit-fromlang-multiselect">Toponym is derived from which language(s)?:</label>
+                                <select class="edit-fromlang-multiselect" id="edit-fromlang-multiselect" name="edit-fromLanguage" multiple="multiple" required>
+                                    {% for language in languages %}
+                                    <option value="{{ language.iso_639_3 }}">{{ language.name }}</option>
+                                    {% endfor %}
+                                </select><br>
                                 <label for="edit-endonymDropdown">Endonym: </label>
                                 <select class="edit-endonymDropdown" id="edit-endonymDropdown" name="edit-endonym">
                                     <option value="True">True</option>
                                     <option value="False">False</option>
-                                </select>
-                                <!-- span id="endonym-question"style='font-size:10px;'>&#10067;</span--><br>
+                                </select><br>
+                                <!-- span id="endonym-question"style='font-size:10px;'>&#10067;</span-->
                                 <textarea id="edit-form-content" name="edit-form-content" rows="8" cols="80" required></textarea>
                             </div>
                             <div class="edit-form-div">
@@ -579,6 +603,9 @@
         var geoTypeField = document.getElementById("geo-type-field");
         var iso_3166_1Field = document.getElementById("iso-3166-1-field");
         var iso_3166_2Field = document.getElementById("iso-3166-2-field");
+        {% if user.is_authenticated %}
+            var djangoUsername = "{{ user.get_username }}"
+        {% endif %}
 
         // Opens sidebar
         function openSidebar() {
@@ -702,7 +729,8 @@
             newArticleTab.innerText = 'New';
             closeTab.innerText = 'Cancel';
             closeTab.style.color = 'white';
-            newArticle.style.display = 'block';
+            newArticleDiv.style.display = 'block';
+            editArticleDiv.style.display = 'none';
             sidebarContent = document.getElementsByClassName("sidebar-content");
             for (let i = 0; i < sidebarContent.length; i++) {
                 sidebarContent[i].style.display = "none";
@@ -720,8 +748,8 @@
             }
 
             coordField.value = coordinates;
-            $('.lang-singleselect').val(null).trigger('change');
             $('.lang-multiselect').val(null).trigger('change');
+            document.getElementById("form-content").value = '';
             openSidebar();
             markerToggleOff();
         }
@@ -764,9 +792,7 @@
                 name = jsondata[0]['edit']['name']
                 let activeContent = document.getElementById("article");
                 let inLanguage = jsondata[0]['edit']['in_language']
-                console.log(inLanguage)
                 let fromLanguage = jsondata[0]['edit']['from_language']
-                console.log(fromLanguage)
                 // activeContent.style.visibility = 'visible';
                 activeContent.style.display = 'block';
                 activeContent.style.height = '100%';
@@ -798,8 +824,39 @@
                 {% if user.is_authenticated %}
                 document.getElementById("edit-tab").innerText = "Edit"
                 document.getElementById("edit-tab").addEventListener("click", editArticle(tpnm_id));
-                $('.edit-lang-singleselect').val(inLanguage).trigger('change');
-                $('.edit-lang-multiselect').val(fromLanguage).trigger('change');
+                $('.edit-inlang-multiselect').val(inLanguage);  // doesn't work
+                $('#edit-inlang-multiselect').select2("data", {id: inLanguage, text: inLanguage});
+
+                // Set up the Select2 control
+                // THIS IS HOW TO DO IT WITH AJAX
+                // $('#mySelect2').select2({
+                //     ajax: {
+                //         url: '/api/students'
+                //     }
+                // });
+                //
+                // // Fetch the preselected item, and add to the control
+                // var studentSelect = $('#mySelect2');
+                // $.ajax({
+                //     type: 'GET',
+                //     url: '/api/students/s/' + studentId
+                // }).then(function (data) {
+                //     // create the option and append to Select2
+                //     var option = new Option(data.full_name, data.id, true, true);
+                //     studentSelect.append(option).trigger('change');
+                //
+                //     // manually trigger the `select2:select` event
+                //     studentSelect.trigger({
+                //         type: 'select2:select',
+                //         params: {
+                //             data: data
+                //         }
+                //     });
+                // });
+
+                console.log(inLanguage)
+                $('.edit-fromlang-multiselect').append(fromLanguage).trigger('change');
+                console.log(fromLanguage)
                 document.getElementById("edit-form-content").value = content;
                 document.getElementById("edit-name-field").value = name;
                 {% endif %}
@@ -982,6 +1039,7 @@
                 openArticle(currentMarkerId)
             });
         });
+
     </script>
 </body>
 

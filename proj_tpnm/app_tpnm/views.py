@@ -60,9 +60,7 @@ def get_article(request):
                 'edited': edit.edited,
                 'username': edit.username,
                 'reference': edit.reference,
-                'reference_url': edit.reference_url,
-                'see_also_title': edit.see_also_title,
-                'see_also_url': edit.see_also_url,
+                'see_also': edit.see_also,
             }
         },
         ]}
@@ -83,11 +81,11 @@ def save_article(request):
     iso_3166_2 = request.POST['iso-3166-2-field']
     named_id = title + ' id:' + str(mapbox_id)
     name = request.POST['name-field']
-    in_language = request.POST['inLanguage']
-    from_language = request.POST.getlist('sourceLanguage')
+    in_language = request.POST.getlist('inLanguage')
+    from_language = request.POST.getlist('fromLanguage')
     endonym = request.POST['endonym']
     content = request.POST['form-content']
-    reference = request.POST['reference-field']
+    reference = request.POST.getlist('reference-field')
     username = request.user.get_username()
     print(request.POST)
     article = Article(tpnm_id=tpnm_id, mapbox_id=mapbox_id, named_id=named_id, title=title, longitude=longitude, latitude=latitude,
@@ -101,14 +99,15 @@ def save_article(request):
 @login_required
 def save_edit(request):
     name = request.POST['name-field']
-    in_language = request.POST['inLanguage']
-    from_language = request.POST.getlist('sourceLanguage')
+    in_language = request.POST.getlist('inLanguage')
+    from_language = request.POST.getlist('fromLanguage')
     endonym = request.POST['endonym']
     content = request.POST['form-content']
-    reference = request.POST['reference-field']
+    reference = request.POST.getlist('reference-field')
     username = request.user.get_username()
+    see_also = request.POST.getlist('see-also')
     edit = Edit(name=name, in_language=in_language,
-                from_language=from_language, endonym=endonym, content=content, reference=reference, username=username)
+                from_language=from_language, endonym=endonym, content=content, reference=reference, username=username, see_also=see_also)
     edit.save()
     return HttpResponseRedirect(reverse('app_tpnm:index'))
 
@@ -117,7 +116,29 @@ def about(request):
     }
     return render(request, 'app_tpnm/about.html', context)
 
-
+# def save_comment(request):
+#     if request.method == 'POST':
+#         post_text = request.POST.get('the_post')
+#         response_data = {}
+#
+#         post = Post(text=post_text, author=request.user)
+#         post.save()
+#
+#         response_data['result'] = 'Create post successful!'
+#         response_data['postpk'] = post.pk
+#         response_data['text'] = post.text
+#         response_data['created'] = post.created.strftime('%B %d, %Y %I:%M %p')
+#         response_data['author'] = post.author.username
+#
+#         return HttpResponse(
+#             json.dumps(response_data),
+#             content_type="application/json"
+#         )
+#     else:
+#         return HttpResponse(
+#             json.dumps({"nothing to see": "this isn't happening"}),
+#             content_type="application/json"
+#         )
 # class LanguageAutocomplete(autocomplete.Select2QuerySetView):
 #     def get_queryset(self):
 #
