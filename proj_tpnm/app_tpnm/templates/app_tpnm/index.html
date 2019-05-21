@@ -9,6 +9,7 @@
     <link href='https://api.tiles.mapbox.com/mapbox-gl-js/v0.53.1/mapbox-gl.css' rel='stylesheet' />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/css/select2.min.css" rel="stylesheet" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.7/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
     <link rel="icon" href="{% static "app_tpnm/favicon.ico" %}">
 </script>
     <script>
@@ -485,6 +486,9 @@
                         </form>
                     </div>
                     <div id="edit-article">
+                        <div id="article-name-list">
+
+                        </div>
                         <form action="/save_edit/" method="post">
                             {% csrf_token %}
                             <div class="edit-form-div">
@@ -525,7 +529,7 @@
                             </div>
                             <div>
                                 <input type="hidden" id="id-field" name="id-field" value="undefined">
-                                <input type="hidden" id="tpnm-id-field" name="tpnm-id-field" value="undefined">
+                                <input type="hidden" id="edit-tpnm-id-field" name="edit-tpnm-id-field" value="undefined">
                             </div>
                         </form>
 
@@ -594,6 +598,7 @@
         var longField = document.getElementById("long-field");
         var latField = document.getElementById("lat-field");
         var tpnmIdField = document.getElementById("tpnm-id-field");
+        var editTpnmIdField = document.getElementById("edit-tpnm-id-field");
         var idField = document.getElementById("id-field");
         var mapboxIdField = document.getElementById("mapbox-id-field");
         var placeClassField = document.getElementById("place-class-field");
@@ -778,19 +783,21 @@
             axios.post('{% url 'app_tpnm:get_article' %}', data, config).then(function(response) {
                 console.log('Axios')
                 // Parse data from Axios response
-                var jsondata = response.data.features
-                id = jsondata[0]['properties']['id']
-                title = jsondata[0]['properties']['title']
-                coordinates = jsondata[0]["geometry"]["coordinates"]
-                content = jsondata[0]['edit']['content']
-                endonymValue = jsondata[0]['edit']['endonym']
-                editCreated = jsondata[0]['edit']['created']
+                var jsondata = response.data
+                console.log(jsondata)
+                id = jsondata['properties'][0]['id']
+                tpnmId = jsondata['properties'][0]['tpnm_id']
+                title = jsondata['properties'][0]['title']
+                coordinates = jsondata['properties'][0]['coordinates']
+                content = jsondata['properties'][0]['toponyms'][0]['edits'][0]['content']
+                endonymValue = jsondata['properties'][0]['toponyms'][0]['edits'][0]['endonym']
+                editCreated = jsondata['properties'][0]['toponyms'][0]['edits'][0]['created']
                 editDateTime = formatDateTime(editCreated)
-                editUsername = jsondata[0]['edit']['username']
-                name = jsondata[0]['edit']['name']
+                editUsername = jsondata['properties'][0]['toponyms'][0]['edits'][0]['username']
+                name = jsondata['properties'][0]['toponyms'][0]['name']
                 let activeContent = document.getElementById("article");
-                let inLanguage = jsondata[0]['edit']['in_language']
-                let fromLanguage = jsondata[0]['edit']['from_language']
+                let inLanguage = jsondata['properties'][0]['toponyms'][0]['edits'][0]['in_language']
+                let fromLanguage = jsondata['properties'][0]['toponyms'][0]['edits'][0]['from_language']
                 // activeContent.style.visibility = 'visible';
                 activeContent.style.display = 'block';
                 activeContent.style.height = '100%';
@@ -804,7 +811,8 @@
                 coordField.value = coordinates;
                 articleName.innerText = name;
                 articleContent.innerText = content;
-                idField.value = id
+                idField.value = id;
+                editTpnmIdField.value = tpnmId;
                 document.getElementById("article-inLanguage").innerText = "Used in: "+inLanguage;
                 document.getElementById("article-fromLanguage").innerText = "Source: "+fromLanguage;
                 document.getElementById("article-username").innerText = "Last edit by: "+editUsername;

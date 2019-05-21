@@ -26,47 +26,21 @@ def usermap(request):
 
 def get_article(request):
     data = json.loads(request.body)
+    print(data)
     # current_id = data['id']
-    article = Article.objects.get(tpnm_id=data['tpnm_id'])
-    article_names = ArticleName.objects.filter(article__tpnm_id=data['tpnm_id']).order_by('id')
-    edits = Edit.objects.filter(article_name__tpnm_id=data['tpnm_id']).order_by('edited')
-
-    for edit in edits:
-        print(edit)
-    for article_name in article_names:
-        print(article_name)
-    jsondata = {
-        'type': 'FeatureCollection',
-        'features': [{
-                'type': article.place_type,
-                'geometry': {
-                    'type': article.geo_type,
-                    'coordinates': [article.longitude, article.latitude]
-                },
-            'properties': {
-                'class': article.place_class,
-                'title': article.title,
-                'iso_3166_1': article.iso_3166_1,
-                'id': article.id,
-                'tpnm_id': article.tpnm_id,
-                'named_id': article.named_id,
-                'created': article.created,
-                'created_by': article.created_by
-            },
-            'edit': {
-                'name': article_name.name,
-                'in_language': edit.in_language,
-                'from_language': edit.from_language,
-                'endonym': edit.endonym,
-                'content': edit.content,
-                'created': edit.created,
-                'edited': edit.edited,
-                'username': edit.username,
-                'reference': edit.reference,
-                'see_also': edit.see_also,
-            }
-        },
-        ]}
+    articles = Article.objects.filter(tpnm_id=data['tpnm_id'])
+    # article_names = ArticleName.objects.filter(article__tpnm_id=data['tpnm_id']).order_by('id')
+    # edits = Edit.objects.filter(article_name__id=article_names.id).order_by('edited')
+    jsondata = {'properties': []}
+    for article in articles:
+        jsondata['properties'].append(article.toDictionary())
+    # for article_name in article.article_names.all():
+    # for article_name in article_names:
+    #     jsondata['features'][0]['toponyms'].append(article_name.toDictionary())
+    #     for edit in article_name.edits.all():
+    #         n = 0
+    #         jsondata['features'][0]['toponyms'][n]['article'].append(edit.toDictionary())
+    # print(jsondata['features'])
     print(jsondata)
     return JsonResponse(jsondata)
 
@@ -106,6 +80,7 @@ def save_article(request):
 @login_required
 def save_edit(request):
     id = request.POST['id-field']
+    tpnm_id = request.POST['edit-tpnm-id-field']
     article = Article.objects.get(id=id)
     name = request.POST['edit-name-field']
     in_language = request.POST.getlist('edit-inlang-multiselect')
@@ -115,7 +90,9 @@ def save_edit(request):
     reference = request.POST.getlist('edit-reference-field')
     username = request.user.get_username()
     see_also = request.POST.getlist('edit-see-also')
-    edit = Edit(article = article, name=name, in_language=in_language,
+    article_name = ArticleName(tpnm_id=tpnm_id, article=article, name=name)
+    article_name.save()
+    edit = Edit(article_name = article_name, in_language=in_language,
                 from_language=from_language, endonym=endonym, content=content, reference=reference, username=username, see_also=see_also)
     edit.save()
     return HttpResponseRedirect(reverse('app_tpnm:index'))
