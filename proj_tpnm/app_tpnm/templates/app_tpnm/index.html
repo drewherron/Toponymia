@@ -300,6 +300,39 @@
             margin-bottom: 50px;
         }
 
+        .history-div1{
+            margin: 0px 10%;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .history-div2{
+            /* margin: 0px 10%; */
+            display: flex;
+            flex-direction: row;
+            justify-content: space-around;
+        }
+
+        .history-div3{
+            margin: 20px 10%;
+            margin-top: 15px;
+            display: flex;
+            flex-direction: row;
+        }
+
+        .history-div4{
+            margin: 0px 10%;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .history-div5{
+            margin: 0px 10%;
+            display: flex;
+            flex-direction: row;
+        }
+
         .marker {
             background-image: url("{% static "app_tpnm/marker.svg" %}");
             background-size: cover;
@@ -397,148 +430,178 @@
                     <button class="tablink" id="history-tab">History</button>
                     <button class="tablink" id="close-tab">Close</button>
                 </div>
-                <div class="sidebar-content" id="article">
-                    <div class="article-title"></div>
-                    <div class="article-coordinates"></div>
-                    <hr>
-                    <div id="article-div1">
-                        <div><h2 id="article-name"></h2></div>
-                        <div id="article-endonym"></div>
-                    </div>
-                    <div id="article-div2">
-                        <div><h4 id="article-fromLanguage"></h4></div>
-                    </div>
-                    <div id="article-div3">
-                        <div><h5 id="article-inLanguage"></h5></div>
-                    </div>
-                    <div id="article-div4">
-                        <div id="article-content"></div>
-                    </div>
-                    <div id="article-div5">
-                        <div><p id="article-username"></p></div>
-                        <div><p id="article-datetime"></p></div>
-                    </div>
-                    <hr class="thin">
-                </div>
-                <div class="sidebar-content" id="talk">
-                    <div class="article-title"></div>
-                    <div class="article-coordinates"></div>
-                    <hr>
-                </div>
-                <div class="sidebar-content" id="edit">
-                    <div class="article-title"></div>
-                    <div class="article-coordinates"></div>
-                    <hr>
-                    <div id="new-article">
-                        <form action="/save_article/" method="post">
-                            {% csrf_token %}
-                            <div class="form-div">
-                                <label for="name-field">Toponym:</label>
-                                <input type="text" id="name-field" name="name-field" value="undefined" required>
+                <div id="app">
+                    <div class="sidebar-content" id="article">
+                        <div class="article-title"></div>
+                        <div class="article-coordinates"></div>
+                        <hr>
+                            <div v-for="name in names">
+                                <div id="article-div1">
+                                    <div><h2 id="article-name">[[ name.name ]]</h2></div>
+                                    <div id="article-endonym">Endonym: [[ name.edits[0].endonym ]]</div>
+                                </div>
+                                <div id="article-div2">
+                                    <div><h4 id="article-fromLanguage"> Source language(s): [[ name.edits[0].from_language ]]</h4></div>
+                                </div>
+                                <div id="article-div3">
+                                    <div><h5 id="article-inLanguage">Used in: [[ name.edits[0].in_language ]]</h5></div>
+                                </div>
+                                <div id="article-div4">
+                                    <div id="article-content"><pre>[[ name.edits[0].content ]]</pre></div>
+                                </div>
+                                <div id="article-div5">
+                                    <div><p id="article-username"></p>Last edit by: [[ name.edits[0].username ]]</div>
+                                    <div><p id="article-datetime"></p>[[ name.edits[0].created ]]</div>
+                                </div>
+                                <hr class="thin">
                             </div>
-                            <div class="form-div">
-                                <label for="inlang-multiselect">Which languages use this (exact) topnym:</label>
-                                <!-- <select class="inlang-multiselect" name="inLanguage" required> -->
-                                <select class="inlang-multiselect" id="inlang-multiselect" name="inlang-multiselect" multiple="multiple" required>
-                                    {% for language in languages %}
-                                    <option value="{{ language.name }}">{{ language.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="form-div">
-                                <label for="fromlang-multiselect">Toponym is derived from which language(s):</label>
-                                <select class="fromlang-multiselect" id="fromlang-multiselect" name="fromlang-multiselect" multiple="multiple" required>
-                                    {% for language in languages %}
-                                    <option value="{{ language.name }}">{{ language.name }}</option>
-                                    {% endfor %}
-                                </select><br>
-                                <label for="endonymDropdown">Endonym: </label>
-                                <select class="endonymDropdown" name="endonym">
-                                    <option value="True">True</option>
-                                    <option value="False">False</option>
-                                </select><br>
-                                <!-- span id="endonym-question"style='font-size:10px;'>&#10067;</span-->
-                                <label for="form-content">Description:</label>
-                                <textarea id="form-content" name="form-content" rows="8" cols="80" required></textarea>
-                            </div>
-                            <div class="form-div">
-                                <label for="reference-field">Reference(s):</label>
-                                <input type="url" id="reference-field" class="reference-field" name="reference-field" placeholder="Enter URL">
-                            </div>
-                            <div class="form-div" id="article-button-div">
-                                <button type="button" id="addAnotherBtn">Add Another</button>
-                                <button type="submit">Submit</button>
-                            </div>
-                            <div>
-                                <input type="hidden" id="title-field" name="title-field" value="undefined">
-                                <input type="hidden" id="coord-field" name="coord-field" value="undefined">
-                                <input type="hidden" id="long-field" name="long-field" value="undefined">
-                                <input type="hidden" id="lat-field" name="lat-field" value="undefined">
-                                <input type="hidden" id="tpnm-id-field" name="tpnm-id-field" value="undefined">
-                                <input type="hidden" id="mapbox-id-field" name="mapbox-id-field" value="undefined">
-                                <input type="hidden" id="place-class-field" name="place-class-field" value="undefined">
-                                <input type="hidden" id="place-type-field" name="place-type-field" value="undefined">
-                                <input type="hidden" id="geo-type-field" name="geo-type-field" value="undefined">
-                                <input type="hidden" id="iso-3166-1-field" name="iso-3166-1-field" value="undefined">
-                                <input type="hidden" id="iso-3166-2-field" name="iso-3166-2-field" value="undefined">
-                                <input type="hidden" id="geo-type-field" name="geo-type-field" value="undefined">
-                            </div>
-                        </form>
                     </div>
-                    <div id="edit-article">
-                        <div id="article-name-list">
-
+                    <div class="sidebar-content" id="talk">
+                        <div class="article-title"></div>
+                        <div class="article-coordinates"></div>
+                        <hr>
+                    </div>
+                    <div class="sidebar-content" id="edit">
+                        <div class="article-title"></div>
+                        <div class="article-coordinates"></div>
+                        <hr>
+                        <div id="new-article">
+                            <form action="/save_article/" method="post">
+                                {% csrf_token %}
+                                <div class="form-div">
+                                    <label for="name-field">Toponym:</label>
+                                    <input type="text" id="name-field" name="name-field" value="undefined" required>
+                                </div>
+                                <div class="form-div">
+                                    <label for="inlang-multiselect">Which languages use this (exact) topnym:</label>
+                                    <!-- <select class="inlang-multiselect" name="inLanguage" required> -->
+                                    <select class="inlang-multiselect" id="inlang-multiselect" name="inlang-multiselect" multiple="multiple" required>
+                                        {% for language in languages %}
+                                        <option value="{{ language.name }}">{{ language.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="form-div">
+                                    <label for="fromlang-multiselect">Toponym is derived from which language(s):</label>
+                                    <select class="fromlang-multiselect" id="fromlang-multiselect" name="fromlang-multiselect" multiple="multiple" required>
+                                        {% for language in languages %}
+                                        <option value="{{ language.name }}">{{ language.name }}</option>
+                                        {% endfor %}
+                                    </select><br>
+                                    <label for="endonymDropdown">Endonym: </label>
+                                    <select class="endonymDropdown" name="endonym">
+                                        <option value="True">True</option>
+                                        <option value="False">False</option>
+                                    </select><br>
+                                    <!-- span id="endonym-question"style='font-size:10px;'>&#10067;</span-->
+                                    <label for="form-content">Description:</label>
+                                    <textarea id="form-content" name="form-content" rows="8" cols="80" required></textarea>
+                                </div>
+                                <div class="form-div">
+                                    <label for="reference-field">Reference(s):</label>
+                                    <input type="url" id="reference-field" class="reference-field" name="reference-field" placeholder="Enter URL">
+                                </div>
+                                <div class="form-div" id="article-button-div">
+                                    <button type="submit">Submit</button>
+                                </div>
+                                <div>
+                                    <input type="hidden" id="title-field" name="title-field" value="undefined">
+                                    <input type="hidden" id="coord-field" name="coord-field" value="undefined">
+                                    <input type="hidden" id="long-field" name="long-field" value="undefined">
+                                    <input type="hidden" id="lat-field" name="lat-field" value="undefined">
+                                    <input type="hidden" id="tpnm-id-field" name="tpnm-id-field" value="undefined">
+                                    <input type="hidden" id="mapbox-id-field" name="mapbox-id-field" value="undefined">
+                                    <input type="hidden" id="place-class-field" name="place-class-field" value="undefined">
+                                    <input type="hidden" id="place-type-field" name="place-type-field" value="undefined">
+                                    <input type="hidden" id="geo-type-field" name="geo-type-field" value="undefined">
+                                    <input type="hidden" id="iso-3166-1-field" name="iso-3166-1-field" value="undefined">
+                                    <input type="hidden" id="iso-3166-2-field" name="iso-3166-2-field" value="undefined">
+                                    <input type="hidden" id="geo-type-field" name="geo-type-field" value="undefined">
+                                </div>
+                            </form>
                         </div>
-                        <form action="/save_edit/" method="post">
-                            {% csrf_token %}
-                            <div class="edit-form-div">
-                                <label for="edit-name-field">Toponym: </label>
-                                <input type="text" id="edit-name-field" name="edit-name-field" required>
+                        <div id="edit-article">
+                            <div id="app">
+                                <ol>
+                                    <li v-for="name in names">
+                                        [[ name.name ]]
+                                    </li>
+                                </ol>
                             </div>
-                            <div class="edit-form-div">
-                                <label for="edit-inlang-multiselect">Which language(s) use this (exact) toponym?:</label>
-                                <!-- <select class="inlang-multiselect" name="inLanguage" required> -->
-                                <select class="edit-inlang-multiselect" id="edit-inlang-multiselect" name="edit-inlang-multiselect" multiple="multiple" required>
-                                    {% for language in languages %}
-                                    <option value="{{ language.name }}">{{ language.name }}</option>
-                                    {% endfor %}
-                                </select>
-                            </div>
-                            <div class="edit-form-div">
-                                <label for="edit-fromlang-multiselect">Toponym is derived from which language(s)?:</label>
-                                <select class="edit-fromlang-multiselect" id="edit-fromlang-multiselect" name="edit-fromlang-multiselect" multiple="multiple" required>
-                                    {% for language in languages %}
-                                    <option value="{{ language.name }}">{{ language.name }}</option>
-                                    {% endfor %}
-                                </select><br>
-                                <label for="edit-endonymDropdown">Endonym: </label>
-                                <select class="edit-endonymDropdown" id="edit-endonymDropdown" name="edit-endonym">
-                                    <option value="True">True</option>
-                                    <option value="False">False</option>
-                                </select><br>
-                                <label for="form-content">Description:</label><br>
-                                <textarea id="edit-form-content" name="edit-form-content" rows="8" cols="80" required></textarea>
-                            </div>
-                            <div class="edit-form-div">
-                                <label for="edit-reference-field">Reference(s):</label>
-                                <input type="url" class="edit-reference-field" name="edit-reference-field" placeholder="Enter URL">
-                            </div>
-                            <div class="edit-form-div" id="edit-article-button-div">
-                                <button type="button" id="edit-addAnotherBtn">Add Another</button>
-                                <button type="submit">Submit</button>
-                            </div>
-                            <div>
-                                <input type="hidden" id="id-field" name="id-field" value="undefined">
-                                <input type="hidden" id="edit-tpnm-id-field" name="edit-tpnm-id-field" value="undefined">
-                            </div>
-                        </form>
-
+                            <form action="/save_edit/" method="post">
+                                {% csrf_token %}
+                                <div class="edit-form-div">
+                                    <label for="edit-name-field">Toponym: </label>
+                                    <input type="text" id="edit-name-field" name="edit-name-field" required>
+                                </div>
+                                <div class="edit-form-div">
+                                    <label for="edit-inlang-multiselect">Which language(s) use this (exact) toponym?:</label>
+                                    <!-- <select class="inlang-multiselect" name="inLanguage" required> -->
+                                    <select class="edit-inlang-multiselect" id="edit-inlang-multiselect" name="edit-inlang-multiselect" multiple="multiple" required>
+                                        {% for language in languages %}
+                                        <option value="{{ language.name }}">{{ language.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="edit-form-div">
+                                    <label for="edit-fromlang-multiselect">Toponym is derived from which language(s)?:</label>
+                                    <select class="edit-fromlang-multiselect" id="edit-fromlang-multiselect" name="edit-fromlang-multiselect" multiple="multiple" required>
+                                        {% for language in languages %}
+                                        <option value="{{ language.name }}">{{ language.name }}</option>
+                                        {% endfor %}
+                                    </select><br>
+                                    <label for="edit-endonymDropdown">Endonym: </label>
+                                    <select class="edit-endonymDropdown" id="edit-endonymDropdown" name="edit-endonym">
+                                        <option value="True">True</option>
+                                        <option value="False">False</option>
+                                    </select><br>
+                                    <label for="form-content">Description:</label><br>
+                                    <textarea id="edit-form-content" name="edit-form-content" rows="8" cols="80" required></textarea>
+                                </div>
+                                <div class="edit-form-div">
+                                    <label for="edit-reference-field">Reference(s):</label>
+                                    <input type="url" class="edit-reference-field" name="edit-reference-field" placeholder="Enter URL">
+                                </div>
+                                <div class="edit-form-div" id="edit-article-button-div">
+                                    <button type="submit">Submit</button>
+                                </div>
+                                <div>
+                                    <input type="hidden" id="id-field" name="id-field" value="undefined">
+                                    <input type="hidden" id="edit-tpnm-id-field" name="edit-tpnm-id-field" value="undefined">
+                                </div>
+                            </form>
+                        </div>
                     </div>
-                </div>
-                <div class="sidebar-content" id="history">
-                    <div class="article-title"></div>
-                    <div class="article-coordinates"></div>
-                    <hr>
+                    <div class="sidebar-content" id="history">
+                        <div class="article-title"></div>
+                        <div class="article-coordinates"></div>
+                        <hr>
+                        <div v-for="name in names">
+                            <div class="history-name">
+                                <div><h2 class="article-name">Edits for: [[ name.name ]]</h2></div>
+                                <div v-for="edit in name.edits">
+                                    <div class="history-div1">
+                                        <div><h3 class="history-name">[[ name.name ]]</h3></div>
+                                    </div>
+                                    <div class="history-div2">
+                                        <div><p class="history-username"></p>Edited by: [[ edit.username ]]</div>
+                                        <div><p class="history-datetime"></p>[[ edit.created ]]</div>
+                                    </div>
+                                    <div class="history-div3">
+                                        <div class="history-content"><pre>[[ edit.content ]]</pre></div>
+                                    </div>
+                                    <div class="history-div4">
+                                        <div><p class="history-fromLanguage"> Source language(s): [[ edit.from_language ]]</p></div>
+                                        <div><p class="history-inLanguage">Used in: [[ edit.in_language ]]</p></div>
+                                    </div>
+                                    <div class="history-div5">
+                                        <div class="history-endonym">Endonym: [[ edit.endonym ]]</div>
+                                    </div>
+                                    <hr class="thin">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
             <div id='map'>
@@ -552,6 +615,7 @@
     <!-- Axios CDN -->
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
+
         // This is mapbox's public demo key, only using while testing
         mapboxgl.accessToken = 'pk.eyJ1IjoieWF4eDByIiwiYSI6ImNqdW9rYXd1ODBjbjg0NHA3emp4ZDZiZWgifQ.0KqNiYI2LlrzR1lNSFJ6IA';
         // mapboxgl.accessToken = {
@@ -576,20 +640,20 @@
         var randomBtn = document.getElementById('random-btn');
         var sidebar = document.getElementById('sidebar');
         var articleTab = document.getElementById("article-tab");
-        var articleName = document.getElementById("article-name");
+        // var articleName = document.getElementById("article-name");
         var articleContent = document.getElementById("article-content");
         var talkTab = document.getElementById("talk-tab");
         var talkContent = document.getElementById("talk-content");
         {% if user.is_authenticated %}
         var editTab = document.getElementById("edit-tab");
-        var editContent = document.getElementById("edit-content");
+        var editTpnmIdField = document.getElementById("edit-tpnm-id-field");
+        var editArticleDiv = document.getElementById("edit-article");
         {% endif %}
         var historyTab = document.getElementById("history-tab");
         var historyContent = document.getElementById("history-content");
         var closeTab = document.getElementById("close-tab");
         var markerToggle = document.getElementById("marker-toggle");
         var newArticleDiv = document.getElementById("new-article");
-        var editArticleDiv = document.getElementById("edit-article");
         var articleTitle = document.getElementsByClassName("article-title");
         var articleCoordinates = document.getElementsByClassName("article-coordinates");
         var nameField = document.getElementById("name-field");
@@ -598,7 +662,6 @@
         var longField = document.getElementById("long-field");
         var latField = document.getElementById("lat-field");
         var tpnmIdField = document.getElementById("tpnm-id-field");
-        var editTpnmIdField = document.getElementById("edit-tpnm-id-field");
         var idField = document.getElementById("id-field");
         var mapboxIdField = document.getElementById("mapbox-id-field");
         var placeClassField = document.getElementById("place-class-field");
@@ -702,7 +765,6 @@
         }
 
         function formatDateTime(DTinput) {
-            console.log(formatDateTime)
             let date = new Date(DTinput);
             let year = date.getUTCFullYear();
             let month = date.getUTCMonth()+1;
@@ -716,7 +778,6 @@
 
         {% if user.is_authenticated %}
         function newArticlePoint(title, coordinates, mapboxId) {
-            console.log('newArticlePoint')
             removeTabListeners();
             articleTab.style.backgroundColor = '#555';
             articleTab.style.color = '#737070';
@@ -762,7 +823,6 @@
         {% endif %}
 
         function openArticle(tpnm_id) {
-            console.log('openArticle');
             addTabListeners();
             document.getElementById("close-tab").innerText = "Close"
             // document.getElementById('close-tab').onclick = closeSidebar();
@@ -781,7 +841,6 @@
                 }
             }
             axios.post('{% url 'app_tpnm:get_article' %}', data, config).then(function(response) {
-                console.log('Axios')
                 // Parse data from Axios response
                 var jsondata = response.data
                 console.log(jsondata)
@@ -809,39 +868,49 @@
                     articleCoordinates[i].innerText = '(' + coordinates.toString() + ')';
                 }
                 coordField.value = coordinates;
-                articleName.innerText = name;
+                // articleName.innerText = name;
                 articleContent.innerText = content;
                 idField.value = id;
                 editTpnmIdField.value = tpnmId;
-                document.getElementById("article-inLanguage").innerText = "Used in: "+inLanguage;
-                document.getElementById("article-fromLanguage").innerText = "Source: "+fromLanguage;
-                document.getElementById("article-username").innerText = "Last edit by: "+editUsername;
-                document.getElementById("article-datetime").innerText = editDateTime;
-                console.log(editCreated)
-                if (endonymValue == true){
-                    document.getElementById("article-endonym").innerHTML = "<p>Endonym</p>"
-                {% if user.is_authenticated %}
-                    document.getElementById("edit-endonymDropdown").value = "True";
-                {% endif %}
-                } else {
-                    document.getElementById("article-endonym").innerHTML = "<p>Exonym</p>"
-                {% if user.is_authenticated %}
-                    document.getElementById("edit-endonymDropdown").value = "False";
-                {% endif %}
-                }
+                // document.getElementById("article-inLanguage").innerText = "Used in: "+inLanguage;
+                // document.getElementById("article-fromLanguage").innerText = "Source: "+fromLanguage;
+                // document.getElementById("article-username").innerText = "Last edit by: "+editUsername;
+                // document.getElementById("article-datetime").innerText = editDateTime;
+                // if (endonymValue == true){
+                //     document.getElementById("article-endonym").innerHTML = "<p>Endonym</p>"
+                // {% if user.is_authenticated %}
+                //     document.getElementById("edit-endonymDropdown").value = "True";
+                // {% endif %}
+                // } else {
+                //     document.getElementById("article-endonym").innerHTML = "<p>Exonym</p>"
+                // {% if user.is_authenticated %}
+                //     document.getElementById("edit-endonymDropdown").value = "False";
+                // {% endif %}
+                // }
                 {% if user.is_authenticated %}
                 document.getElementById("edit-tab").innerText = "Edit"
                 document.getElementById("edit-tab").addEventListener("click", editArticle(tpnm_id));
                 $('.edit-inlang-multiselect').val(inLanguage).trigger('change');
-                console.log(inLanguage)
                 $('.edit-fromlang-multiselect').val(fromLanguage).trigger('change');
-                console.log(fromLanguage)
                 document.getElementById("edit-form-content").value = content;
                 document.getElementById("edit-name-field").value = name;
+
+                app.names = jsondata['properties'][0]['toponyms']
+
                 {% endif %}
             });
             openSidebar();
         }
+
+        var app = new Vue({
+            el: '#app',
+            data: {
+                names: []
+            },
+            delimiters: ["[[","]]"]
+        });
+
+
         // Toggle button change on click
         var addMarkerMode = false;
         {% if user.is_authenticated %}
@@ -945,10 +1014,6 @@
                         tooltip.innerText = title;
                         currentMarker.appendChild(tooltip);
 
-                        function logid() {
-                            console.log(tpnmId)
-                        }
-                        // currentMarker.addEventListener('click', openArticle(tpnmId));
                         document.getElementById("close-tab").addEventListener("click", function() {
                             cancelMarker(marker)
                         });
