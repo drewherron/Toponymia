@@ -78,7 +78,7 @@ def save_article(request):
     return HttpResponseRedirect(reverse('app_tpnm:index'))
 
 @login_required
-def save_edit(request):
+def save_name(request):
     id = request.POST['id-field']
     tpnm_id = request.POST['edit-tpnm-id-field']
     article = Article.objects.get(id=id)
@@ -97,40 +97,24 @@ def save_edit(request):
     edit.save()
     return HttpResponseRedirect(reverse('app_tpnm:index'))
 
+@login_required
+def save_edit(request):
+    article_name_id = request.POST['article-name-id-field']
+    tpnm_id = request.POST['edit-tpnm-id-field']
+    article_name = ArticleName.objects.get(id=article_name_id)
+    in_language = request.POST.getlist('edit-inlang-multiselect')
+    from_language = request.POST.getlist('edit-fromlang-multiselect')
+    endonym = request.POST['edit-endonym']
+    content = request.POST['edit-form-content']
+    reference = request.POST.getlist('edit-reference-field')
+    username = request.user.get_username()
+    see_also = request.POST.getlist('edit-see-also')
+    edit = Edit(article_name = article_name, in_language=in_language,
+                from_language=from_language, endonym=endonym, content=content, reference=reference, username=username, see_also=see_also)
+    edit.save()
+    return HttpResponseRedirect(reverse('app_tpnm:index'))
+
 def about(request):
     context = {
     }
     return render(request, 'app_tpnm/about.html', context)
-
-# def save_comment(request):
-#     if request.method == 'POST':
-#         post_text = request.POST.get('the_post')
-#         response_data = {}
-#
-#         post = Post(text=post_text, author=request.user)
-#         post.save()
-#
-#         response_data['result'] = 'Create post successful!'
-#         response_data['postpk'] = post.pk
-#         response_data['text'] = post.text
-#         response_data['created'] = post.created.strftime('%B %d, %Y %I:%M %p')
-#         response_data['author'] = post.author.username
-#
-#         return HttpResponse(
-#             json.dumps(response_data),
-#             content_type="application/json"
-#         )
-#     else:
-#         return HttpResponse(
-#             json.dumps({"nothing to see": "this isn't happening"}),
-#             content_type="application/json"
-#         )
-# class LanguageAutocomplete(autocomplete.Select2QuerySetView):
-#     def get_queryset(self):
-#
-#         qs = Language.objects.all()
-#
-#         if self.q:
-#             qs = qs.filter(name__icontains=self.q)
-#
-#         return qs

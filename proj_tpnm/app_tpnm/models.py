@@ -64,6 +64,7 @@ class ArticleName(models.Model):
 
     def toDictionary(self):
         r = {
+            'id': self.id,
             'name': self.name,
             'edits': [],
         }
@@ -96,6 +97,7 @@ class Edit(models.Model):
 
     def toDictionary(self):
         return {
+            'id': self.id,
             'in_language': self.in_language,
             'from_language': self.from_language,
             'endonym': self.endonym,

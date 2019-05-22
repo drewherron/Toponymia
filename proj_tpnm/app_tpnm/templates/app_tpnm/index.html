@@ -283,6 +283,13 @@
             height: auto;
         }
 
+        #edit-dropdown-div {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            align-items: center;
+        }
+
         edit-form * {
             margin: 5px;
         }
@@ -304,13 +311,14 @@
             margin: 0px 10%;
             display: flex;
             flex-direction: row;
+            justify-content: center;
         }
 
         .history-div2{
-            /* margin: 0px 10%; */
+            margin: 0px 10%;
             display: flex;
             flex-direction: row;
-            justify-content: space-around;
+            justify-content: space-between;
         }
 
         .history-div3{
@@ -521,18 +529,21 @@
                             </form>
                         </div>
                         <div id="edit-article">
-                            <div id="app">
-                                <ol>
-                                    <li v-for="name in names">
-                                        [[ name.name ]]
-                                    </li>
-                                </ol>
-                            </div>
                             <form action="/save_edit/" method="post">
                                 {% csrf_token %}
+                                <div id="edit-dropdown-div">
+                                    <label for="edit-dropdown">Toponym: </label>
+                                    <div class="edit-dropdown">
+                                        <select v-model="selected" v-on:change="selectForm(selected)">
+                                            <option disabled value="">Select a toponym to edit</option>
+                                            <option v-for="name in names">[[ name.name ]]</option>
+                                        </select>
+                                    </div>
+                                    <span>OR</span>
+                                    <button id="add-name-btn" type="button" name="button">Add New</button>
+                                </div>
                                 <div class="edit-form-div">
-                                    <label for="edit-name-field">Toponym: </label>
-                                    <input type="text" id="edit-name-field" name="edit-name-field" required>
+                                    <input type="text" id="edit-name-field" name="edit-name-field" disabled>
                                 </div>
                                 <div class="edit-form-div">
                                     <label for="edit-inlang-multiselect">Which language(s) use this (exact) toponym?:</label>
@@ -624,17 +635,18 @@
         // }
         // }
 
-        // Add Map
+        // Add map
         var map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/mapbox/streets-v11',
             center: [2, 20],
             zoom: 1.5
         });
-        map.addControl(new MapboxGeocoder({
-            accessToken: mapboxgl.accessToken,
-            mapboxgl: mapboxgl
-        }));
+        // Add geocoder (search bar)
+        // map.addControl(new MapboxGeocoder({
+        //     accessToken: mapboxgl.accessToken,
+        //     mapboxgl: mapboxgl
+        // }));
         map.addControl(new mapboxgl.NavigationControl());
 
         var randomBtn = document.getElementById('random-btn');
@@ -791,8 +803,8 @@
             newArticleTab.innerText = 'New';
             closeTab.innerText = 'Cancel';
             closeTab.style.color = 'white';
-            newArticleDiv.style.display = 'block';
-            editArticleDiv.style.display = 'none';
+            document.getElementById("new-article").style.display = 'block';
+            document.getElementById("edit-article").style.display = 'none';
             sidebarContent = document.getElementsByClassName("sidebar-content");
             for (let i = 0; i < sidebarContent.length; i++) {
                 sidebarContent[i].style.display = "none";
@@ -818,8 +830,13 @@
 
         function editArticle(tpnm_id) {
             console.log('editArticle')
+            document.getElementById("add-name-btn").addEventListener("click", editArticle(tpnm_id));
         }
 
+
+        function selectForm(selected) {
+            document.getElementById("edit-name-field").value = selected;
+        }
         {% endif %}
 
         function openArticle(tpnm_id) {
@@ -828,7 +845,7 @@
             // document.getElementById('close-tab').onclick = closeSidebar();
             closeTab.onclick = closeSidebar;
             {% if user.is_authenticated %}
-            newArticleDiv.style.display = 'none';
+            document.getElementById("new-article").style.display = 'none';
             {% endif %}
             openTab("article");
 
@@ -848,11 +865,11 @@
                 tpnmId = jsondata['properties'][0]['tpnm_id']
                 title = jsondata['properties'][0]['title']
                 coordinates = jsondata['properties'][0]['coordinates']
-                content = jsondata['properties'][0]['toponyms'][0]['edits'][0]['content']
-                endonymValue = jsondata['properties'][0]['toponyms'][0]['edits'][0]['endonym']
-                editCreated = jsondata['properties'][0]['toponyms'][0]['edits'][0]['created']
-                editDateTime = formatDateTime(editCreated)
-                editUsername = jsondata['properties'][0]['toponyms'][0]['edits'][0]['username']
+                // content = jsondata['properties'][0]['toponyms'][0]['edits'][0]['content']
+                // endonymValue = jsondata['properties'][0]['toponyms'][0]['edits'][0]['endonym']
+                // editCreated = jsondata['properties'][0]['toponyms'][0]['edits'][0]['created']
+                // editDateTime = formatDateTime(editCreated)
+                // editUsername = jsondata['properties'][0]['toponyms'][0]['edits'][0]['username']
                 name = jsondata['properties'][0]['toponyms'][0]['name']
                 let activeContent = document.getElementById("article");
                 let inLanguage = jsondata['properties'][0]['toponyms'][0]['edits'][0]['in_language']
@@ -887,16 +904,12 @@
                 //     document.getElementById("edit-endonymDropdown").value = "False";
                 // {% endif %}
                 // }
+                app.names = jsondata['properties'][0]['toponyms']
                 {% if user.is_authenticated %}
                 document.getElementById("edit-tab").innerText = "Edit"
-                document.getElementById("edit-tab").addEventListener("click", editArticle(tpnm_id));
                 $('.edit-inlang-multiselect').val(inLanguage).trigger('change');
                 $('.edit-fromlang-multiselect').val(fromLanguage).trigger('change');
                 document.getElementById("edit-form-content").value = content;
-                document.getElementById("edit-name-field").value = name;
-
-                app.names = jsondata['properties'][0]['toponyms']
-
                 {% endif %}
             });
             openSidebar();
@@ -905,11 +918,11 @@
         var app = new Vue({
             el: '#app',
             data: {
-                names: []
+                names: [],
+                selected: ''
             },
             delimiters: ["[[","]]"]
         });
-
 
         // Toggle button change on click
         var addMarkerMode = false;
@@ -978,15 +991,16 @@
                             var title = nameEn + ' (' + name + ')'
                             titleField.value = title;
                             nameField.value = nameEn
+                            document.getElementById("name-field").value = nameEn
                         } else {
                             var title = nameEn
                             titleField.value = title;
-                            nameField.value = nameEn
+                            document.getElementById("name-field").value = nameEn
                         }
                     } else {
                         var title = name
                         titleField.value = title;
-                        nameField.value = name
+                        document.getElementById("name-field").value = name
                     }
                 }
                 // var popup = new mapboxgl.Popup({
