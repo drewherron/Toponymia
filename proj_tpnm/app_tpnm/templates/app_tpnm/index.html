@@ -16,8 +16,10 @@
         $(document).ready(function() {
             $('.inlang-multiselect').select2();
             $('.fromlang-multiselect').select2();
-            $('.edit-inlang-multiselect').select2();
-            $('.edit-fromlang-multiselect').select2();
+            $('.nn-inlang-multiselect').select2();
+            $('.nn-fromlang-multiselect').select2();
+            $('.ne-inlang-multiselect').select2();
+            $('.ne-fromlang-multiselect').select2();
         });
 </script>
     </script>
@@ -278,23 +280,23 @@
             margin: 5px;
         }
 
-        .form-div {
+        .na-div {
             margin: auto;
             height: auto;
         }
 
-        #edit-dropdown-div {
+        #dropdown {
             display: flex;
             flex-direction: row;
             justify-content: center;
             align-items: center;
         }
 
-        edit-form * {
+        nn-form * {
             margin: 5px;
         }
 
-        .edit-form-div {
+        .nn-div {
             margin: auto;
             height: auto;
         }
@@ -303,7 +305,7 @@
             margin-bottom: 50px;
         }
 
-        #edit-article-button-div {
+        #nn-article-button-div {
             margin-bottom: 50px;
         }
 
@@ -476,11 +478,11 @@
                         <div id="new-article">
                             <form action="/save_article/" method="post">
                                 {% csrf_token %}
-                                <div class="form-div">
-                                    <label for="name-field">Toponym:</label>
-                                    <input type="text" id="name-field" name="name-field" value="undefined" required>
+                                <div class="na-div">
+                                    <label for="na-name">Toponym:</label>
+                                    <input type="text" id="na-name" name="na-name" value="undefined" required>
                                 </div>
-                                <div class="form-div">
+                                <div class="na-div">
                                     <label for="inlang-multiselect">Which languages use this (exact) topnym:</label>
                                     <!-- <select class="inlang-multiselect" name="inLanguage" required> -->
                                     <select class="inlang-multiselect" id="inlang-multiselect" name="inlang-multiselect" multiple="multiple" required>
@@ -489,101 +491,141 @@
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="form-div">
+                                <div class="na-div">
                                     <label for="fromlang-multiselect">Toponym is derived from which language(s):</label>
                                     <select class="fromlang-multiselect" id="fromlang-multiselect" name="fromlang-multiselect" multiple="multiple" required>
                                         {% for language in languages %}
                                         <option value="{{ language.name }}">{{ language.name }}</option>
                                         {% endfor %}
                                     </select><br>
-                                    <label for="endonymDropdown">Endonym: </label>
-                                    <select class="endonymDropdown" name="endonym">
+                                    <label for="na-endonymDropdown">Endonym: </label>
+                                    <select class="na-endonymDropdown" name="endonym">
                                         <option value="True">True</option>
                                         <option value="False">False</option>
                                     </select><br>
                                     <!-- span id="endonym-question"style='font-size:10px;'>&#10067;</span-->
-                                    <label for="form-content">Description:</label>
-                                    <textarea id="form-content" name="form-content" rows="8" cols="80" required></textarea>
+                                    <label for="na-content">Description:</label>
+                                    <textarea id="na-content" name="na-content" rows="8" cols="80" required></textarea>
                                 </div>
-                                <div class="form-div">
-                                    <label for="reference-field">Reference(s):</label>
-                                    <input type="url" id="reference-field" class="reference-field" name="reference-field" placeholder="Enter URL">
+                                <div class="na-div">
+                                    <label for="na-reference">Reference(s):</label>
+                                    <input type="url" id="na-reference" class="na-reference" name="na-reference" placeholder="Enter URL">
                                 </div>
-                                <div class="form-div" id="article-button-div">
+                                <div class="na-div" id="na-button-div">
                                     <button type="submit">Submit</button>
                                 </div>
                                 <div>
-                                    <input type="hidden" id="title-field" name="title-field" value="undefined">
-                                    <input type="hidden" id="coord-field" name="coord-field" value="undefined">
-                                    <input type="hidden" id="long-field" name="long-field" value="undefined">
-                                    <input type="hidden" id="lat-field" name="lat-field" value="undefined">
-                                    <input type="hidden" id="tpnm-id-field" name="tpnm-id-field" value="undefined">
-                                    <input type="hidden" id="mapbox-id-field" name="mapbox-id-field" value="undefined">
-                                    <input type="hidden" id="place-class-field" name="place-class-field" value="undefined">
-                                    <input type="hidden" id="place-type-field" name="place-type-field" value="undefined">
-                                    <input type="hidden" id="geo-type-field" name="geo-type-field" value="undefined">
-                                    <input type="hidden" id="iso-3166-1-field" name="iso-3166-1-field" value="undefined">
-                                    <input type="hidden" id="iso-3166-2-field" name="iso-3166-2-field" value="undefined">
-                                    <input type="hidden" id="geo-type-field" name="geo-type-field" value="undefined">
+                                    <input type="hidden" id="na-title" name="na-title" value="undefined">
+                                    <input type="hidden" id="na-coord" name="na-coord" value="undefined">
+                                    <input type="hidden" id="na-long" name="long" value="undefined">
+                                    <input type="hidden" id="na-lat" name="na-lat" value="undefined">
+                                    <input type="hidden" id="na-tpnm-id" name="na-tpnm-id" value="undefined">
+                                    <input type="hidden" id="na-mapbox-id" name="na-mapbox-id" value="undefined">
+                                    <input type="hidden" id="na-place-class" name="na-place-class" value="undefined">
+                                    <input type="hidden" id="na-place-type" name="na-place-type" value="undefined">
+                                    <input type="hidden" id="na-geo-type" name="na-geo-type" value="undefined">
+                                    <input type="hidden" id="na-iso-3166-1" name="na-iso-3166-1" value="undefined">
+                                    <input type="hidden" id="na-iso-3166-2" name="na-iso-3166-2" value="undefined">
+                                    <input type="hidden" id="na-geo-type" name="na-geo-type" value="undefined">
                                 </div>
                             </form>
                         </div>
-                        <div id="edit-article">
+                        <div id="dropdown">
+                                <label for="ne-dropdown">Toponym: </label>
+                                <div class="ne-dropdown">
+                                    <select v-model="selected" v-on:change="newEdit(selected)">
+                                        <option disabled value="">Select a toponym to edit</option>
+                                        <option v-for="name in names">[[ name.name ]]</option>
+                                    </select>
+                                </div>
+                                <span>OR</span>
+                                <button id="add-name-btn" type="button" name="button">Add New</button>
+                        </div>
+                        <div id="new-edit">
                             <form action="/save_edit/" method="post">
                                 {% csrf_token %}
-                                <div id="edit-dropdown-div">
-                                    <label for="edit-dropdown">Toponym: </label>
-                                    <div class="edit-dropdown">
-                                        <select v-model="selected" v-on:change="selectForm(selected)">
-                                            <option disabled value="">Select a toponym to edit</option>
-                                            <option v-for="name in names">[[ name.name ]]</option>
-                                        </select>
-                                    </div>
-                                    <span>OR</span>
-                                    <button id="add-name-btn" type="button" name="button">Add New</button>
+                                <div class="ne-div">
+                                    <input type="text" id="ne-name" name="ne-name" disabled>
                                 </div>
-                                <div class="edit-form-div">
-                                    <input type="text" id="edit-name-field" name="edit-name-field" disabled>
-                                </div>
-                                <div class="edit-form-div">
-                                    <label for="edit-inlang-multiselect">Which language(s) use this (exact) toponym?:</label>
+                                <div class="ne-div">
+                                    <label for="ne-inlang-multiselect">Which language(s) use this (exact) toponym?:</label>
                                     <!-- <select class="inlang-multiselect" name="inLanguage" required> -->
-                                    <select class="edit-inlang-multiselect" id="edit-inlang-multiselect" name="edit-inlang-multiselect" multiple="multiple" required>
+                                    <select class="ne-inlang-multiselect" id="ne-inlang-multiselect" name="ne-inlang-multiselect" multiple="multiple" required>
                                         {% for language in languages %}
                                         <option value="{{ language.name }}">{{ language.name }}</option>
                                         {% endfor %}
                                     </select>
                                 </div>
-                                <div class="edit-form-div">
-                                    <label for="edit-fromlang-multiselect">Toponym is derived from which language(s)?:</label>
-                                    <select class="edit-fromlang-multiselect" id="edit-fromlang-multiselect" name="edit-fromlang-multiselect" multiple="multiple" required>
+                                <div class="ne-div">
+                                    <label for="ne-fromlang-multiselect">Toponym is derived from which language(s)?:</label>
+                                    <select class="ne-fromlang-multiselect" id="ne-fromlang-multiselect" name="ne-fromlang-multiselect" multiple="multiple" required>
                                         {% for language in languages %}
                                         <option value="{{ language.name }}">{{ language.name }}</option>
                                         {% endfor %}
                                     </select><br>
-                                    <label for="edit-endonymDropdown">Endonym: </label>
-                                    <select class="edit-endonymDropdown" id="edit-endonymDropdown" name="edit-endonym">
+                                    <label for="ne-endonymDropdown">Endonym: </label>
+                                    <select class="ne-endonymDropdown" id="ne-endonymDropdown" name="ne-endonym">
                                         <option value="True">True</option>
                                         <option value="False">False</option>
                                     </select><br>
-                                    <label for="form-content">Description:</label><br>
-                                    <textarea id="edit-form-content" name="edit-form-content" rows="8" cols="80" required></textarea>
+                                    <label for="ne-content">Description:</label><br>
+                                    <textarea id="ne-content" name="ne-content" rows="8" cols="80" required></textarea>
                                 </div>
-                                <div class="edit-form-div">
-                                    <label for="edit-reference-field">Reference(s):</label>
-                                    <input type="url" class="edit-reference-field" name="edit-reference-field" placeholder="Enter URL">
+                                <div class="ne-div">
+                                    <label for="ne-reference">Reference(s):</label>
+                                    <input type="url" class="ne-reference" name="ne-reference" placeholder="Enter URL">
                                 </div>
-                                <div class="edit-form-div" id="edit-article-button-div">
+                                <div class="ne-div" id="ne-button-div">
                                     <button type="submit">Submit</button>
                                 </div>
                                 <div>
-                                    <input type="hidden" id="id-field" name="id-field" value="undefined">
-                                    <input type="hidden" id="edit-tpnm-id-field" name="edit-tpnm-id-field" value="undefined">
+                                    <input type="hidden" id="ne-article-name-id" name="ne-article-name-id" value="undefined">
+                                    <input type="hidden" id="ne-tpnm-id" name="ne-tpnm-id" value="undefined">
                                 </div>
                             </form>
                         </div>
-                        <div id="add-name">
-
+                        <div id="new-name">
+                            <form action="/save_name/" method="post">
+                                {% csrf_token %}
+                                <div class="nn-div">
+                                    <input type="text" id="nn-name" name="nn-name" disabled>
+                                </div>
+                                <div class="nn-div">
+                                    <label for="nn-inlang-multiselect">Which language(s) use this (exact) toponym?:</label>
+                                    <!-- <select class="inlang-multiselect" name="inLanguage" required> -->
+                                    <select class="nn-inlang-multiselect" id="nn-inlang-multiselect" name="nn-inlang-multiselect" multiple="multiple" required>
+                                        {% for language in languages %}
+                                        <option value="{{ language.name }}">{{ language.name }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="nn-div">
+                                    <label for="nn-fromlang-multiselect">Toponym is derived from which language(s)?:</label>
+                                    <select class="nn-fromlang-multiselect" id="nn-fromlang-multiselect" name="nn-fromlang-multiselect" multiple="multiple" required>
+                                        {% for language in languages %}
+                                        <option value="{{ language.name }}">{{ language.name }}</option>
+                                        {% endfor %}
+                                    </select><br>
+                                    <label for="nn-endonymDropdown">Endonym: </label>
+                                    <select class="nn-endonymDropdown" id="nn-endonymDropdown" name="nn-endonym">
+                                        <option value="True">True</option>
+                                        <option value="False">False</option>
+                                    </select><br>
+                                    <label for="nn-content">Description:</label><br>
+                                    <textarea id="nn-content" name="nn-content" rows="8" cols="80" required></textarea>
+                                </div>
+                                <div class="nn-div">
+                                    <label for="nn-reference">Reference(s):</label>
+                                    <input type="url" class="nn-reference" name="nn-reference" placeholder="Enter URL">
+                                </div>
+                                <div class="nn-div" id="nn-button-div">
+                                    <button type="submit">Submit</button>
+                                </div>
+                                <div>
+                                    <input type="hidden" id="nn-article-id" name="nn-article-id" value="undefined">
+                                    <input type="hidden" id="nn-tpnm-id" name="nn-tpnm-id" value="undefined">
+                                </div>
+                            </form>
                         </div>
                     </div>
                     <div class="sidebar-content" id="history">
@@ -661,8 +703,7 @@
         var talkContent = document.getElementById("talk-content");
         {% if user.is_authenticated %}
         var editTab = document.getElementById("edit-tab");
-        var editTpnmIdField = document.getElementById("edit-tpnm-id-field");
-        var editArticleDiv = document.getElementById("edit-article");
+        var editTpnmIdField = document.getElementById("nn-tpnm-id");
         {% endif %}
         var historyTab = document.getElementById("history-tab");
         var historyContent = document.getElementById("history-content");
@@ -671,19 +712,19 @@
         var newArticleDiv = document.getElementById("new-article");
         var articleTitle = document.getElementsByClassName("article-title");
         var articleCoordinates = document.getElementsByClassName("article-coordinates");
-        var nameField = document.getElementById("name-field");
-        var titleField = document.getElementById("title-field");
-        var coordField = document.getElementById("coord-field");
-        var longField = document.getElementById("long-field");
-        var latField = document.getElementById("lat-field");
-        var tpnmIdField = document.getElementById("tpnm-id-field");
-        var idField = document.getElementById("id-field");
-        var mapboxIdField = document.getElementById("mapbox-id-field");
-        var placeClassField = document.getElementById("place-class-field");
-        var placeTypeField = document.getElementById("place-type-field");
-        var geoTypeField = document.getElementById("geo-type-field");
-        var iso_3166_1Field = document.getElementById("iso-3166-1-field");
-        var iso_3166_2Field = document.getElementById("iso-3166-2-field");
+        var nameField = document.getElementById("na-name");
+        var titleField = document.getElementById("na-title");
+        var coordField = document.getElementById("na-coord");
+        var longField = document.getElementById("na-long");
+        var latField = document.getElementById("na-lat");
+        var tpnmIdField = document.getElementById("na-tpnm-id");
+        var idField = document.getElementById("na-id");
+        var mapboxIdField = document.getElementById("na-mapbox-id");
+        var placeClassField = document.getElementById("na-place-class");
+        var placeTypeField = document.getElementById("na-place-type");
+        var geoTypeField = document.getElementById("na-geo-type");
+        var iso_3166_1Field = document.getElementById("na-iso-3166-1");
+        var iso_3166_2Field = document.getElementById("na-iso-3166-2");
         {% if user.is_authenticated %}
             var djangoUsername = "{{ user.get_username }}"
         {% endif %}
@@ -807,7 +848,8 @@
             closeTab.innerText = 'Cancel';
             closeTab.style.color = 'white';
             document.getElementById("new-article").style.display = 'block';
-            document.getElementById("edit-article").style.display = 'none';
+            document.getElementById("new-name").style.display = 'none';
+            document.getElementById("new-edit").style.display = 'none';
             sidebarContent = document.getElementsByClassName("sidebar-content");
             for (let i = 0; i < sidebarContent.length; i++) {
                 sidebarContent[i].style.display = "none";
@@ -825,30 +867,77 @@
             }
 
             coordField.value = coordinates;
-            $('.lang-multiselect').val(null).trigger('change');
-            document.getElementById("form-content").value = '';
+            $('.inlang-multiselect').val(null).trigger('change');
+            $('.fromlang-multiselect').val(null).trigger('change');
+            document.getElementById("na-content").value = '';
+            document.getElementById("na-reference").value = '';
             openSidebar();
             markerToggleOff();
         }
 
-        function editArticle(tpnm_id) {
-            console.log('editArticle')
-            document.getElementById("add-name-btn").addEventListener("click", editArticle(tpnm_id));
+        function addName(tpnm_id) {
+            document.getElementById("new-article").style.display = 'none';
+            document.getElementById("new-name").style.display = 'block';
+            document.getElementById("dropdown").style.display = 'none';
+            document.getElementById("new-edit").style.display = 'none';
+            document.getElementById("nn-name").value = '';
+            document.getElementById("nn-content").value = '';
+            document.getElementById("nn-reference").value = '';
+            document.getElementById("nn-tpnm-id").value = 'tpnm_id';
+            $('.nn-inlang-multiselect').val(null).trigger('change');
+            $('.nn-fromlang-multiselect').val(null).trigger('change');
+            // let data = {
+            //     tpnm_id: tpnm_id
+            // }
+            // let config = {
+            //     headers: {
+            //         'X-CSRFToken': '{{ csrf_token }}'
+            //     }
+            // }
+            // axios.post('{% url 'app_tpnm:get_article' %}', data, config).then(function(response) {
+            // });
         }
 
-
-        function selectForm(selected) {
-            document.getElementById("edit-name-field").value = selected;
+        function addEdit(tpnm_id) {
+            document.getElementById("new-article").style.display = 'none';
+            document.getElementById("new-name").style.display = 'none';
+            document.getElementById("dropdown").style.display = 'block';
+            document.getElementById("new-edit").style.display = 'block';
+            let data = {
+                tpnm_id: tpnm_id
+            }
+            let config = {
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}'
+                }
+            }
+            axios.post('{% url 'app_tpnm:get_article' %}', data, config).then(function(response) {
+                let inLanguage = jsondata['properties'][0]['toponyms'][0]['edits'][0]['in_language']
+                let fromLanguage = jsondata['properties'][0]['toponyms'][0]['edits'][0]['from_language']
+                let endonymValue = jsondata['properties'][0]['toponyms'][0]['edits'][0]['endonym']
+                $('.ne-inlang-multiselect').val(inLanguage).trigger('change');
+                $('.ne-fromlang-multiselect').val(fromLanguage).trigger('change');
+                document.getElementById("ne-content").value = content;
+                if (endonymValue == true){
+                    document.getElementById("ne-endonymDropdown").value = "True";
+                } else {
+                    document.getElementById("ne-endonymDropdown").value = "False";
+                }
+            });
         }
         {% endif %}
 
         function openArticle(tpnm_id) {
             addTabListeners();
-            document.getElementById("close-tab").innerText = "Close"
             // document.getElementById('close-tab').onclick = closeSidebar();
             closeTab.onclick = closeSidebar;
             {% if user.is_authenticated %}
             document.getElementById("new-article").style.display = 'none';
+            document.getElementById("new-name").style.display = 'none';
+            document.getElementById("dropdown").style.display = 'block';
+            document.getElementById("new-edit").style.display = 'none';
+            document.getElementById("add-name-btn").addEventListener("click", addName(tpnm_id));
+            document.getElementById("close-tab").innerText = "Close"
             {% endif %}
             openTab("article");
 
@@ -889,9 +978,9 @@
                 }
                 coordField.value = coordinates;
                 // articleName.innerText = name;
-                articleContent.innerText = content;
-                idField.value = id;
-                editTpnmIdField.value = tpnmId;
+                // articleContent.innerText = content;
+                // idField.value = id;
+                // editTpnmIdField.value = tpnmId;
                 // document.getElementById("article-inLanguage").innerText = "Used in: "+inLanguage;
                 // document.getElementById("article-fromLanguage").innerText = "Source: "+fromLanguage;
                 // document.getElementById("article-username").innerText = "Last edit by: "+editUsername;
@@ -910,9 +999,11 @@
                 app.names = jsondata['properties'][0]['toponyms']
                 {% if user.is_authenticated %}
                 document.getElementById("edit-tab").innerText = "Edit"
-                $('.edit-inlang-multiselect').val(inLanguage).trigger('change');
-                $('.edit-fromlang-multiselect').val(fromLanguage).trigger('change');
-                document.getElementById("edit-form-content").value = content;
+                document.getElementById("nn-article-id").value = id;
+                document.getElementById("nn-tpnm-id").value = tpnmId;
+                document.getElementById("ne-article-id").value = id;
+                document.getElementById("ne-tpnm-id").value = tpnmId;
+                document.getElementById("ne-content").value = content;
                 {% endif %}
             });
             openSidebar();
@@ -987,23 +1078,22 @@
                 iso_3166_1Field.value = iso_3166_1;
                 iso_3166_2Field.value = iso_3166_2;
                 var tpnmId = Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36) + mapboxId.toString();
-                tpnmIdField.value = tpnmId;
                 if ((typeof nameEn != "undefined" && nameEn) || (typeof name != "undefined" && name)) {
                     if (typeof nameEn != "undefined") {
                         if (nameEn != name) {
                             var title = nameEn + ' (' + name + ')'
                             titleField.value = title;
                             nameField.value = nameEn
-                            document.getElementById("name-field").value = nameEn
+                            document.getElementById("na-name").value = nameEn
                         } else {
                             var title = nameEn
                             titleField.value = title;
-                            document.getElementById("name-field").value = nameEn
+                            document.getElementById("na-name").value = nameEn
                         }
                     } else {
                         var title = name
                         titleField.value = title;
-                        document.getElementById("name-field").value = name
+                        document.getElementById("na-name").value = name
                     }
                 }
                 // var popup = new mapboxgl.Popup({
@@ -1030,7 +1120,6 @@
                         tooltip.className = 'tooltip';
                         tooltip.innerText = title;
                         currentMarker.appendChild(tooltip);
-
                         document.getElementById("close-tab").addEventListener("click", function() {
                             cancelMarker(marker)
                         });
