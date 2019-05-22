@@ -156,7 +156,10 @@
             color: #333;
             background-color: #333;
             width: 80%;
-            margin-bottom: 50px;
+            margin: 20px 0px;
+        }
+        .spacer-div {
+            height: 50px;
         }
         #marker-toggle {
             position: fixed;
@@ -218,8 +221,13 @@
         .article-coordinates {
             color: #1a1a1a
         }
+        .article-box {
+            box-shadow: -3px 3px 3px gray;
+            margin: 30px;
+            padding: 20px;
+            border: 1px solid lightgray;
+        }
         #article-div1 {
-            margin: 0px 10%;
             display: flex;
             flex-direction: row;
             justify-content: space-between;
@@ -227,14 +235,12 @@
         }
         #article-div2 {
             margin-top: 0px;
-            margin-left: 10%;
             text-align: left;
         }
         #article-div2 *{
             margin-top: 0px;
         }
         #article-div3 {
-            margin-left: 10%;
             text-align: left;
             /* display: flex;
             flex-direction: row;
@@ -242,22 +248,24 @@
             align-items: baseline; */
         }
         #article-div4 {
-            margin-top: 15px;
-            margin-bottom: 15px;
-            margin-left: 10%;
             display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: baseline;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+        }
+
+        #article-div4 pre {
+            font-size: 14px;
+            font-family:serif;
+            word-wrap: break-word;
+            white-space: pre-wrap;
         }
         #article-div5 {
-            margin: 0px 10%;
             display: flex;
             flex-direction: row;
             justify-content: space-between;
         }
         #article-content {
-            margin: 15px 0px;
             word-wrap: break-word;
             text-align: left;
         }
@@ -292,6 +300,10 @@
             align-items: center;
         }
 
+        #dropdown * {
+            margin: 5px 5px;
+        }
+
         nn-form * {
             margin: 5px;
         }
@@ -310,37 +322,38 @@
         }
 
         .history-div1{
-            margin: 0px 10%;
             display: flex;
             flex-direction: row;
             justify-content: center;
         }
 
         .history-div2{
-            margin: 0px 10%;
             display: flex;
             flex-direction: row;
             justify-content: space-between;
         }
 
         .history-div3{
-            margin: 20px 10%;
-            margin-top: 15px;
             display: flex;
             flex-direction: row;
         }
 
         .history-div4{
-            margin: 0px 10%;
             display: flex;
             flex-direction: column;
             align-items: flex-start;
         }
 
         .history-div5{
-            margin: 0px 10%;
             display: flex;
             flex-direction: row;
+        }
+
+        .history-content pre {
+            font-size: 13px;
+            text-align: left;
+            word-wrap: break-word;
+            white-space: pre-wrap;
         }
 
         .marker {
@@ -446,25 +459,28 @@
                         <div class="article-coordinates"></div>
                         <hr>
                             <div v-for="name in names">
-                                <div id="article-div1">
-                                    <div><h2 id="article-name">[[ name.name ]]</h2></div>
-                                    <div id="article-endonym">Endonym: [[ name.edits[0].endonym ]]</div>
+                                <div class="article-box">
+                                    <div id="article-div1">
+                                        <div><h2 id="article-name">[[ name.name ]]</h2></div>
+                                        <div id="article-endonym">Endonym: [[ name.edits[0].endonym ]]</div>
+                                    </div>
+                                    <div id="article-div2">
+                                        <div><h4 id="article-fromLanguage"> Source language(s): [[ name.edits[0].from_language ]]</h4></div>
+                                    </div>
+                                    <div id="article-div3">
+                                        <div><h5 id="article-inLanguage">Used in: [[ name.edits[0].in_language ]]</h5></div>
+                                    </div>
+                                    <div id="article-div4">
+                                        <p>Etymology:</p>
+                                        <div id="article-content"><pre>[[ name.edits[0].content ]]</pre></div>
+                                    </div>
+                                    <div id="article-div5">
+                                        <div><p id="article-username"></p>Last edit by: [[ name.edits[0].username ]]</div>
+                                        <div><p id="article-datetime"></p>[[ name.edits[0].created ]]</div>
+                                    </div>
                                 </div>
-                                <div id="article-div2">
-                                    <div><h4 id="article-fromLanguage"> Source language(s): [[ name.edits[0].from_language ]]</h4></div>
-                                </div>
-                                <div id="article-div3">
-                                    <div><h5 id="article-inLanguage">Used in: [[ name.edits[0].in_language ]]</h5></div>
-                                </div>
-                                <div id="article-div4">
-                                    <div id="article-content"><pre>[[ name.edits[0].content ]]</pre></div>
-                                </div>
-                                <div id="article-div5">
-                                    <div><p id="article-username"></p>Last edit by: [[ name.edits[0].username ]]</div>
-                                    <div><p id="article-datetime"></p>[[ name.edits[0].created ]]</div>
-                                </div>
-                                <hr class="thin">
                             </div>
+                            <div class="spacer-div"></div>
                     </div>
                     <div class="sidebar-content" id="talk">
                         <div class="article-title"></div>
@@ -483,7 +499,7 @@
                                     <input type="text" id="na-name" name="na-name" value="undefined" required>
                                 </div>
                                 <div class="na-div">
-                                    <label for="inlang-multiselect">Which languages use this (exact) topnym:</label>
+                                    <label for="inlang-multiselect">Toponym is used in which language(s):</label>
                                     <!-- <select class="inlang-multiselect" name="inLanguage" required> -->
                                     <select class="inlang-multiselect" id="inlang-multiselect" name="inlang-multiselect" multiple="multiple" required>
                                         {% for language in languages %}
@@ -499,13 +515,13 @@
                                         {% endfor %}
                                     </select><br>
                                     <label for="na-endonymDropdown">Endonym: </label>
-                                    <select class="na-endonymDropdown" name="endonym">
+                                    <select class="na-endonymDropdown" id="na-endonymDropdown" name="endonym">
                                         <option value="True">True</option>
                                         <option value="False">False</option>
                                     </select><br>
                                     <!-- span id="endonym-question"style='font-size:10px;'>&#10067;</span-->
-                                    <label for="na-content">Description:</label>
-                                    <textarea id="na-content" name="na-content" rows="8" cols="80" required></textarea>
+                                    <label for="na-content">Etymology:</label>
+                                    <textarea id="na-content" name="na-content" rows="8" cols="80"></textarea>
                                 </div>
                                 <div class="na-div">
                                     <label for="na-reference">Reference(s):</label>
@@ -517,7 +533,7 @@
                                 <div>
                                     <input type="hidden" id="na-title" name="na-title" value="undefined">
                                     <input type="hidden" id="na-coord" name="na-coord" value="undefined">
-                                    <input type="hidden" id="na-long" name="long" value="undefined">
+                                    <input type="hidden" id="na-long" name="na-long" value="undefined">
                                     <input type="hidden" id="na-lat" name="na-lat" value="undefined">
                                     <input type="hidden" id="na-tpnm-id" name="na-tpnm-id" value="undefined">
                                     <input type="hidden" id="na-mapbox-id" name="na-mapbox-id" value="undefined">
@@ -533,22 +549,19 @@
                         <div id="dropdown">
                                 <label for="ne-dropdown">Toponym: </label>
                                 <div class="ne-dropdown">
-                                    <select v-model="selected" v-on:change="newEdit(selected)">
+                                    <select v-model="selected" v-on:change="addEdit(selected)">
                                         <option disabled value="">Select a toponym to edit</option>
-                                        <option v-for="name in names">[[ name.name ]]</option>
+                                        <option v-for="name in names" v-bind:key="name.id" >[[ name.name ]]</option>
                                     </select>
                                 </div>
                                 <span>OR</span>
-                                <button id="add-name-btn" type="button" name="button">Add New</button>
+                                <button id="add-name-btn" type="button" name="button" onclick="addName()">Add New</button>
                         </div>
                         <div id="new-edit">
                             <form action="/save_edit/" method="post">
                                 {% csrf_token %}
                                 <div class="ne-div">
-                                    <input type="text" id="ne-name" name="ne-name" disabled>
-                                </div>
-                                <div class="ne-div">
-                                    <label for="ne-inlang-multiselect">Which language(s) use this (exact) toponym?:</label>
+                                    <label for="ne-inlang-multiselect">Toponym is used in which language(s):</label>
                                     <!-- <select class="inlang-multiselect" name="inLanguage" required> -->
                                     <select class="ne-inlang-multiselect" id="ne-inlang-multiselect" name="ne-inlang-multiselect" multiple="multiple" required>
                                         {% for language in languages %}
@@ -568,8 +581,8 @@
                                         <option value="True">True</option>
                                         <option value="False">False</option>
                                     </select><br>
-                                    <label for="ne-content">Description:</label><br>
-                                    <textarea id="ne-content" name="ne-content" rows="8" cols="80" required></textarea>
+                                    <label for="ne-content">Etymology:</label><br>
+                                    <textarea id="ne-content" name="ne-content" rows="8" cols="80"></textarea>
                                 </div>
                                 <div class="ne-div">
                                     <label for="ne-reference">Reference(s):</label>
@@ -579,16 +592,19 @@
                                     <button type="submit">Submit</button>
                                 </div>
                                 <div>
-                                    <input type="hidden" id="ne-article-name-id" name="ne-article-name-id" value="undefined">
+                                    <input type="hidden" id="ne-article-id" name="ne-article-id" value="undefined">
                                     <input type="hidden" id="ne-tpnm-id" name="ne-tpnm-id" value="undefined">
+                                    <input type="hidden" id="ne-name" name="ne-name">
                                 </div>
                             </form>
+                        <div class="spacer-div"></div>
                         </div>
                         <div id="new-name">
                             <form action="/save_name/" method="post">
                                 {% csrf_token %}
                                 <div class="nn-div">
-                                    <input type="text" id="nn-name" name="nn-name" disabled>
+                                    <label for="na-name">Toponym:</label>
+                                    <input type="text" id="nn-name" name="nn-name" required>
                                 </div>
                                 <div class="nn-div">
                                     <label for="nn-inlang-multiselect">Which language(s) use this (exact) toponym?:</label>
@@ -611,14 +627,15 @@
                                         <option value="True">True</option>
                                         <option value="False">False</option>
                                     </select><br>
-                                    <label for="nn-content">Description:</label><br>
-                                    <textarea id="nn-content" name="nn-content" rows="8" cols="80" required></textarea>
+                                    <label for="nn-content">Etymology:</label><br>
+                                    <textarea id="nn-content" name="nn-content" rows="8" cols="80"></textarea>
                                 </div>
                                 <div class="nn-div">
                                     <label for="nn-reference">Reference(s):</label>
-                                    <input type="url" class="nn-reference" name="nn-reference" placeholder="Enter URL">
+                                    <input type="url" id="nn-reference" name="nn-reference" placeholder="Enter URL">
                                 </div>
                                 <div class="nn-div" id="nn-button-div">
+                                    <button type="button" id="nn-cancel-btn" onclick="nnCancel()">Submit</button>
                                     <button type="submit">Submit</button>
                                 </div>
                                 <div>
@@ -626,6 +643,7 @@
                                     <input type="hidden" id="nn-tpnm-id" name="nn-tpnm-id" value="undefined">
                                 </div>
                             </form>
+                        <div class="spacer-div"></div>
                         </div>
                     </div>
                     <div class="sidebar-content" id="history">
@@ -636,27 +654,29 @@
                             <div class="history-name">
                                 <div><h2 class="article-name">Edits for: [[ name.name ]]</h2></div>
                                 <div v-for="edit in name.edits">
-                                    <div class="history-div1">
-                                        <div><h3 class="history-name">[[ name.name ]]</h3></div>
+                                    <div class="article-box">
+                                        <div class="history-div1">
+                                            <div><h3 class="history-name">[[ name.name ]]</h3></div>
+                                        </div>
+                                        <div class="history-div2">
+                                            <div><p class="history-username"></p>Submitted by: [[ edit.username ]]</div>
+                                            <div><p class="history-datetime"></p>[[ edit.created ]]</div>
+                                        </div>
+                                        <div class="history-div3">
+                                            <div class="history-content"><pre>[[ edit.content ]]</pre></div>
+                                        </div>
+                                        <div class="history-div4">
+                                            <div><p class="history-fromLanguage"> Source language(s): [[ edit.from_language ]]</p></div>
+                                            <div><p class="history-inLanguage">Used in: [[ edit.in_language ]]</p></div>
+                                        </div>
+                                        <div class="history-div5">
+                                            <div class="history-endonym">Endonym: [[ edit.endonym ]]</div>
+                                        </div>
                                     </div>
-                                    <div class="history-div2">
-                                        <div><p class="history-username"></p>Edited by: [[ edit.username ]]</div>
-                                        <div><p class="history-datetime"></p>[[ edit.created ]]</div>
-                                    </div>
-                                    <div class="history-div3">
-                                        <div class="history-content"><pre>[[ edit.content ]]</pre></div>
-                                    </div>
-                                    <div class="history-div4">
-                                        <div><p class="history-fromLanguage"> Source language(s): [[ edit.from_language ]]</p></div>
-                                        <div><p class="history-inLanguage">Used in: [[ edit.in_language ]]</p></div>
-                                    </div>
-                                    <div class="history-div5">
-                                        <div class="history-endonym">Endonym: [[ edit.endonym ]]</div>
-                                    </div>
-                                    <hr class="thin">
                                 </div>
                             </div>
                         </div>
+                        <div class="spacer-div"></div>
                     </div>
                 </div>
             </div>
@@ -818,6 +838,12 @@
             // activeContent.style.visibility = 'visible';
             activeContent.style.display = 'block';
             activeContent.style.height = '100%';
+            if (document.getElementById("edit").style.display == 'block') {
+                document.getElementById("new-article").style.display = 'none';
+                document.getElementById("new-name").style.display = 'none';
+                document.getElementById("dropdown").style.display = 'flex';
+                document.getElementById("new-edit").style.display = 'none';
+            }
         }
 
         function formatDateTime(DTinput) {
@@ -850,6 +876,7 @@
             document.getElementById("new-article").style.display = 'block';
             document.getElementById("new-name").style.display = 'none';
             document.getElementById("new-edit").style.display = 'none';
+            document.getElementById("dropdown").style.display = 'flex';
             sidebarContent = document.getElementsByClassName("sidebar-content");
             for (let i = 0; i < sidebarContent.length; i++) {
                 sidebarContent[i].style.display = "none";
@@ -876,6 +903,7 @@
         }
 
         function addName(tpnm_id) {
+            console.log('addName')
             document.getElementById("new-article").style.display = 'none';
             document.getElementById("new-name").style.display = 'block';
             document.getElementById("dropdown").style.display = 'none';
@@ -898,10 +926,10 @@
             // });
         }
 
-        function addEdit(tpnm_id) {
+        function addEdit(article_id) {
             document.getElementById("new-article").style.display = 'none';
             document.getElementById("new-name").style.display = 'none';
-            document.getElementById("dropdown").style.display = 'block';
+            document.getElementById("dropdown").style.display = 'flex';
             document.getElementById("new-edit").style.display = 'block';
             let data = {
                 tpnm_id: tpnm_id
@@ -934,7 +962,7 @@
             {% if user.is_authenticated %}
             document.getElementById("new-article").style.display = 'none';
             document.getElementById("new-name").style.display = 'none';
-            document.getElementById("dropdown").style.display = 'block';
+            document.getElementById("dropdown").style.display = 'flex';
             document.getElementById("new-edit").style.display = 'none';
             document.getElementById("add-name-btn").addEventListener("click", addName(tpnm_id));
             document.getElementById("close-tab").innerText = "Close"
@@ -1004,6 +1032,7 @@
                 document.getElementById("ne-article-id").value = id;
                 document.getElementById("ne-tpnm-id").value = tpnmId;
                 document.getElementById("ne-content").value = content;
+                document.getElementById("add-name-btn").addEventListener("click", addName(tpnm_id));
                 {% endif %}
             });
             openSidebar();
@@ -1069,30 +1098,40 @@
                 mapboxId = jsonfeatures[0]["id"]
                 iso_3166_1 = jsonfeatures[0]["properties"]["iso_3166_1"]
                 iso_3166_2 = jsonfeatures[0]["properties"]["iso_3166_2"]
-                mapboxIdField.value = mapboxId;
-                placeClassField.value = placeClass;
-                placeTypeField.value = placeType;
-                geoTypeField.value = geoType;
-                longField.value = longitude;
-                latField.value = latitude;
-                iso_3166_1Field.value = iso_3166_1;
-                iso_3166_2Field.value = iso_3166_2;
+                // mapboxIdField.value = mapboxId;
+                // placeClassField.value = placeClass;
+                // placeTypeField.value = placeType;
+                // geoTypeField.value = geoType;
+                // longField.value = longitude;
+                console.log(longitude)
+                document.getElementById("na-coord").value = coordinates;
+                document.getElementById("na-long").value = longitude;
+                document.getElementById("na-lat").value = latitude;
+                document.getElementById("na-mapbox-id").value = mapboxId;
+                document.getElementById("na-place-class").value = placeClass;
+                document.getElementById("na-place-type").value = placeType;
+                document.getElementById("na-geo-type").value = geoType;
+                document.getElementById("na-iso-3166-1").value = iso_3166_1;
+                document.getElementById("na-iso-3166-2").value = iso_3166_2;
+                // latField.value = latitude;
+                // iso_3166_1Field.value = iso_3166_1;
+                // iso_3166_2Field.value = iso_3166_2;
                 var tpnmId = Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36) + mapboxId.toString();
+                document.getElementById("na-tpnm-id").value = tpnmId;
                 if ((typeof nameEn != "undefined" && nameEn) || (typeof name != "undefined" && name)) {
                     if (typeof nameEn != "undefined") {
                         if (nameEn != name) {
                             var title = nameEn + ' (' + name + ')'
-                            titleField.value = title;
-                            nameField.value = nameEn
+                            document.getElementById("na-title").value = title
                             document.getElementById("na-name").value = nameEn
                         } else {
                             var title = nameEn
-                            titleField.value = title;
+                            document.getElementById("na-title").value = title
                             document.getElementById("na-name").value = nameEn
                         }
                     } else {
                         var title = name
-                        titleField.value = title;
+                        document.getElementById("na-title").value = title
                         document.getElementById("na-name").value = name
                     }
                 }

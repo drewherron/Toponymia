@@ -46,24 +46,24 @@ def get_article(request):
 
 @login_required
 def save_article(request):
-    tpnm_id = request.POST['tpnm-id-field']
-    mapbox_id = request.POST['mapbox-id-field']
+    tpnm_id = request.POST['na-tpnm-id']
+    mapbox_id = request.POST['na-mapbox-id']
     # coordinates = {request.POST['coord-field']}
-    title = request.POST['title-field']
-    longitude = request.POST['long-field']
-    latitude = request.POST['lat-field']
-    place_class = request.POST['place-class-field']
-    place_type = request.POST['place-type-field']
-    geo_type = request.POST['geo-type-field']
-    iso_3166_1 = request.POST['iso-3166-1-field']
-    iso_3166_2 = request.POST['iso-3166-2-field']
+    title = request.POST['na-title']
+    longitude = request.POST['na-long']
+    latitude = request.POST['na-lat']
+    place_class = request.POST['na-place-class']
+    place_type = request.POST['na-place-type']
+    geo_type = request.POST['na-geo-type']
+    iso_3166_1 = request.POST['na-iso-3166-1']
+    iso_3166_2 = request.POST['na-iso-3166-2']
     named_id = title + ' id:' + str(mapbox_id)
-    name = request.POST['name-field']
+    name = request.POST['na-name']
     in_language = request.POST.getlist('inlang-multiselect')
     from_language = request.POST.getlist('fromlang-multiselect')
     endonym = request.POST['endonym']
-    content = request.POST['form-content']
-    reference = request.POST.getlist('reference-field')
+    content = request.POST['na-content']
+    reference = request.POST.getlist('na-reference')
     username = request.user.get_username()
     print(request.POST)
     article = Article(tpnm_id=tpnm_id, mapbox_id=mapbox_id, named_id=named_id, title=title, longitude=longitude, latitude=latitude,

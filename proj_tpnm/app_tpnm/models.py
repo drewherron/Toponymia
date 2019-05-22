@@ -68,7 +68,7 @@ class ArticleName(models.Model):
             'name': self.name,
             'edits': [],
         }
-        for edit in self.edits.all():
+        for edit in self.edits.order_by('-created'):
             r['edits'].append(edit.toDictionary())
         return r
 
