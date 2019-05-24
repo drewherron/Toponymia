@@ -79,18 +79,18 @@ def save_article(request):
 
 @login_required
 def save_name(request):
-    id = request.POST['id-field']
-    tpnm_id = request.POST['edit-tpnm-id-field']
-    article = Article.objects.get(id=id)
-    name = request.POST['edit-name-field']
-    in_language = request.POST.getlist('edit-inlang-multiselect')
-    from_language = request.POST.getlist('edit-fromlang-multiselect')
-    endonym = request.POST['edit-endonym']
-    content = request.POST['edit-form-content']
-    reference = request.POST.getlist('edit-reference-field')
+    article_id = request.POST['nn-article-id']
+    tpnm_id = request.POST['nn-tpnm-id']
+    article = Article.objects.get(id=article_id)
+    name = request.POST['nn-name']
+    in_language = request.POST.getlist('nn-inlang-multiselect')
+    from_language = request.POST.getlist('nn-fromlang-multiselect')
+    endonym = request.POST['nn-endonym']
+    content = request.POST['nn-content']
+    reference = request.POST.getlist('nn-reference')
     username = request.user.get_username()
-    see_also = request.POST.getlist('edit-see-also')
-    article_name = ArticleName(tpnm_id=tpnm_id, article=article, name=name)
+    see_also = request.POST.getlist('nn-see-also')
+    article_name = ArticleName(id=article_id, article=article, name=name)
     article_name.save()
     edit = Edit(article_name = article_name, in_language=in_language,
                 from_language=from_language, endonym=endonym, content=content, reference=reference, username=username, see_also=see_also)
@@ -99,16 +99,16 @@ def save_name(request):
 
 @login_required
 def save_edit(request):
-    article_name_id = request.POST['article-name-id-field']
-    tpnm_id = request.POST['edit-tpnm-id-field']
+    article_name_id = request.POST['ne-article-name-id']
+    tpnm_id = request.POST['ne-tpnm-id']
     article_name = ArticleName.objects.get(id=article_name_id)
-    in_language = request.POST.getlist('edit-inlang-multiselect')
-    from_language = request.POST.getlist('edit-fromlang-multiselect')
-    endonym = request.POST['edit-endonym']
-    content = request.POST['edit-form-content']
-    reference = request.POST.getlist('edit-reference-field')
+    in_language = request.POST.getlist('ne-inlang-multiselect')
+    from_language = request.POST.getlist('ne-fromlang-multiselect')
+    endonym = request.POST['ne-endonym']
+    content = request.POST['ne-form']
+    reference = request.POST.getlist('ne-reference')
     username = request.user.get_username()
-    see_also = request.POST.getlist('edit-see-also')
+    see_also = request.POST.getlist('ne-see-also')
     edit = Edit(article_name = article_name, in_language=in_language,
                 from_language=from_language, endonym=endonym, content=content, reference=reference, username=username, see_also=see_also)
     edit.save()

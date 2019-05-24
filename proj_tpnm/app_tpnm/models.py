@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.postgres.fields import JSONField, ArrayField
 from django import forms
+import datetime
 
 
 class Article(models.Model):
@@ -96,13 +97,14 @@ class Edit(models.Model):
         return self.article_name.name + ' Edit' + str(self.id)
 
     def toDictionary(self):
+
         return {
             'id': self.id,
-            'in_language': self.in_language,
-            'from_language': self.from_language,
+            'in_language': ', '.join(self.in_language),
+            'from_language': ', '.join(self.from_language),
             'endonym': self.endonym,
             'content': self.content,
-            'created': self.created,
+            'created': self.created.strftime("%m/%d/%Y, %H:%M:%S"),
             'edited': self.edited,
             'username': self.username,
             'reference': self.reference,

@@ -465,7 +465,7 @@
                                         <div id="article-endonym">Endonym: [[ name.edits[0].endonym ]]</div>
                                     </div>
                                     <div id="article-div2">
-                                        <div><h4 id="article-fromLanguage"> Source language(s): [[ name.edits[0].from_language ]]</h4></div>
+                                        <div><h4 id="article-fromLanguage"> Source language(s): [[ name.edits[0].from_language ]]</div>
                                     </div>
                                     <div id="article-div3">
                                         <div><h5 id="article-inLanguage">Used in: [[ name.edits[0].in_language ]]</h5></div>
@@ -592,8 +592,8 @@
                                     <button type="submit">Submit</button>
                                 </div>
                                 <div>
-                                    <input type="hidden" id="ne-article-id" name="ne-article-id" value="undefined">
                                     <input type="hidden" id="ne-tpnm-id" name="ne-tpnm-id" value="undefined">
+                                    <input type="hidden" id="ne-article-name-id" name="ne-article-name-id" value="undefined">
                                     <input type="hidden" id="ne-name" name="ne-name">
                                 </div>
                             </form>
@@ -635,7 +635,6 @@
                                     <input type="url" id="nn-reference" name="nn-reference" placeholder="Enter URL">
                                 </div>
                                 <div class="nn-div" id="nn-button-div">
-                                    <button type="button" id="nn-cancel-btn" onclick="nnCancel()">Submit</button>
                                     <button type="submit">Submit</button>
                                 </div>
                                 <div>
@@ -708,10 +707,10 @@
             zoom: 1.5
         });
         // Add geocoder (search bar)
-        // map.addControl(new MapboxGeocoder({
-        //     accessToken: mapboxgl.accessToken,
-        //     mapboxgl: mapboxgl
-        // }));
+        map.addControl(new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl
+        }));
         map.addControl(new mapboxgl.NavigationControl());
 
         var randomBtn = document.getElementById('random-btn');
@@ -751,7 +750,7 @@
 
         // Opens sidebar
         function openSidebar() {
-            console.log('openSidebar')
+            // console.log('openSidebar')
             windowWidth = window.outerWidth;
             sidebar.style.width = "800px";
             sidebar.style.maxWidth = "windowWidth";
@@ -761,7 +760,7 @@
         // Closes sidebar
 
         function closeSidebar() {
-            console.log('closeSidebar')
+            // console.log('closeSidebar')
             document.getElementById("sidebar").style.width = "0";
             document.getElementById("map").style.marginLeft = "0";
             // sidebar.style.width = "0";
@@ -789,7 +788,7 @@
         function cancelMarker(marker) {
             marker.remove();
             closeSidebar();
-            console.log('cancelMarker')
+            // console.log('cancelMarker')
         }
 
         var listentime = function() {
@@ -797,7 +796,7 @@
         }
 
         function addTabListeners() {
-            console.log('addTabListeners')
+            // console.log('addTabListeners')
             document.getElementById("article-tab").addEventListener("click", listentime);
             document.getElementById("talk-tab").addEventListener("click", listentime);
             {% if user.is_authenticated %}
@@ -807,7 +806,7 @@
         }
 
         function removeTabListeners() {
-            console.log('removeTabListeners')
+            // console.log('removeTabListeners')
 
             document.getElementById("article-tab").removeEventListener("click", listentime);
             document.getElementById("talk-tab").removeEventListener("click", listentime);
@@ -818,7 +817,7 @@
         }
 
         function openTab(thisTab) {
-            console.log('openTab')
+            // console.log('openTab')
             // Resets tabs and allows click to navigate. Only really needed within openArticle()
             tablinks = document.getElementsByClassName("tablink");
             for (let i = 0; i < tablinks.length; i++) {
@@ -903,7 +902,7 @@
         }
 
         function addName(tpnm_id) {
-            console.log('addName')
+            // console.log('addName')
             document.getElementById("new-article").style.display = 'none';
             document.getElementById("new-name").style.display = 'block';
             document.getElementById("dropdown").style.display = 'none';
@@ -931,27 +930,27 @@
             document.getElementById("new-name").style.display = 'none';
             document.getElementById("dropdown").style.display = 'flex';
             document.getElementById("new-edit").style.display = 'block';
-            let data = {
-                tpnm_id: tpnm_id
-            }
-            let config = {
-                headers: {
-                    'X-CSRFToken': '{{ csrf_token }}'
-                }
-            }
-            axios.post('{% url 'app_tpnm:get_article' %}', data, config).then(function(response) {
-                let inLanguage = jsondata['properties'][0]['toponyms'][0]['edits'][0]['in_language']
-                let fromLanguage = jsondata['properties'][0]['toponyms'][0]['edits'][0]['from_language']
-                let endonymValue = jsondata['properties'][0]['toponyms'][0]['edits'][0]['endonym']
-                $('.ne-inlang-multiselect').val(inLanguage).trigger('change');
-                $('.ne-fromlang-multiselect').val(fromLanguage).trigger('change');
-                document.getElementById("ne-content").value = content;
-                if (endonymValue == true){
-                    document.getElementById("ne-endonymDropdown").value = "True";
-                } else {
-                    document.getElementById("ne-endonymDropdown").value = "False";
-                }
-            });
+            // let data = {
+            //     tpnm_id: tpnm_id
+            // }
+            // let config = {
+            //     headers: {
+            //         'X-CSRFToken': '{{ csrf_token }}'
+            //     }
+            // }
+            // axios.post('{% url 'app_tpnm:get_article' %}', data, config).then(function(response) {
+            //     let inLanguage = jsondata['properties'][0]['toponyms'][0]['edits'][0]['in_language']
+            //     let fromLanguage = jsondata['properties'][0]['toponyms'][0]['edits'][0]['from_language']
+            //     let endonymValue = jsondata['properties'][0]['toponyms'][0]['edits'][0]['endonym']
+            //     $('.ne-inlang-multiselect').val(inLanguage).trigger('change');
+            //     $('.ne-fromlang-multiselect').val(fromLanguage).trigger('change');
+            //     document.getElementById("ne-content").value = content;
+            //     if (endonymValue == true){
+            //         document.getElementById("ne-endonymDropdown").value = "True";
+            //     } else {
+            //         document.getElementById("ne-endonymDropdown").value = "False";
+            //     }
+            // });
         }
         {% endif %}
 
@@ -980,13 +979,13 @@
             axios.post('{% url 'app_tpnm:get_article' %}', data, config).then(function(response) {
                 // Parse data from Axios response
                 var jsondata = response.data
-                console.log(jsondata)
-                id = jsondata['properties'][0]['id']
+                // console.log(jsondata)
+                article_id = jsondata['properties'][0]['id']
                 tpnmId = jsondata['properties'][0]['tpnm_id']
                 title = jsondata['properties'][0]['title']
                 coordinates = jsondata['properties'][0]['coordinates']
-                // content = jsondata['properties'][0]['toponyms'][0]['edits'][0]['content']
-                // endonymValue = jsondata['properties'][0]['toponyms'][0]['edits'][0]['endonym']
+                content = jsondata['properties'][0]['toponyms'][0]['edits'][0]['content']
+                endonymValue = jsondata['properties'][0]['toponyms'][0]['edits'][0]['endonym']
                 // editCreated = jsondata['properties'][0]['toponyms'][0]['edits'][0]['created']
                 // editDateTime = formatDateTime(editCreated)
                 // editUsername = jsondata['properties'][0]['toponyms'][0]['edits'][0]['username']
@@ -1026,10 +1025,10 @@
                 // }
                 app.names = jsondata['properties'][0]['toponyms']
                 {% if user.is_authenticated %}
+                // Set all edit field values
                 document.getElementById("edit-tab").innerText = "Edit"
-                document.getElementById("nn-article-id").value = id;
+                document.getElementById("nn-article-id").value = article_id;
                 document.getElementById("nn-tpnm-id").value = tpnmId;
-                document.getElementById("ne-article-id").value = id;
                 document.getElementById("ne-tpnm-id").value = tpnmId;
                 document.getElementById("ne-content").value = content;
                 document.getElementById("add-name-btn").addEventListener("click", addName(tpnm_id));
@@ -1103,7 +1102,7 @@
                 // placeTypeField.value = placeType;
                 // geoTypeField.value = geoType;
                 // longField.value = longitude;
-                console.log(longitude)
+                // console.log(longitude)
                 document.getElementById("na-coord").value = coordinates;
                 document.getElementById("na-long").value = longitude;
                 document.getElementById("na-lat").value = latitude;
@@ -1165,20 +1164,20 @@
 
 
                     } else if (jsonfeatures[0]["geometry"]["type"] == "LineString") {
-                        console.log('LineString')
+                        // console.log('LineString')
                         // marker.setLngLat(coordinates[Math.floor((coordinates.length) / 2)]) marker.addTo(map); map.flyTo({
                         //     center: coordinates[Math.floor((coordinates.length) / 2)]
                         // });
                         // markerToggleOff();
                         // openSidebar()
                     } else if (jsonfeatures[0]["geometry"]["type"] == "MultiLineString") {
-                        console.log('MultiLineString')
+                        // console.log('MultiLineString')
                         // marker.setLngLat(coordinates[Math.floor((coordinates.length) / 2)])
                         // marker.addTo(map);
                         // markerToggleOff();
                         // openSidebar()
                     } else if (jsonfeatures[0]["geometry"]["type"] == "MultiPolygon") {
-                        console.log('MultiPolygon')
+                        // console.log('MultiPolygon')
                     }
                 }
             }
