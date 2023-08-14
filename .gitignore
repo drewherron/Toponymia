@@ -137,7 +137,22 @@ dmypy.json
 # Pyre type checker
 .pyre/
 
+#
 # End of https://www.gitignore.io/api/django
+#
+
+# Node/NPM related
+node_modules/
+npm-debug.log
+package-lock.json
+
+# IDE related
+*.swp
+*.swo
+*.idea/
+*.vscode/
 
 # Custom
 secret*
+
+
