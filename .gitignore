@@ -146,7 +146,11 @@ node_modules/
 npm-debug.log
 package-lock.json
 
+# TS
+package.json
+
 # IDE related
+.#*
 *.swp
 *.swo
 *.idea/
