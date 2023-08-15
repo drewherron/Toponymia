@@ -5,6 +5,10 @@ import datetime
 
 
 class Article(models.Model):
+    """
+    Represents a geographical place on the map with associated metadata.
+    Each article corresponds to a unique place with a specific name, coordinates, and other details.
+    """
     tpnm_id = models.CharField(max_length=500)
     mapbox_id = models.PositiveIntegerField(blank=True, null=True)
     title = models.CharField(max_length=1000)
@@ -53,6 +57,10 @@ class Article(models.Model):
 
 
 class ArticleName(models.Model):
+    """
+    Represents a specific name or toponym for a geographical place.
+    A place (Article) can have multiple names based on language, history, or other factors.
+    """
     tpnm_id = models.CharField(max_length=500)
     article = models.ForeignKey('Article', related_name='article_names', on_delete=models.CASCADE)
     name = models.CharField(max_length=200, blank=False, null=False)
@@ -75,6 +83,11 @@ class ArticleName(models.Model):
 
 
 class Edit(models.Model):
+    """
+    Represents an edit or annotation made to a specific name (ArticleName) of a place.
+    Contains details about the edit, the languages it pertains to, and other metadata.
+    Only the most recent edit is shown as the article, and the 'edit history' is available to the user.
+    """
     article_name = models.ForeignKey(
         'ArticleName', related_name='edits', on_delete=models.CASCADE)
     in_language = ArrayField(
@@ -113,6 +126,10 @@ class Edit(models.Model):
 
 
 class Comment(models.Model):
+    """
+    Represents user comments or discussions related to a specific place (Article).
+    Contains the content of the comment and metadata like the author and timestamps.
+    """
     article = models.ForeignKey(
         'Comment', related_name='categories', on_delete=models.CASCADE)
     username = models.CharField(max_length=200)
@@ -137,6 +154,10 @@ class Comment(models.Model):
 
 
 class Language(models.Model):
+    """
+    Represents a language with a specific ISO 639-3 code and name.
+    Used to categorize or filter names (ArticleName) and edits based on language.
+    """
     iso_639_3 = models.CharField(max_length=3)
     name = models.CharField(max_length=200)
 
