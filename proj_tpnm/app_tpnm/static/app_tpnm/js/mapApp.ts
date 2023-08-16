@@ -10,6 +10,7 @@ class MapApp {
     private historyTab: HTMLElement;
     private historyContent: HTMLElement;
     private closeTab: HTMLElement;
+    private addMarkerMode: boolean = false;
     private markerToggle: HTMLElement;
     private newArticleDiv: HTMLElement;
     private articleTitle: HTMLCollectionOf<Element>;
@@ -87,4 +88,26 @@ class MapApp {
         this.sidebar.style.width = "0";
         this.mapContainer.style.marginLeft = "0";
     }
+        
+    markerToggleOn(): boolean {
+        this.markerToggle.innerHTML = 'Cancel';
+        this.markerToggle.style.borderStyle = 'inset';
+        this.markerToggle.style.backgroundColor = '#f99a89';
+        this.addMarkerMode = true;
+        return this.addMarkerMode;
+    }
+
+    markerToggleOff(): boolean {
+        this.markerToggle.innerHTML = 'Add Marker';
+        this.markerToggle.style.borderStyle = 'outset';
+        this.markerToggle.style.backgroundColor = 'lightgray';
+        this.addMarkerMode = false;
+        return this.addMarkerMode;
+    }
+
+    cancelMarker(marker: any): void {
+        marker.remove();
+        this.closeSidebar();
+    }
+
 }
