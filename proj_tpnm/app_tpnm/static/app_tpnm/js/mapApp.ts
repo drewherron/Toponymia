@@ -27,7 +27,7 @@ class MapApp {
     private iso_3166_1Field: HTMLInputElement;
     private iso_3166_2Field: HTMLInputElement;
     private djangoUsername?: string;
-}
+
     constructor() {
         this.randomBtn = document.getElementById('random-btn') as HTMLElement;
         this.sidebar = document.getElementById('sidebar') as HTMLElement;
@@ -58,3 +58,31 @@ class MapApp {
         // TODO figure out sending Django data to TS
         // this.djangoUsername = "{{ user.get_username }}"; // This line might need adjustment based on your setup
     }
+
+    init() {
+        mapboxgl.accessToken = 'YOUR_MAPBOX_TOKEN';
+        this.map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [2, 20],
+            zoom: 1.5
+        });
+        this.map.addControl(new MapboxGeocoder({
+            accessToken: mapboxgl.accessToken,
+            mapboxgl: mapboxgl
+        }));
+        this.map.addControl(new mapboxgl.NavigationControl());
+    }
+
+    openSidebar() {
+        const windowWidth = window.outerWidth;
+        this.sidebar.style.width = "800px";
+        this.sidebar.style.maxWidth = `${windowWidth}px`;
+        document.getElementById("map").style.marginLeft = "20%";
+    }
+
+    closeSidebar() {
+        this.sidebar.style.width = "0";
+        document.getElementById("map").style.marginLeft = "0";
+    }
+}
