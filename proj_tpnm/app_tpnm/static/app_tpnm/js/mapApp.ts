@@ -1,5 +1,6 @@
 class MapApp {
     private map: any;
+    private mapContainer: HTMLElement;
     private randomBtn: HTMLElement;
     private sidebar: HTMLElement;
     private articleTab: HTMLElement;
@@ -29,6 +30,7 @@ class MapApp {
     private djangoUsername?: string;
 
     constructor() {
+        this.mapContainer = document.getElementById("map") as HTMLElement;
         this.randomBtn = document.getElementById('random-btn') as HTMLElement;
         this.sidebar = document.getElementById('sidebar') as HTMLElement;
         this.articleTab = document.getElementById("article-tab") as HTMLElement;
@@ -78,11 +80,11 @@ class MapApp {
         const windowWidth = window.outerWidth;
         this.sidebar.style.width = "800px";
         this.sidebar.style.maxWidth = `${windowWidth}px`;
-        document.getElementById("map").style.marginLeft = "20%";
+        this.mapContainer.style.marginLeft = "20%";
     }
 
     closeSidebar() {
         this.sidebar.style.width = "0";
-        document.getElementById("map").style.marginLeft = "0";
+        this.mapContainer.style.marginLeft = "0";
     }
 }
