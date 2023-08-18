@@ -28,7 +28,8 @@ class MapApp {
     private geoTypeField: HTMLInputElement;
     private iso_3166_1Field: HTMLInputElement;
     private iso_3166_2Field: HTMLInputElement;
-    private djangoUsername?: string;
+    private username: string | null;
+
 
     constructor() {
         this.mapContainer = document.getElementById("map") as HTMLElement;
@@ -59,7 +60,8 @@ class MapApp {
         this.iso_3166_1Field = document.getElementById("na-iso-3166-1") as HTMLInputElement;
         this.iso_3166_2Field = document.getElementById("na-iso-3166-2") as HTMLInputElement;
         // TODO figure out sending Django data to TS
-        // this.djangoUsername = "{{ user.get_username }}"; // This line might need adjustment based on your setup
+        this.username = window.djangoUsername;
+
     }
 
     init() {
@@ -132,4 +134,41 @@ class MapApp {
         this.openTab(this.innerText);
     }
 
+    openTab(thisTab: string): void {
+        let tablinks = document.getElementsByClassName("tablink");
+        for (let i = 0; i < tablinks.length; i++) {
+            tablinks[i].style.backgroundColor = '#555';
+            tablinks[i].style.color = 'white';
+        }
+        let activeTab = document.getElementById(thisTab.toLowerCase() + "-tab");
+        activeTab!.style.backgroundColor = 'white';
+        activeTab!.style.color = 'black';
+
+        let sidebarContent = document.getElementsByClassName("sidebar-content");
+        for (let i = 0; i < sidebarContent.length; i++) {
+            sidebarContent[i].style.display = "none";
+        }
+        let activeContent = document.getElementById(thisTab.toLowerCase());
+        activeContent!.style.display = 'block';
+        activeContent!.style.height = '100%';
+
+        if (document.getElementById("edit")!.style.display == 'block') {
+            document.getElementById("new-article")!.style.display = 'none';
+            document.getElementById("new-name")!.style.display = 'none';
+            document.getElementById("dropdown")!.style.display = 'flex';
+            document.getElementById("new-edit")!.style.display = 'none';
+        }
+    }
+
+    formatDateTime(DTinput: string): string {
+        let date = new Date(DTinput);
+        let year = date.getUTCFullYear();
+        let month = date.getUTCMonth() + 1;
+        let day = date.getUTCDate();
+        let hours = date.getUTCHours();
+        let minutes = date.getUTCMinutes();
+        let seconds = date.getUTCSeconds();
+        let UTCDateTime = year + '/' + month + '/' + day + ' ' + hours + ':' + minutes + ':' + seconds + ' UTC';
+        return UTCDateTime;
+    }
 }
