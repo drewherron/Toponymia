@@ -110,4 +110,26 @@ class MapApp {
         this.closeSidebar();
     }
 
+    addTabListeners(): void {
+        this.articleTab.addEventListener("click", this.listentime.bind(this));
+        this.talkTab.addEventListener("click", this.listentime.bind(this));
+        if (this.isAuthenticated) {
+            this.editTab?.addEventListener("click", this.listentime.bind(this));
+        }
+        this.historyTab.addEventListener("click", this.listentime.bind(this));
+    }
+
+    removeTabListeners(): void {
+        this.articleTab.removeEventListener("click", this.listentime.bind(this));
+        this.talkTab.removeEventListener("click", this.listentime.bind(this));
+        if (this.isAuthenticated) {
+            this.editTab?.removeEventListener("click", this.listentime.bind(this));
+        }
+        this.historyTab.removeEventListener("click", this.listentime.bind(this));
+    }
+
+    listentime(): void {
+        this.openTab(this.innerText);
+    }
+
 }
