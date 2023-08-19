@@ -28,7 +28,14 @@ class MapApp {
     private geoTypeField: HTMLInputElement;
     private iso_3166_1Field: HTMLInputElement;
     private iso_3166_2Field: HTMLInputElement;
+    private geojson: any;
+    private articleIdList: string[] = [];
+    private markerHeight: number = 50;
+    private markerRadius: number = 10;
+    private linearOffset: number = 25;
+    private articleIdList: string[];
     private username: string | null;
+    private vueApp: any;
 
 
     constructor() {
