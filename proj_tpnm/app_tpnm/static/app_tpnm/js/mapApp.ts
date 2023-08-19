@@ -67,7 +67,17 @@ class MapApp {
         this.iso_3166_1Field = document.getElementById("na-iso-3166-1") as HTMLInputElement;
         this.iso_3166_2Field = document.getElementById("na-iso-3166-2") as HTMLInputElement;
         // TODO figure out sending Django data to TS
-        this.username = window.djangoUsername;
+
+        this.vueApp = createApp({
+            data() {
+                return {
+                    names: [],
+                    selected: ''
+                };
+            },
+            delimiters: ["[[","]]"]
+        }).mount('#app');
+
 
     }
 
