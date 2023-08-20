@@ -237,6 +237,28 @@ class MapApp {
             this.openSidebar();
             this.markerToggleOff();
         };
+
+        this.addName = (tpnm_id: string) => {
+            document.getElementById("new-article")!.style.display = 'none';
+            document.getElementById("new-name")!.style.display = 'block';
+            document.getElementById("dropdown")!.style.display = 'none';
+            document.getElementById("new-edit")!.style.display = 'none';
+            document.getElementById("nn-name")!.value = '';
+            document.getElementById("nn-content")!.value = '';
+            document.getElementById("nn-reference")!.value = '';
+            document.getElementById("nn-tpnm-id")!.value = tpnm_id;
+            $('.nn-inlang-multiselect').val(null).trigger('change');
+            $('.nn-fromlang-multiselect').val(null).trigger('change');
+            this.newArticleDiv.style.display = 'none';
+        };
+
+        this.addEdit = (article_id: string) => {
+            document.getElementById("new-article")!.style.display = 'none';
+            document.getElementById("new-name")!.style.display = 'none';
+            document.getElementById("dropdown")!.style.display = 'flex';
+            document.getElementById("new-edit")!.style.display = 'block';
+            this.newArticleDiv.style.display = 'none';
+        };
     }
 
     openArticle(tpnm_id: string, csrf_token: string, app_tpnm_get_article_url: string) {
