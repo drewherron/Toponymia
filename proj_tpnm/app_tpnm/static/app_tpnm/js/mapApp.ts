@@ -265,4 +265,28 @@ class MapApp {
 
         this.addMarkersToMap();
     }
+
+    private addMarkersToMap(): void {
+        this.geojson.features.forEach(marker => {
+            const markerDiv = document.createElement('div');
+            markerDiv.className = 'marker';
+            new mapboxgl.Marker(markerDiv, {
+                offset: [8, -18]
+            })
+            .setLngLat(marker.geometry.coordinates)
+            .addTo(this.map);
+
+            const currentMarkerId = marker.properties.tpnm_id;
+            markerDiv.setAttribute('id', currentMarkerId);
+            const currentMarker = document.getElementById(currentMarkerId);
+            const tooltip = document.createElement('span');
+            tooltip.className = 'tooltip';
+            tooltip.innerText = marker.properties.title;
+            currentMarker?.appendChild(tooltip);
+
+            currentMarker?.addEventListener('click', () => {
+                this.openArticle(currentMarkerId);
+            });
+        });
+    }
 }
