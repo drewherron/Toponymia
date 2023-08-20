@@ -244,4 +244,25 @@ class MapApp {
 
         this.openSidebar();
     }
+
+    private fetchArticles(): void {
+
+        const articles = [];
+
+        articles.forEach(article => {
+            this.geojson.features.push({
+                geometry: {
+                    coordinates: [article.longitude, article.latitude]
+                },
+                properties: {
+                    title: article.title,
+                    tpnm_id: article.tpnm_id
+                }
+            });
+
+            this.articleIdList.push(article.tpnm_id);
+        });
+
+        this.addMarkersToMap();
+    }
 }
