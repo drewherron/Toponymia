@@ -191,6 +191,9 @@ class MapApp {
         let UTCDateTime = year + '/' + month + '/' + day + ' ' + hours + ':' + minutes + ':' + seconds + ' UTC';
         return UTCDateTime;
     }
+
+    newArticlePoint?(title: string, coordinates: string[], mapboxId: string): void;
+
     initAuthenticatedFeatures() {
         if (!this.username) return;
 
