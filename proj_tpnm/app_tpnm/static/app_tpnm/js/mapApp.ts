@@ -191,6 +191,51 @@ class MapApp {
         let UTCDateTime = year + '/' + month + '/' + day + ' ' + hours + ':' + minutes + ':' + seconds + ' UTC';
         return UTCDateTime;
     }
+    initAuthenticatedFeatures() {
+        if (!this.username) return;
+
+        this.newArticlePoint = (title: string, coordinates: string[], mapboxId: string) => {
+            this.removeTabListeners();
+            this.articleTab.style.backgroundColor = '#555';
+            this.articleTab.style.color = '#737070';
+            this.talkTab.style.backgroundColor = '#555';
+            this.talkTab.style.color = '#737070';
+            this.historyTab.style.backgroundColor = '#555';
+            this.historyTab.style.color = '#737070';
+            let newArticleTab = document.getElementById("edit-tab") as HTMLElement;
+            newArticleTab.style.backgroundColor = 'white';
+            newArticleTab.style.color = 'black';
+            newArticleTab.innerText = 'New';
+            this.closeTab.innerText = 'Cancel';
+            this.closeTab.style.color = 'white';
+            this.newArticleDiv.style.display = 'block';
+            document.getElementById("new-name").style.display = 'none';
+            document.getElementById("new-edit").style.display = 'none';
+            document.getElementById("dropdown").style.display = 'flex';
+            let sidebarContent = this.sidebar.getElementsByClassName("sidebar-content");
+            for (let i = 0; i < sidebarContent.length; i++) {
+                sidebarContent[i].style.display = "none";
+            }
+            let activeContent = document.getElementById("edit");
+            activeContent!.style.display = 'block';
+            activeContent!.style.height = '100%';
+            for (let i = 0; i < this.articleTitle.length; i++) {
+                this.articleTitle[i].innerText = title;
+            }
+            for (let i = 0; i < this.articleCoordinates.length; i++) {
+                this.articleCoordinates[i].innerText = '(' + coordinates.toString() + ')';
+            }
+
+            this.coordField.value = coordinates.join(',');
+            $('.inlang-multiselect').val(null).trigger('change');
+            $('.fromlang-multiselect').val(null).trigger('change');
+            document.getElementById("na-content")!.value = '';
+            document.getElementById("na-reference")!.value = '';
+            this.openSidebar();
+            this.markerToggleOff();
+        };
+    }
+
     openArticle(tpnm_id: string, csrf_token: string, app_tpnm_get_article_url: string) {
         this.addTabListeners();
         this.closeTab.onclick = this.closeSidebar.bind(this);
