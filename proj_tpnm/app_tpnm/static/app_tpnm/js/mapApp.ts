@@ -81,7 +81,12 @@ class MapApp {
             delimiters: ["[[","]]"]
         }).mount('#app');
 
+        this.geojson = {
+            type: 'FeatureCollection',
+            features: []
+        };
 
+        this.fetchArticles();
     }
 
     init() {
