@@ -1,3 +1,6 @@
+import * as mapboxgl from 'mapbox-gl';
+import { createApp } from 'vue';
+import axios from 'axios';
 class MapApp {
     private map: any;
     private mapContainer: HTMLElement;
