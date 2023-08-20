@@ -341,6 +341,66 @@ class MapApp {
         });
     }
 
+    initMapClickEvent() {
+        if (!this.username) return;
+
+        this.map.on('click', (e: any) => {
+            if (this.addMarkerMode) {
+                const markerDiv = document.createElement('div');
+                markerDiv.className = 'marker';
+                const jsonfeatures = this.map.queryRenderedFeatures(e.point);
+                const geoType = jsonfeatures[0]["geometry"]["type"];
+                const coordinates = jsonfeatures[0]["geometry"]["coordinates"];
+                const longitude = coordinates[0];
+                const latitude = coordinates[1];
+                const nameEn = jsonfeatures[0]["properties"]["name_en"];
+                const name = jsonfeatures[0]["properties"]["name"];
+                const placeType = jsonfeatures[0]["properties"]["type"];
+                const placeClass = jsonfeatures[0]["properties"]["class"];
+                const mapboxId = jsonfeatures[0]["id"];
+                const iso_3166_1 = jsonfeatures[0]["properties"]["iso_3166_1"];
+                const iso_3166_2 = jsonfeatures[0]["properties"]["iso_3166_2"];
+                // ... (similar assignments for other fields)
+
+                const tpnmId = Math.random().toString(36).substring(2) + (new Date()).getTime().toString(36) + mapboxId.toString();
+
+                let title: string;
+                if (nameEn || name) {
+                    if (nameEn) {
+                        title = nameEn !== name ? `${nameEn} (${name})` : nameEn;
+                    } else {
+                        title = name;
+                    }
+                }
+
+                const named_id = `${title} (${mapboxId.toString()})`;
+
+                if (geoType === "Point" && title) {
+                    this.articleTitle.innerText = title;
+                    this.newArticlePoint(title, coordinates, mapboxId);
+                    const marker = new mapboxgl.Marker(markerDiv, {
+                        offset: [9, -18]
+                    }).setLngLat(coordinates).addTo(this.map);
+
+                    this.map.flyTo({
+                        center: coordinates
+                    });
+
+                    markerDiv.setAttribute('id', tpnmId);
+                    const currentMarker = document.getElementById(tpnmId);
+                    const tooltip = document.createElement('span');
+                    tooltip.className = 'tooltip';
+                    tooltip.innerText = title;
+                    currentMarker?.appendChild(tooltip);
+
+                    this.closeTab.addEventListener("click", () => {
+                        this.cancelMarker(marker);
+                    });
+                }
+            }
+        });
+    }
+
     private fetchArticles(): void {
 
         const articles = [];
