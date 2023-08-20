@@ -188,4 +188,60 @@ class MapApp {
         let UTCDateTime = year + '/' + month + '/' + day + ' ' + hours + ':' + minutes + ':' + seconds + ' UTC';
         return UTCDateTime;
     }
+    openArticle(tpnm_id: string, csrf_token: string, app_tpnm_get_article_url: string) {
+        this.addTabListeners();
+        this.closeTab.onclick = this.closeSidebar.bind(this);
+
+        if (this.username) {
+            document.getElementById("new-article")!.style.display = 'none';
+            document.getElementById("new-name")!.style.display = 'none';
+            document.getElementById("dropdown")!.style.display = 'flex';
+            document.getElementById("new-edit")!.style.display = 'none';
+            document.getElementById("add-name-btn")!.addEventListener("click", () => this.addName(tpnm_id));
+            document.getElementById("close-tab")!.innerText = "Close";
+        }
+
+        this.openTab("article");
+
+        let data = {
+            tpnm_id: tpnm_id
+        }
+        let config = {
+            headers: {
+                'X-CSRFToken': csrf_token
+            }
+        }
+        axios.post(app_tpnm_get_article_url, data, config).then((response) => {
+            let jsondata = response.data;
+            let article_id = jsondata['properties'][0]['id'];
+            let tpnmId = jsondata['properties'][0]['tpnm_id'];
+            let title = jsondata['properties'][0]['title'];
+            let coordinates = jsondata['properties'][0]['coordinates'];
+            let content = jsondata['properties'][0]['toponyms'][0]['edits'][0]['content'];
+            let activeContent = document.getElementById("article");
+            activeContent!.style.display = 'block';
+            activeContent!.style.height = '100%';
+
+            for (let i = 0; i < this.articleTitle.length; i++) {
+                this.articleTitle[i].innerText = title;
+            }
+            for (let i = 0; i < this.articleCoordinates.length; i++) {
+                this.articleCoordinates[i].innerText = '(' + coordinates.toString() + ')';
+            }
+            this.coordField.value = coordinates.join(',');
+
+            this.vueApp.names = jsondata['properties'][0]['toponyms'];
+
+            if (this.username) {
+                document.getElementById("edit-tab")!.innerText = "Edit";
+                document.getElementById("nn-article-id")!.value = article_id;
+                document.getElementById("nn-tpnm-id")!.value = tpnmId;
+                document.getElementById("ne-tpnm-id")!.value = tpnmId;
+                document.getElementById("ne-content")!.value = content;
+                document.getElementById("add-name-btn")!.addEventListener("click", () => this.addName(tpnm_id));
+            }
+        });
+
+        this.openSidebar();
+    }
 }
