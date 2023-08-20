@@ -245,6 +245,29 @@ class MapApp {
         this.openSidebar();
     }
 
+    initEventListeners() {
+        if (this.username) {
+            this.markerToggle.addEventListener('click', () => {
+                if (this.markerToggle.innerHTML == 'Add Marker') {
+                    this.markerToggleOn();
+                } else {
+                    this.markerToggleOff();
+                }
+            });
+        }
+
+        this.randomBtn.addEventListener('click', () => {
+            const randomArticle = this.articleIdList[Math.floor(Math.random() * this.articleIdList.length)];
+            this.openArticle(randomArticle);
+        });
+
+        this.map.on('click', (e: any) => { 
+            const features = this.map.queryRenderedFeatures(e.point);
+            document.getElementById('features').innerHTML = JSON.stringify(features, null, 2);
+            const jsonfeatures = this.map.queryRenderedFeatures(e.point);
+        });
+    }
+
     private fetchArticles(): void {
 
         const articles = [];
