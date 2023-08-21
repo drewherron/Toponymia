@@ -1,7 +1,7 @@
 import * as mapboxgl from 'mapbox-gl';
 import { createApp } from 'vue';
 import axios from 'axios';
-class MapApp {
+export class MapApp {
     private map: any;
     private mapContainer: HTMLElement;
     private randomBtn: HTMLElement;
@@ -36,7 +36,6 @@ class MapApp {
     private markerHeight: number = 50;
     private markerRadius: number = 10;
     private linearOffset: number = 25;
-    private articleIdList: string[];
     private username: string | null;
     private vueApp: any;
 
@@ -72,6 +71,7 @@ class MapApp {
         // TODO figure out sending Django data to TS
         const bodyData = document.body.dataset;
         this.username = bodyData.username && bodyData.username !== 'null' ? bodyData.username : null;
+
 
 
         this.vueApp = createApp({
@@ -143,7 +143,7 @@ class MapApp {
     addTabListeners(): void {
         this.articleTab.addEventListener("click", this.listentime.bind(this));
         this.talkTab.addEventListener("click", this.listentime.bind(this));
-        if (this.isAuthenticated) {
+        if (this.username) {
             this.editTab?.addEventListener("click", this.listentime.bind(this));
         }
         this.historyTab.addEventListener("click", this.listentime.bind(this));
@@ -152,7 +152,7 @@ class MapApp {
     removeTabListeners(): void {
         this.articleTab.removeEventListener("click", this.listentime.bind(this));
         this.talkTab.removeEventListener("click", this.listentime.bind(this));
-        if (this.isAuthenticated) {
+        if (this.username) {
             this.editTab?.removeEventListener("click", this.listentime.bind(this));
         }
         this.historyTab.removeEventListener("click", this.listentime.bind(this));
@@ -165,8 +165,8 @@ class MapApp {
     openTab(thisTab: string): void {
         let tablinks = document.getElementsByClassName("tablink");
         for (let i = 0; i < tablinks.length; i++) {
-            tablinks[i].style.backgroundColor = '#555';
-            tablinks[i].style.color = 'white';
+            (tablinks[i] as HTMLElement).style.backgroundColor = '#555';
+            (tablinks[i] as HTMLElement).style.color = 'white';
         }
         let activeTab = document.getElementById(thisTab.toLowerCase() + "-tab");
         activeTab!.style.backgroundColor = 'white';
@@ -174,7 +174,7 @@ class MapApp {
 
         let sidebarContent = document.getElementsByClassName("sidebar-content");
         for (let i = 0; i < sidebarContent.length; i++) {
-            sidebarContent[i].style.display = "none";
+            (sidebarContent[i] as HTMLElement).style.display = "none";
         }
         let activeContent = document.getElementById(thisTab.toLowerCase());
         activeContent!.style.display = 'block';
@@ -201,6 +201,8 @@ class MapApp {
     }
 
     newArticlePoint?(title: string, coordinates: string[], mapboxId: string): void;
+    addName?(tpnm_id: string): void;
+    addEdit?(article_id: string): void;
 
     initAuthenticatedFeatures() {
         if (!this.username) return;
@@ -231,10 +233,10 @@ class MapApp {
             activeContent!.style.display = 'block';
             activeContent!.style.height = '100%';
             for (let i = 0; i < this.articleTitle.length; i++) {
-                this.articleTitle[i].innerText = title;
+                (this.articleTitle[i] as HTMLElement).innerText = title;
             }
             for (let i = 0; i < this.articleCoordinates.length; i++) {
-                this.articleCoordinates[i].innerText = '(' + coordinates.toString() + ')';
+                (this.articleCoordinates[i] as HTMLElement).innerText = '(' + coordinates.toString() + ')';
             }
 
             this.coordField.value = coordinates.join(',');
@@ -304,10 +306,10 @@ class MapApp {
             activeContent!.style.height = '100%';
 
             for (let i = 0; i < this.articleTitle.length; i++) {
-                this.articleTitle[i].innerText = title;
+                (this.articleTitle[i] as HTMLElement).innerText = title;
             }
             for (let i = 0; i < this.articleCoordinates.length; i++) {
-                this.articleCoordinates[i].innerText = '(' + coordinates.toString() + ')';
+                (this.articleCoordinates[i] as HTMLElement).innerText = '(' + coordinates.toString() + ')';
             }
             this.coordField.value = coordinates.join(',');
 
