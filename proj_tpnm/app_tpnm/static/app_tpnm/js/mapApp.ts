@@ -1,9 +1,12 @@
 import * as mapboxgl from 'mapbox-gl';
 import { createApp } from 'vue';
 import axios from 'axios';
+
 export class MapApp {
     private map: any;
     private mapContainer: HTMLElement;
+    private csrfToken: string;
+    private articleUrl: string;
     private randomBtn: HTMLElement;
     private sidebar: HTMLElement;
     private articleTab: HTMLElement;
@@ -42,6 +45,8 @@ export class MapApp {
 
     constructor() {
         this.mapContainer = document.getElementById("map") as HTMLElement;
+        this.csrfToken = (document.querySelector('meta[name="csrf-token"]') as HTMLMetaElement).content;
+        this.articleUrl = (document.querySelector('meta[name="article-url"]') as HTMLMetaElement).content;        
         this.randomBtn = document.getElementById('random-btn') as HTMLElement;
         this.sidebar = document.getElementById('sidebar') as HTMLElement;
         this.articleTab = document.getElementById("article-tab") as HTMLElement;
@@ -341,7 +346,7 @@ export class MapApp {
 
         this.randomBtn.addEventListener('click', () => {
             const randomArticle = this.articleIdList[Math.floor(Math.random() * this.articleIdList.length)];
-            this.openArticle(randomArticle);
+            this.openArticle(randomArticle, this.csrfToken, this.articleUrl);
         });
 
         this.map.on('click', (e: any) => { 
@@ -451,7 +456,7 @@ export class MapApp {
             currentMarker?.appendChild(tooltip);
 
             currentMarker?.addEventListener('click', () => {
-                this.openArticle(currentMarkerId);
+                this.openArticle(currentMarkerId, this.csrfToken, this.articleUrl);
             });
         });
     }
