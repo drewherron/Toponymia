@@ -9,5 +9,6 @@
     "allowJs": true,
     "moduleResolution": "node"
   },
-  "include": ["./src"]
+  "include": ["./proj_tpnm/app_tpnm/static/app_tpnm/js/*.ts"],
+  "exclude": ["node_modules"]
 }
