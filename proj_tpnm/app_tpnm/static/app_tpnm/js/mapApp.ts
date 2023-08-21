@@ -77,8 +77,6 @@ export class MapApp {
         const bodyData = document.body.dataset;
         this.username = bodyData.username && bodyData.username !== 'null' ? bodyData.username : null;
 
-
-
         this.vueApp = createApp({
             data() {
                 return {
