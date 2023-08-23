@@ -1,3 +1,6 @@
+## Under Construction
+**Refactoring to TypeScript, if I can get around to it.**
+
 ## Overview
 from [Wiktionary](https://en.wiktionary.org/wiki/toponym):
 
